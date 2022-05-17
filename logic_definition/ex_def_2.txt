@@ -1,0 +1,19 @@
+G1 = XOR(2);
+G2 = NOR(2);
+G3 = NAND(3);
+
+D1, D2, D3 = SWITCH(0);
+
+DTYPE1 = DTYPE;
+
+D1 -> G1.I1;
+D2 -> DTYPE.DATA;
+D3 -> G3.I3;
+
+G2 -> G3.I1;
+
+CLK1 = CLOCK(20);
+CLK1 -> G1.I2, DTYPE.CLK;
+
+DTYPE.Q -> G2.I2;
+DTYPE.QBAR -> G3.I2
