@@ -1,0 +1,12 @@
+conection           = name, "->", input, { "," , input }, ";" ;
+input               = name, ".", "I", argument ;
+assignment          = name, { "," , name } "=", ( device_arg_dec | device ) ";" ; 
+device_arg_dec      = device_arg, "(", argument , ")" ;
+dtype_op            = name, ".", dtype_op_name ;  
+dtype_ip            = name, ".", dtype_ip_name ;  
+dtype_op_name       = "Q" | "QBAR" ;
+dtype_ip_name       = "DATA" | "CLK" | "SET" | "CLEAR" ;
+name                = letter, { letter | digit } ;
+argument            = digit , { digit } ;
+device_arg          = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;
+device              = "DTYPE" | "XOR" ;
