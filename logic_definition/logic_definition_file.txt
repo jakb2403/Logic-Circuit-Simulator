@@ -8,8 +8,9 @@ assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";
 conection           = ( name | dtype_ip_name ), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
 monitor  		    = monitor_name, "=", ( name | input ), ";" ;
 
+device_arg_dec      = device_arg, "(", argument , ")" ;
 device              = "DTYPE" | "XOR" ;
-device_w_arg        = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;
+device_arg        = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;
 dtype_ip            = name, ".", dtype_ip_name ;  
 dtype_op            = name, ".", dtype_op_name ;  
 
@@ -17,8 +18,6 @@ monitor_name 	    = "MON", argument ;
 
 dtype_ip_name       = "DATA" | "CLK" | "SET" | "CLEAR" ;
 dtype_op_name       = "Q" | "QBAR" ;
-
-device_arg_dec      = device_arg, "(", argument , ")" ;
 
 input               = name, ".", "I", argument ;
 argument            = digit , { digit } ;
