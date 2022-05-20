@@ -1,7 +1,9 @@
 conection           = name, "->", input, { "," , input }, ";" ;
+monitor  		= monitor_name, "=", name | input, ";" ;
+assignment          = name, { "," , name } "=", ( device_arg_dec | device ), ";" ; 
 input               = name, ".", "I", argument ;
-assignment          = name, { "," , name } "=", ( device_arg_dec | device ) ";" ; 
 device_arg_dec      = device_arg, "(", argument , ")" ;
+monitor_name 	= "MON", argument ;
 dtype_op            = name, ".", dtype_op_name ;  
 dtype_ip            = name, ".", dtype_ip_name ;  
 dtype_op_name       = "Q" | "QBAR" ;
