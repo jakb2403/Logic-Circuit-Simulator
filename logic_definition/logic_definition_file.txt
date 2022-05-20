@@ -1,14 +1,21 @@
-conection           = name, "->", input, { "," , input }, ";" ;
-monitor  		= monitor_name, "=", name | input, ";" ;
-assignment          = name, { "," , name } "=", ( device_arg_dec | device ), ";" ; 
-input               = name, ".", "I", argument ;
-device_arg_dec      = device_arg, "(", argument , ")" ;
-monitor_name 	= "MON", argument ;
-dtype_op            = name, ".", dtype_op_name ;  
-dtype_ip            = name, ".", dtype_ip_name ;  
-dtype_op_name       = "Q" | "QBAR" ;
-dtype_ip_name       = "DATA" | "CLK" | "SET" | "CLEAR" ;
-name                = letter, { letter | digit } ;
-argument            = digit , { digit } ;
-device_arg          = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;
+section_mon = "monitor", "{", monitor, {monitor}, "}" ;
+section_con = "connection", "{", connection, {connection}, "}" ;
+section_ass = "assignment", "{", assignment, {assigment}, "}" ;
+
 device              = "DTYPE" | "XOR" ;
+device_w_arg        = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;
+dtype_ip            = name, ".", dtype_ip_name ;  
+dtype_op            = name, ".", dtype_op_name ;  
+
+monitor_name 	    = "MON", argument ;
+assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
+
+dtype_ip_name       = "DATA" | "CLK" | "SET" | "CLEAR" ;
+dtype_op_name       = "Q" | "QBAR" ;
+
+device_arg_dec      = device_arg, "(", argument , ")" ;
+monitor  		    = monitor_name, "=", ( name | input ), ";" ;
+conection           = ( name | dtype_ip_name ), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
+argument            = digit , { digit } ;
+input               = name, ".", "I", argument ;
+name                = letter, { letter | digit } ;
