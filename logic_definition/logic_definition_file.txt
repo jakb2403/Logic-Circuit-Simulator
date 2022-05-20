@@ -1,21 +1,21 @@
 program             = section_ass, section_con, section_mon ;
 
-section_ass         = "assignment", "{", assignment, {assigment}, "}" ;
+section_ass         = "assignment", "{", assignment, {assignment}, "}" ;
 section_con         = "connection", "{", connection, {connection}, "}" ;
 section_mon         = "monitor", "{", monitor, {monitor}, "}" ;
 
 assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
-conection           = ( name | dtype_ip_name ), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
+connection           = ( name | dtype_ip_name ), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
 monitor  		    = monitor_name, "=", ( name | input ), ";" ;
 
 device_arg_dec      = device_arg, "(", argument , ")" ;
 device              = "DTYPE" | "XOR" ;
-device_arg        = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;
-dtype_ip            = name, ".", dtype_ip_name ;  
-dtype_op            = name, ".", dtype_op_name ;  
+device_arg        = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;  
 
 monitor_name 	    = "MON", argument ;
 
+dtype_ip            = name, ".", dtype_ip_name ;  
+dtype_op            = name, ".", dtype_op_name ;
 dtype_ip_name       = "DATA" | "CLK" | "SET" | "CLEAR" ;
 dtype_op_name       = "Q" | "QBAR" ;
 
