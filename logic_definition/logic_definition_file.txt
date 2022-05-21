@@ -5,7 +5,7 @@ section_con         = "connection", "{", connection, {connection}, "}" ;
 section_mon         = "monitor", "{", monitor, {monitor}, "}" ;
 
 assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
-connection           = ( name | dtype_ip_name ), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
+connection           = ( name | dtype_op), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
 monitor  		    = monitor_name, "=", ( name | input ), ";" ;
 
 device_arg_dec      = device_arg, "(", argument , ")" ;
