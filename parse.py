@@ -57,12 +57,10 @@ class Parser:
             self.name()
         if self.symbol.type == self.scanner.EQUALS:
             self.symbol = self.scanner.get_symbol()
-            if (self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.DEVICES_ARG_ID):
+            if self.symbol.type == self.scanner.DEVICE_ARG:
                 self.device_arg()
-            elif (self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.DEVICES_ID):
-                self.symbol = self.scanner.get_symbol()
+            elif self.symbol.type == self.scanner.DEVICE:
+                self.device()
             else:
                 self.sytax_error() # unrecognised device type
         else: 
@@ -81,5 +79,7 @@ class Parser:
     
     def device_arg(self):
         """device_arg = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;"""
+        current_id = self.symbol.id
         self.symbol = self.scanner.get_symbol()
         if self.symbol.type == self.scanner.DOT:
+            
