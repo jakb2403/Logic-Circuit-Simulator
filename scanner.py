@@ -53,11 +53,11 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
         self.names = names
         self.symbol_type_list = [self.COMMA, self.SEMICOLON, self.EQUALS, 
-        self.DOT, self.KEYWORD, self.DEVICE_ARG, self.DEVICE, self.DTYPE_IP, 
-        self.DTYPE_OP, self.NUMBER, self.NAME, self.EOF] = range(12)
-        #PLEASE tell us whether MON and I are keywords
-        #Do we also need END as a keyword?
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "MON", "I"]
+        self.DOT, self.OPENBRACKET, self.CLOSEDBRACKET, self.OPENCURLYBRACKET, 
+        self.CLOSEDCURLYBRACKET, self.KEYWORD, self.DEVICE_ARG, self.DEVICE, self.DTYPE_IP, 
+        self.DTYPE_OP, self.NUMBER, self.NAME, self.EOF] = range("""number""") #feel free to change the names, esp. bracket stuff names, they are too  long, but I can't think of a good name
+        #tell us whether MON and I are keywords
+        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "MON", "I"] #do we also need END as a keyword?
         self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
         self.device_list = ["DTYPE", "XOR"]
         self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
