@@ -55,7 +55,9 @@ class Scanner:
         self.symbol_type_list = [self.COMMA, self.SEMICOLON, self.EQUALS, 
         self.KEYWORD, self.NUMBER, self.NAME, self.EOF] = range(7)
         #PLEASE tell us whether MON and I are keywords
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "DTYPE", "XOR", "CLOCK", "AND", "NAND", "OR", "NOR", "MON", "I", "DATA", "CLK", "SET", "CLEAR", "Q", "QBAR"] 
+        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "DTYPE", "XOR", 
+        "CLOCK", "AND", "NAND", "OR", "NOR", "MON", "I", "DATA", "CLK", "SET", 
+        "CLEAR", "Q", "QBAR"] 
 
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
