@@ -1,8 +1,8 @@
-program             = section_ass, section_con, section_mon ;
+program             = section_dev, section_con, section_mon ;
 
-section_ass         = "assignment", "{", assignment, {assignment}, "}" ;
-section_con         = "connection", "{", connection, {connection}, "}" ;
-section_mon         = "monitor", "{", monitor, {monitor}, "}" ;
+section_dev         = "DEVICES", "{", assignment, {assignment}, "}" ;
+section_con         = "CONNECT", "{", connection, {connection}, "}" ;
+section_mon         = "MONITOR", "{", monitor, {monitor}, "}" ;
 
 assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
 connection           = ( name | dtype_op), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
