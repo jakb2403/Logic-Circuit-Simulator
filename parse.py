@@ -79,7 +79,47 @@ class Parser:
     
     def device_arg(self):
         """device_arg = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;"""
-        current_id = self.symbol.id
+        current_id = self.symbol.id # save device_arg_id to local variable current_id
         self.symbol = self.scanner.get_symbol()
-        if self.symbol.type == self.scanner.DOT:
-            
+        if self.symbol.type == self.scanner.OPENBRACKET:    # NOR(
+            self.symbol = self.scanner.get_symbol()
+        elif self.symbol.type == self.scanner.NUMBER:       # NOR2
+            self.syntax_error() # missing symbols: (
+        else:                                               # NOR or NOR@
+            self.syntax_error() # missing argument of device_arg
+        if self.symbol.type == self.scanner.NUMBER:         
+            if (current_id == self.scanner.ADD_ID or self.scanner.NAND_ID 
+                or self.scanner.OR_ID or self.scanner.NOR_ID):
+                if 2 <= self.symbol.id <= 16:               # NOR(2
+                    ret
+                    self.symbol = self.scanner.get_symbol()
+                else:                                       # NOR(18
+                    self.semantic_error() # invalid argument
+            elif current_id == self.scanner.SWITCH_ID:      # SWITCH(1
+                if self.symbol == 0 or 1:
+                    self.symbol = self.scanner.get_symbol() 
+                else:                                       # SWITCH(3
+                    self.semantic_error() # invalid argument
+            elif current_id == self.scanner.CLOCK_ID:       # CLOCK(20
+                self.symbol = self.scanner.get_symbol()     # not sure whether negative number passes so might need error handling
+        else:                                               # NOR(A)
+            self.syntax_error() # invalid argument type
+        if self.symbol.type == self.scanner.CLOSEDBRACKET:  # NOR(2)
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error() # missing symbols: )
+    
+    def device(self):
+        """device = "DTYPE" | "XOR" ;"""
+        self.symbol = self.scanner.get_symbol()
+        if self.symbol == self.scanner.OPENBRACKET:
+            self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.NUMBER:
+                self.symbol = self.scanner.get_symbol()
+                if self.symbol.type == self.scanner.CLOSEDBRACKET:
+                    self.syntax_error() # argument to device
+"""                else:
+                    self.syntax_error() #unexpected symbol: (
+            else:
+                self.syntax_error() # unexpected symbol: ("""
+        
