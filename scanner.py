@@ -53,13 +53,14 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
         self.names = names
         self.symbol_type_list = [self.COMMA, self.SEMICOLON, self.EQUALS, 
-        self.DOT, self.KEYWORD, self.NUMBER, self.NAME, self.EOF] = range(8)
+        self.DOT, self.KEYWORD, self.DEVICE_ARG, self.DEVICE, self.DTYPE_IP, 
+        self.DTYPE_OP, self.NUMBER, self.NAME, self.EOF] = range(12)
         #PLEASE tell us whether MON and I are keywords
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "DTYPE", "XOR", 
-        "CLOCK", "AND", "NAND", "OR", "NOR", "MON", "I", "DATA", "CLK", "SET", 
-        "CLEAR", "Q", "QBAR"] #In parser.py, I've used DEVICE_ARG_ID and DEVICE_ID (dont get confused between DEVICES_ID)
-                            #DEVICE_ID = ["DTYPE", "XOR"], DEVICE_ARG_ID = ["CLOCK", "AND", "NAND", "OR", "NOR"]
-                            #We might also need DTYPE_INPUT_ID and DTYPE_OUTPUT_ID but I haven't included in parser.py yet.
-
+        #Do we also need END as a keyword?
+        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "MON", "I"]
+        self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
+        self.device_list = ["DTYPE", "XOR"]
+        self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
+        self.dtype_op_list = ["Q", "QBAR"]
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
