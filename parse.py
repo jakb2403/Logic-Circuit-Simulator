@@ -35,10 +35,51 @@ class Parser:
 
     def __init__(self, names, devices, network, monitors, scanner):
         """Initialise constants."""
+        self.names = names
+        self.devices = devices
+        self.network = network
+        self.monitors = monitors
+        self.scanner = scanner
 
     def parse_network(self):
         """Parse the circuit definition file."""
         # For now just return True, so that userint and gui can run in the
         # skeleton code. When complete, should return False when there are
         # errors in the circuit definition file.
+        
         return True
+
+    def assignment(self):
+        """assignment = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ;"""
+        self.name()
+        while self.symbol.type == self.scanner.COMMA: # missing comma should also raise error: missing symbols, or maybe not
+            self.symbol = self.scanner.get_symbol()
+            self.name()
+        if self.symbol.type == self.scanner.EQUALS:
+            self.symbol = self.scanner.get_symbol()
+            if (self.symbol.type == self.scanner.KEYWORD and
+                self.symbol.id == self.scanner.DEVICES_ARG_ID):
+                self.device_arg()
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                self.symbol.id == self.scanner.DEVICES_ID):
+                self.symbol = self.scanner.get_symbol()
+            else:
+                self.sytax_error() # unrecognised device type
+        else: 
+            self.syntax_error() # missing symbols: =
+        if self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error() # missing symbols: ;
+        
+    def name(self):
+        """name = letter, { letter | digit } ;"""
+        if self.symbol.type == self.scanner.NAME:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error() # invalid device name
+    
+    def device_arg(self):
+        """device_arg = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;"""
+        self.symbol = self.scanner.get_symbol()
+        if self.symbol.type == self.scanner.DOT:
