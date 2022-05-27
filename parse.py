@@ -8,6 +8,9 @@ Classes
 -------
 Parser - parses the definition file and builds the logic network.
 """
+import scanner
+import devices
+import network
 
 
 class Parser:
@@ -40,7 +43,6 @@ class Parser:
         self.network = network
         self.monitors = monitors
         self.scanner = scanner
-        self.name_arg = {}
 
     def name(self):
         """name = letter, { letter | digit } ;"""
@@ -49,22 +51,69 @@ class Parser:
         else:
             self.syntax_error()     # invalid device name
 
+    def argument(self):
+        """argument = digit , { digit } ;"""
+        while self.symbol.type == self.scanner.NUMBER:
+            self.symbol = self.scanner.get_symbol()
+
+    def input(self):
+        """input = name, ".", "I", argument ;"""
+        self.name()
+        if self.symbol.type == self.scanner.DOT:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error()  # missing symbols: .
+        if (self.symbol.type == self.scanner.KEYWORD
+                and self.symbol.id == self.scanner.I_id):
+            self.argument()
+        else:
+            self.syntax_error()  # invalid device input name
+
+    def dtype_ip(self):
+        self.name()
+        if self.symbol.type == self.scanner.DOT:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error() # missing symbols: .
+        if self.symbol.type == self.scanner.DTYPE_IP:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error()  # unrecognised dtype_ip
+    
+    def dtype_op(self):
+        self.name()
+        if self.symbol.type == self.scanner.DOT:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error() # missing symbols: .
+        if self.symbol.type == self.scanner.DTYPE_OP:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error()  # unrecognised dtype_op
+
     def device(self):
         """device = "DTYPE" | "XOR" ;"""
-        self.symbol = self.scanner.get_symbol()
-        if self.symbol.type != self.scanner.SEMICOLON:
-            self.syntax_error()     # unexpected symbol
-
-    def device_arg(self):
         """device_arg = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;"""
-        current_id = self.symbol.id     # save it to local variable current_id
-        self.symbol = self.scanner.get_symbol()
-        if self.symbol.type == self.scanner.OPENBRACKET:    # NOR(
+        if self.symbol.type == self.scanner.DEVICE:
             self.symbol = self.scanner.get_symbol()
-        else:                                               # NOR or NOR@
-            self.syntax_error()     # missing argument of device_arg
-        if self.symbol.type == self.scanner.NUMBER:
-            if (current_id == self.scanner.AND_ID or self.scanner.NAND_ID
+        elif self.symbol.type == self.scanner.DEVICE_ARG:
+            self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.OPENBRACKET:
+                self.symbol = self.scanner.get_symbol()
+            else:
+                self.syntax_error()     # missing argument of device_arg
+            if self.symbol.type == self.scanner.NUMBER:
+                self.argument()
+            else:
+                self.syntax_eror()      # invalid argument type
+            if self.symbol.type == self.scanner.CLOSEDBRACKET:
+                self.symbol = self.scanner.get_symbol()
+            else:
+                self.syntax_error()     # missing symbols: )
+        else:
+            self.syntax_error()  # unrecognised device type
+
+    """     if (current_id == self.scanner.AND_ID or self.scanner.NAND_ID
                     or self.scanner.OR_ID or self.scanner.NOR_ID):
                 if 2 <= self.symbol.id <= 16:               # NOR(2
                     arg_val = self.symbol.id
@@ -82,49 +131,47 @@ class Parser:
                     arg_val = self.symbol.id
                     self.symbol = self.scanner.get_symbol()
                 else:
-                    self.semantic_error()   # invalid argument
-        else:                                               # NOR(A)
-            self.syntax_error()     # invalid argument type
-        if self.symbol.type == self.scanner.CLOSEDBRACKET:  # NOR(2)
-            self.symbol = self.scanner.get_symbol()
-            return arg_val     # output number of arguments
-        else:
-            self.syntax_error()     # missing symbols: )
+                    self.semantic_error()   # invalid argument            """
 
     def assignment(self):
         """assignment = name, { "," , name }, "=",
         ( device_arg_dec | device ), ";" ;"""
-        name_id = self.symbol.id     # local variable to save name id
-        if name_id == 0:     # name_id is already taken: needs working
-            self.semantic_error()    # used name in device declaration
-        else:
-            self.name()
+        st_type = "assigment"
+        self.name()
         while self.symbol.type == self.scanner.COMMA:
             self.symbol = self.scanner.get_symbol()
             self.name()
         if self.symbol.type == self.scanner.EQUALS:
             self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.DEVICE_ARG:
-                x = self.device_arg()
-            elif self.symbol.type == self.scanner.DEVICE:
-                self.device()
-            else:
-                self.sytax_error()    # unrecognised device type
+            self.device()
         else:
             self.syntax_error()     # missing symbols: =
         if self.symbol.type == self.scanner.SEMICOLON:
-            # save argument to name_id in dictionary
-            self.name_arg[name_id] = x
+            return st_type
         else:
             self.syntax_error()     # missing symbols: ;
 
     def connection(self):
-        if self.symbol.type == self.scanner.NAME:
-            self.name()
-        elif self.symbol.type == self.scanner.
+        i = 0
+        self.name()
+        if self.symbol.type == self.scanner.DOT:
+            self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.DTYPE_OP:
+                self.symbol = self.scanner.get_symbol()
+            elif (self.symbol.type == self.scanner.KEYWORD
+                  and self.symbol.id == self.scanner.I_ID):
+                i = 1
+            elif self.symbol.type == self.scanner.DTYPE_IP:
+                i = 2
+            else:
+                self.syntax_error()  # unexpected symbols: .
         if self.symbol.type == self.scanner.ARROW:
             self.symbol = self.scanner.get_symbol()
-
+        else:
+            self.syntax_error()  # missing symbols: ->
+        if self.symbol.type == self.scanner.NAME:
+            self.input()
+        
 
 
     def section_dev(self):
