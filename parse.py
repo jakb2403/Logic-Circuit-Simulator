@@ -119,8 +119,14 @@ class Parser:
             self.syntax_error()     # missing symbols: ;
 
     def connection(self):
-        self.name()
-        if self.symbol.type == self.scanner.
+        if self.symbol.type == self.scanner.NAME:
+            self.name()
+        elif self.symbol.type == self.scanner.
+        if self.symbol.type == self.scanner.ARROW:
+            self.symbol = self.scanner.get_symbol()
+
+
+
     def section_dev(self):
         if (self.symbol.type == self.scanner.KEYWORD and
                 self.symbol.id == self.scanner.DEVICES_ID):
