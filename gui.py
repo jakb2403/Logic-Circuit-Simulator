@@ -10,7 +10,7 @@ Gui - configures the main window and all the widgets.
 """
 import wx
 import wx.glcanvas as wxcanvas
-from OpenGL import GL, GLUT
+from OpenGL import GL, GLUT, GLU
 
 from names import Names
 from devices import Devices
@@ -230,6 +230,8 @@ class Gui(wx.Frame):
     def __init__(self, title, path, names, devices, network, monitors):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(800, 600))
+        # self.splitter = wx.SplitterWindow(self)
+        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,'Courier'))
 
         # Configure the file menu
         fileMenu = wx.Menu()
@@ -244,28 +246,51 @@ class Gui(wx.Frame):
 
         # Configure the widgets
         self.text = wx.StaticText(self, wx.ID_ANY, "Cycles")
+        self.com_text = wx.StaticText(self, wx.ID_ANY, "Command")
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
         self.run_button = wx.Button(self, wx.ID_ANY, "Run")
-        self.text_box = wx.TextCtrl(self, wx.ID_ANY, "",
-                                    style=wx.TE_PROCESS_ENTER)
+        self.pause_button = wx.Button(self, wx.ID_ANY, "Pause")
+        self.add_button = wx.Button(self, wx.ID_ANY, "Add")
+        self.mon_add_dropdown = wx.ComboBox(self, style=wx.CB_DROPDOWN)
+        self.sep = wx.StaticLine(self, style=wx.LI_VERTICAL)
+        self.load_button = wx.Button(self, wx.ID_ANY, "Load")
+        self.exit_button = wx.Button(self, wx.ID_ANY, "Exit")
+        self.cmd_output_text_box = wx.TextCtrl(
+            self, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.cmd_input_text_box = wx.TextCtrl(self, wx.ID_ANY, "",
+                                              style=wx.TE_PROCESS_ENTER)
 
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
         self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
         self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
-        self.text_box.Bind(wx.EVT_TEXT_ENTER, self.on_text_box)
+        self.cmd_input_text_box.Bind(wx.EVT_TEXT_ENTER, self.on_text_box)
 
         # Configure sizers for layout
-        main_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        side_sizer = wx.BoxSizer(wx.VERTICAL)
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        top_menu_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        cmd_output_sizer = wx.BoxSizer(wx.VERTICAL)
+        cmd_input_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
-        main_sizer.Add(side_sizer, 1, wx.ALL, 5)
+        main_sizer.Add(top_menu_sizer, 0,wx.TOP | wx.EXPAND, 5)
+        main_sizer.Add(self.canvas, 1, wx.EXPAND | wx.TOP, 5)
+        main_sizer.Add(cmd_output_sizer, 0, wx.EXPAND, 5)
+        main_sizer.Add(cmd_input_sizer, 0, wx.BOTTOM | wx.EXPAND, 5)
 
-        side_sizer.Add(self.text, 1, wx.TOP, 10)
-        side_sizer.Add(self.spin, 1, wx.ALL, 5)
-        side_sizer.Add(self.run_button, 1, wx.ALL, 5)
-        side_sizer.Add(self.text_box, 1, wx.ALL, 5)
+        top_menu_sizer.Add(self.run_button, 1, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.text, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 1)
+        top_menu_sizer.Add(self.spin, 1, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.pause_button, 1, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.add_button, 1, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.mon_add_dropdown, 2, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.load_button, 1, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.exit_button, 1, wx.LEFT | wx.RIGHT, 5)
+
+        cmd_output_sizer.Add(self.cmd_output_text_box, 0, wx.EXPAND, 0)
+        # TODO to set value of textbox: self.textpanel.SetValue(s)
+
+        cmd_input_sizer.Add(self.com_text, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 10)
+        cmd_input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 5)
 
         self.SetSizeHints(600, 600)
         self.SetSizer(main_sizer)
@@ -292,6 +317,6 @@ class Gui(wx.Frame):
 
     def on_text_box(self, event):
         """Handle the event when the user enters text."""
-        text_box_value = self.text_box.GetValue()
+        text_box_value = self.cmd_input_text_box.GetValue()
         text = "".join(["New text box value: ", text_box_value])
         self.canvas.render(text)
