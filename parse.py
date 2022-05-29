@@ -56,30 +56,56 @@ class Parser:
         if self.symbol.type == self.scanner.NUMBER:
             self.symbol = self.scanner.get_symbol()
             while (self.symbol.type == self.scanner.NUMBER
-                    and self.symbol.type != self.scanner.EOF):
+                    or self.symbol.type != self.scanner.EOF):
                 self.symbol = self.scanner.get_symbol()
         else:
-            self.syntax_error()   # expected argument
+            self.syntax_error()   # Invalid argument type
 
-    def mon_name(self):
-        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MON_id):
-            self.symbol = self.scanner.get_symbol()
-            self.argument()
-        else:
-            self.syntax_error()   # invalid monitor name
-            
-    def input(self):
-        """input = name, ".", "I", argument ;"""
-        self.name()
-        if self.symbol.type == self.scanner.DOT:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error()  # missing symbols: .
+    """    def input(self):
+                input = name, ".", "I", argument ;
+                self.name()
+                if self.symbol.type == self.scanner.DOT:
+                    self.symbol = self.scanner.get_symbol()
+                else:
+                    self.syntax_error()  # missing symbols: .
+                if (self.symbol.type == self.scanner.KEYWORD
+                        and self.symbol.id == self.scanner.I_id):
+                    self.argument()
+                else:
+                    self.syntax_error()  # invalid device input name
+
+            def dtype_ip(self):
+                dtype_ip = name, ".", dtype_ip_name ;
+                self.name()
+                if self.symbol.type == self.scanner.DOT:
+                    self.symbol = self.scanner.get_symbol()
+                else:
+                    self.syntax_error()   # missing symbols: .
+                if self.symbol.type == self.scanner.DTYPE_IP:
+                    self.symbol = self.scanner.get_symbol()
+                else:
+                    self.syntax_error()  # unrecognised dtype input
+
+            def dtype_op(self):
+                dtype_op = name, ".", dtype_op_name ;
+                self.name()
+                if self.symbol.type == self.scanner.DOT:
+                    self.symbol = self.scanner.get_symbol()
+                else:
+                    self.syntax_error()   # missing symbols: .
+                if self.symbol.type == self.scanner.DTYPE_OP:
+                    self.symbol = self.scanner.get_symbol()
+                else:
+                    self.syntax_error()  # unrecognised dtype output"""
+
+    def monitor_name(self):
+        """monitor_name = "MON", argument ;"""
         if (self.symbol.type == self.scanner.KEYWORD
-                and self.symbol.id == self.scanner.I_id):
+                and self.symbol.id == self.scanner.MON_id):
+            self.symbol = self.scanner.get_symbol()
             self.argument()
         else:
-            self.syntax_error()  # invalid device input name
+            self.syntax_error()   # invalid monitor point name
 
     def nameOrDtypeOP(self):
         self.name()
@@ -124,6 +150,24 @@ class Parser:
         else:
             self.syntax_error  # unexpected symbol
 
+    def monitor_point(self):
+        self.name()
+        if self.symbol.type == self.scanner.SEMICOLON:
+            pass
+        elif self.symbol.type == self.scanner.DOT:
+            self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.DTYPE_OP:
+                self.symbol = self.scanner.get_symbol()
+            elif self.symbol.type == self.scanner.DTYPE_IP:
+                self.symbol = self.scanner.get_symbol()
+            elif (self.symbol.type == self.scanner.KEYWORD
+                    and self.symbol.id == self.scanner.I_id):
+                self.argument()
+            else:
+                self.syntax_error()  # unexpected symbol: .
+        else:
+            self.syntax_error  # unexpected symbol
+
     def device(self):
         """device = "DTYPE" | "XOR" ;"""
         """device_arg = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;"""
@@ -135,10 +179,7 @@ class Parser:
                 self.symbol = self.scanner.get_symbol()
             else:
                 self.syntax_error()     # missing argument of device_arg
-            if self.symbol.type == self.scanner.NUMBER:
-                self.argument()
-            else:
-                self.syntax_eror()      # invalid argument type
+            self.argument()
             if self.symbol.type == self.scanner.CLOSEDBRACKET:
                 self.symbol = self.scanner.get_symbol()
             else:
@@ -208,6 +249,15 @@ class Parser:
             pass
         else:
             self.syntax_error()     # missing symbols: ;
+
+    def monitor(self):
+        self.monitor_name()
+        if self.symbol.type == self.scanner.EQUALS:
+            self.monitor_point()
+        if self.symbol.type == self.scanner.SEMICOLON:
+            pass
+        else:
+            self.syntax_error()    # missing symbols: ;
 
     def section_dev(self):
         if (self.symbol.type == self.scanner.KEYWORD and
