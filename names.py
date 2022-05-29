@@ -42,7 +42,6 @@ class Names:
         """Initialise names list."""
         self.error_code_count = 0  # how many error codes have been declared
 
-
     def unique_error_codes(self, num_error_codes):
         """Return a list of unique integer error codes."""
         if not isinstance(num_error_codes, int):
@@ -51,44 +50,43 @@ class Names:
         return range(self.error_code_count - num_error_codes,
                      self.error_code_count)
 
-
     def query(self, name_string):
         """Return the corresponding name ID for name_string.
 
         If the name string is not present in the names list, return None.
         """
-        if name_string not in self.names_list:
-            raise ValueError("Invalid name_string. Couldn't find that name.")
+
         if name_string in self.names_list:
-            return self.names_list[name_string]
+            return self.names_list.index(name_string)
         else:
             return None
-
 
     def lookup(self, name_string):
         """Return the corresponding name ID for the given name_string.
 
         If the name string is not present in the names list, add it.
         """
-
         if type(name_string) == list:
-            for name in name_string:
-                if name_string in self.names_list:
+            # iterate through name_strings in list and perform lookup
+            for item in name_string:
+                if item.name in self.names_list:
                     return self.names_list.index(name_string)
                 else:
                     if not(name_string[0].isalpha()):
                         raise TypeError("Name string must start with a letter, not a number.")
                     self.names_list.append(name_string)
                     return len(self.names_list) - 1
-
-        else: 
+        else:
+            # perform lookup for 1 name_string item
             if name_string in self.names_list:
                 return self.names_list.index(name_string)
             else:
                 if not(name_string[0].isalpha()):
-                    raise TypeError("Name string must start with a letter, not a number.")
+                    raise TypeError(
+                        "Name string must start with a letter, not a number.")
                 self.names_list.append(name_string)
                 return len(self.names_list) - 1
+
 
     def get_name_string(self, name_id):
         """Return the corresponding name string for the given name_id.
@@ -96,7 +94,8 @@ class Names:
         If the name ID is not a valid index into the names list, return None.
         """
         if name_id < 0:
-            raise ValueError("Invalid name_id. Only positive integers allowed.")
+            raise ValueError(
+                "Invalid name_id. Only positive integers allowed.")
         if name_id < len(self.names_list):
             return self.names_list[name_id]
         else:
