@@ -6,7 +6,7 @@ section_mon         = "MONITOR", "{", monitor, {monitor}, "}" ;
 
 assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
 connection           = ( name | dtype_op), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
-monitor  		    = monitor_name, "=", ( name | input ), ";" ;
+monitor  		    = monitor_name, "=", ( name | input | dtype_op | dtype_ip ), ";" ;
 
 device_arg_dec      = device_arg, "(", argument , ")" ;
 device              = "DTYPE" | "XOR" ;
