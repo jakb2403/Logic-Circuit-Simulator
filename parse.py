@@ -74,7 +74,7 @@ class Parser:
         elif error_type == self.missing_symbol:
             print("missing symbol: " + sym)
         elif error_type == self.unexpected_symbol:
-            print("input connected to input")
+            print("unexpected symbol")   # ideally, we don't need this one
         elif error_type == self.section_order_error:
             print("incorrect ordering of sections")
         while (self.symbol.type != self.scanner.SEMICOLON
