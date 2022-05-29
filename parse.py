@@ -53,9 +53,21 @@ class Parser:
 
     def argument(self):
         """argument = digit , { digit } ;"""
-        while self.symbol.type == self.scanner.NUMBER:
+        if self.symbol.type == self.scanner.NUMBER:
             self.symbol = self.scanner.get_symbol()
+            while (self.symbol.type == self.scanner.NUMBER
+                    and self.symbol.type != self.scanner.EOF):
+                self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error()   # expected argument
 
+    def mon_name(self):
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MON_id):
+            self.symbol = self.scanner.get_symbol()
+            self.argument()
+        else:
+            self.syntax_error()   # invalid monitor name
+            
     def input(self):
         """input = name, ".", "I", argument ;"""
         self.name()
@@ -69,27 +81,48 @@ class Parser:
         else:
             self.syntax_error()  # invalid device input name
 
-    def dtype_ip(self):
+    def nameOrDtypeOP(self):
         self.name()
-        if self.symbol.type == self.scanner.DOT:
+        if self.symbol.type == self.scanner.ARROW:
+            return True
+        elif self.symbol.type == self.scanner.DOT:
             self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.DTYPE_OP:
+                self.symbol = self.scanner.get_symbol()
+                return True
+            elif self.symbol.type == self.scanner.DTYPE_IP:
+                self.symbol = self.scanner.get_symbol()
+                return False
+            elif (self.symbol.type == self.scanner.KEYWORD
+                    and self.symbol.id == self.scanner.I_id):
+                self.argument()
+                return False
+            else:
+                self.syntax_error()  # unexpected symbol: .
         else:
-            self.syntax_error() # missing symbols: .
-        if self.symbol.type == self.scanner.DTYPE_IP:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error()  # unrecognised dtype_ip
-    
-    def dtype_op(self):
+            self.syntax_error  # unexpected symbol
+
+    def inputOrDtypeIP(self):
         self.name()
-        if self.symbol.type == self.scanner.DOT:
+        if (self.symbol.type == self.scanner.COMMA
+                or self.symbol.type == self.scanner.SEMICOLON):
+            return False
+        elif self.symbol.type == self.scanner.DOT:
             self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.DTYPE_OP:
+                self.symbol = self.scanner.get_symbol()
+                return False
+            elif self.symbol.type == self.scanner.DTYPE_IP:
+                self.symbol = self.scanner.get_symbol()
+                return True
+            elif (self.symbol.type == self.scanner.KEYWORD
+                    and self.symbol.id == self.scanner.I_id):
+                self.argument()
+                return True
+            else:
+                self.syntax_error()  # unexpected symbol: .
         else:
-            self.syntax_error() # missing symbols: .
-        if self.symbol.type == self.scanner.DTYPE_OP:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error()  # unrecognised dtype_op
+            self.syntax_error  # unexpected symbol
 
     def device(self):
         """device = "DTYPE" | "XOR" ;"""
@@ -152,27 +185,29 @@ class Parser:
             self.syntax_error()     # missing symbols: ;
 
     def connection(self):
-        i = 0
-        self.name()
-        if self.symbol.type == self.scanner.DOT:
-            self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.DTYPE_OP:
-                self.symbol = self.scanner.get_symbol()
-            elif (self.symbol.type == self.scanner.KEYWORD
-                  and self.symbol.id == self.scanner.I_ID):
-                i = 1
-            elif self.symbol.type == self.scanner.DTYPE_IP:
-                i = 2
-            else:
-                self.syntax_error()  # unexpected symbols: .
+        x = self.nameOrDtypeOP()
         if self.symbol.type == self.scanner.ARROW:
             self.symbol = self.scanner.get_symbol()
         else:
             self.syntax_error()  # missing symbols: ->
-        if self.symbol.type == self.scanner.NAME:
-            self.input()
-        
-
+        y = self.inputOrDtypeIP()
+        if x is True and y is True:
+            while (self.symbol.type == self.scanner.COMMA
+                    and self.symbol.type != self.scanner.EOF):
+                self.symbol = self.scanner.get_symbol()
+                z = self.inputOrDtypeIP()
+                if z is False:
+                    self.syntax_error()  # output to output
+        elif x is True and y is False:
+            self.syntax_error()  # output to output
+        elif x is False and y is True:
+            self.syntax_error()  # input to input
+        else:
+            self.syntax_error()  # input to output
+        if self.symbol.type == self.scanner.SEMICOLON:
+            pass
+        else:
+            self.syntax_error()     # missing symbols: ;
 
     def section_dev(self):
         if (self.symbol.type == self.scanner.KEYWORD and
