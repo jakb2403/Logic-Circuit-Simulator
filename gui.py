@@ -50,6 +50,10 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
     def __init__(self, parent, devices, monitors):
         """Initialise canvas properties and useful variables."""
+
+        self.devices = devices
+        self.monitors = monitors
+
         super().__init__(parent, -1,
                          attribList=[wxcanvas.WX_GL_RGBA,
                                      wxcanvas.WX_GL_DOUBLEBUFFER,
@@ -98,22 +102,42 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Clear everything
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        # Draw specified text at position (10, 10)
-        self.render_text(text, 10, 10)
+        counter = 1
+        # for device_id, output_id in self.monitors.monitors_dictionary:
+        #     monitor_name = self.devices.get_signal_name(device_id, output_id)
+        #     signal_list = self.monitors.monitors_dictionary[(device_id, output_id)]
+        #     self.render_text(monitor_name, 10, (10+150*counter))
+        #     for signal in signal_list:
+        #         x = (i * 20) + 10
+        #         x_next = (i * 20) + 30
+        #         if signal == self.devices.HIGH:
+        #             y = 100
+        #         if signal == self.devices.LOW:
+        #             y = 75
+        #         if signal == self.devices.RISING:
 
-        # Draw a sample signal trace
-        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-        GL.glBegin(GL.GL_LINE_STRIP)
-        for i in range(10):
-            x = (i * 20) + 10
-            x_next = (i * 20) + 30
-            if i % 2 == 0:
-                y = 75
-            else:
-                y = 100
-            GL.glVertex2f(x, y)
-            GL.glVertex2f(x_next, y)
-        GL.glEnd()
+        #         if signal == self.devices.FALLING:
+
+        #         if signal == self.devices.BLANK:
+
+        #     counter += 1
+
+        # for signal in signals_to_draw:
+        #     # Draw specified text at position (10, 10)
+        #     self.render_text(signal_name_text, 10, 10)
+        #     # Draw a sample signal trace
+        #     GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+        #     GL.glBegin(GL.GL_LINE_STRIP)
+        #     for i in range(len(signal)):
+        #         x = (i * 20) + 10
+        #         x_next = (i * 20) + 30
+        #         if signal[i] == 0:
+        #             y = 75
+        #         else:
+        #             y = 100
+        #         GL.glVertex2f(x, y)
+        #         GL.glVertex2f(x_next, y)
+        #     GL.glEnd()
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front
@@ -230,8 +254,20 @@ class Gui(wx.Frame):
     def __init__(self, title, path, names, devices, network, monitors):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(800, 600))
-        # self.splitter = wx.SplitterWindow(self)
-        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,'Courier'))
+        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
+                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
+                     'Courier'))
+
+        self.names = names
+        self.devices = devices
+        self.network = network
+        self.monitors = monitors
+
+        # self.devices_list = devices.devices_list
+        self.device_types_list = ["All", "AND", "NAND",
+                                  "OR", "NOR", "XOR", "SWITCH", "CLOCK", "DTYPE"]
+        self.devices_list = ["View all", "G1", "G2", "G3", "G4"]
+        self.available_devices = self.devices_list
 
         # Configure the file menu
         fileMenu = wx.Menu()
@@ -245,51 +281,73 @@ class Gui(wx.Frame):
         self.canvas = MyGLCanvas(self, devices, monitors)
 
         # Configure the widgets
-        self.text = wx.StaticText(self, wx.ID_ANY, "Cycles")
-        self.com_text = wx.StaticText(self, wx.ID_ANY, "Command")
+        # Top menu
+        self.cycles_text = wx.StaticText(self, wx.ID_ANY, "Cycles")
+        self.device_type = wx.StaticText(self, wx.ID_ANY, "Device type")
+        self.com_text = wx.StaticText(self, wx.ID_ANY, "$")
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
         self.run_button = wx.Button(self, wx.ID_ANY, "Run")
         self.pause_button = wx.Button(self, wx.ID_ANY, "Pause")
-        self.add_button = wx.Button(self, wx.ID_ANY, "Add")
-        self.mon_add_dropdown = wx.ComboBox(self, style=wx.CB_DROPDOWN)
-        self.sep = wx.StaticLine(self, style=wx.LI_VERTICAL)
+        self.continue_button = wx.Button(self, wx.ID_ANY, "Continue")
         self.load_button = wx.Button(self, wx.ID_ANY, "Load")
         self.exit_button = wx.Button(self, wx.ID_ANY, "Exit")
+        # Sidebar
+        self.mon_add_dropdown = wx.ComboBox(
+            self, choices=self.device_types_list, style=wx.CB_READONLY)
+        self.monitor_checklist = wx.CheckListBox(
+            self, choices=self.available_devices, name="Monitor Signals")
+        # Terminal output
         self.cmd_output_text_box = wx.TextCtrl(
             self, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        self.cmd_input_text_box = wx.TextCtrl(self, wx.ID_ANY, "",
+        # Terminal input
+        self.cmd_input_text_box = wx.TextCtrl(self, wx.BOTTOM, "",
                                               style=wx.TE_PROCESS_ENTER)
 
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
         self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
         self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
-        self.cmd_input_text_box.Bind(wx.EVT_TEXT_ENTER, self.on_text_box)
+        self.cmd_input_text_box.Bind(wx.EVT_TEXT_ENTER, self.on_cmd_enter)
+        self.load_button.Bind(wx.EVT_BUTTON, self.on_click_load)
+        self.exit_button.Bind(wx.EVT_BUTTON, self.on_click_exit)
 
         # Configure sizers for layout
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         top_menu_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        canvas_sidebar_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
         cmd_output_sizer = wx.BoxSizer(wx.VERTICAL)
         cmd_input_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        main_sizer.Add(top_menu_sizer, 0,wx.TOP | wx.EXPAND, 5)
-        main_sizer.Add(self.canvas, 1, wx.EXPAND | wx.TOP, 5)
+        main_sizer.Add(top_menu_sizer, 0, wx.TOP | wx.EXPAND, 5)
+        main_sizer.Add(canvas_sidebar_sizer, 1, wx.EXPAND | wx.TOP, 5)
         main_sizer.Add(cmd_output_sizer, 0, wx.EXPAND, 5)
         main_sizer.Add(cmd_input_sizer, 0, wx.BOTTOM | wx.EXPAND, 5)
 
         top_menu_sizer.Add(self.run_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.text, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 1)
+        top_menu_sizer.Add(self.cycles_text, 0, wx.LEFT | wx.RIGHT |
+                           wx.ALIGN_CENTER_VERTICAL, 1)
         top_menu_sizer.Add(self.spin, 1, wx.LEFT | wx.RIGHT, 5)
         top_menu_sizer.Add(self.pause_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.add_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.mon_add_dropdown, 2, wx.LEFT | wx.RIGHT, 5)
+        top_menu_sizer.Add(self.continue_button, 1, wx.LEFT | wx.RIGHT, 5)
         top_menu_sizer.Add(self.load_button, 1, wx.LEFT | wx.RIGHT, 5)
         top_menu_sizer.Add(self.exit_button, 1, wx.LEFT | wx.RIGHT, 5)
+
+        canvas_sidebar_sizer.Add(
+            self.canvas, 4, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
+        canvas_sidebar_sizer.Add(sidebar_sizer, 1, wx.LEFT | wx.RIGHT, 5)
+
+        sidebar_sizer.Add(self.device_type, 0, wx.ALL, 0)
+        sidebar_sizer.Add(self.mon_add_dropdown, 0,
+                          wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
+        sidebar_sizer.Add(self.monitor_checklist, 1,
+                          wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
 
         cmd_output_sizer.Add(self.cmd_output_text_box, 0, wx.EXPAND, 0)
         # TODO to set value of textbox: self.textpanel.SetValue(s)
 
-        cmd_input_sizer.Add(self.com_text, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 10)
+        cmd_input_sizer.Add(self.com_text, 0, wx.LEFT |
+                            wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 12)
         cmd_input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 5)
 
         self.SetSizeHints(600, 600)
@@ -315,8 +373,43 @@ class Gui(wx.Frame):
         text = "Run button pressed."
         self.canvas.render(text)
 
-    def on_text_box(self, event):
+    def on_cmd_enter(self, event):
         """Handle the event when the user enters text."""
         text_box_value = self.cmd_input_text_box.GetValue()
+        self.cmd_input_text_box.Clear()
+        self.cmd_output_text_box.AppendText("\n $  " + text_box_value)
         text = "".join(["New text box value: ", text_box_value])
         self.canvas.render(text)
+
+    def on_dropdown(self, event):
+        """Handle the event when the user clicks the dropdown menu to add a
+        monitor signal"""
+        self.device_to_add = self.mon_add_dropdown.GetValue()
+        text = "".join(["Signal to add: ", self.signal_to_add])
+        self.canvas.render(text)
+
+    def on_click_add(self, event):
+        """Handle the event when the user clicks the 'Add' button after selecting a signal"""
+        device_to_add = self.mon_add_dropdown.GetValue()
+        device_index = self.available_devices.index(device_to_add)
+        del self.available_devices[device_index]
+        self.mon_add_dropdown.Delete(device_index)
+        self.mon_add_dropdown.SetSelection(0)
+        text = "".join(["Signal added: ", device_to_add])
+        self.canvas.render(text)
+
+    def on_click_load(self, event):
+        """Handle the event when the user clicks the 'Load' button"""
+        with wx.FileDialog(self, "Load .txt file", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return     # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            pathname = fileDialog.GetPath()
+            text = "".join(["Opening file: ", pathname])
+            self.canvas.render(text)
+
+    def on_click_exit(self, event):
+        """Handle the event when the user clicks the 'Exit' button"""
+        self.Close()
