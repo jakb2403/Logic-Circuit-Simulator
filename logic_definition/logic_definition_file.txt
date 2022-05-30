@@ -1,24 +1,26 @@
-program             = section_dev, section_con, section_mon ;
+program             = section_dev, section_con, section_mon , end_statement;
 
 section_dev         = "DEVICES", "{", assignment, {assignment}, "}" ;
 section_con         = "CONNECT", "{", connection, {connection}, "}" ;
 section_mon         = "MONITOR", "{", monitor, {monitor}, "}" ;
+end_statement       = "END" ;
 
 assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
-connection           = ( name | dtype_op), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
-monitor  		    = monitor_name, "=", ( name | input ), ";" ;
+connection          = ( name | dtype_op ), "->", ( input | dtype_ip ), { "," , ( input | dtype_ip ) }, ";" ;
+monitor  		    = ( name | input ), ";" ;
 
 device_arg_dec      = device_arg, "(", argument , ")" ;
 device              = "DTYPE" | "XOR" ;
-device_arg        = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;  
+device_arg          = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;  
 
-monitor_name 	    = "MON", argument ;
+
+input               = name, ".", ( ( "I", argument ) | dtype_ip ) ;
+argument            = digit , { digit } ;
+name                = letter, { letter | digit } ;
 
 dtype_ip            = name, ".", dtype_ip_name ;  
 dtype_op            = name, ".", dtype_op_name ;
 dtype_ip_name       = "DATA" | "CLK" | "SET" | "CLEAR" ;
 dtype_op_name       = "Q" | "QBAR" ;
 
-input               = name, ".", "I", argument ;
-argument            = digit , { digit } ;
-name                = letter, { letter | digit } ;
+comment             = "#" , { letter | digit | punctuation } ;
