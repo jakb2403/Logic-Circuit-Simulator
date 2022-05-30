@@ -47,7 +47,7 @@ class Parser:
          self.invalid_device_input_name, self.unrecognised_device_type,
          self.invalid_argument_type, self.missing_argument,
          self.missing_symbol, self.unexpected_symbol,
-         self.section_order_error] = self.names.unique_error_codes()
+         self.section_order_error] = self.names.unique_error_codes(13)
 
     def syntax_error(self, error_type, dev=None, sym=None):
         """print error type and count total number of syntax errors"""
