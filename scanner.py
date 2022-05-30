@@ -27,6 +27,9 @@ class Symbol:
         """Initialise symbol properties."""
         self.type = None
         self.id = None
+        self.line = None
+        self.pos = None
+        self.init_state = None
 
 
 class Scanner:
@@ -53,15 +56,16 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
         self.names = names
         self.symbol_type_list = [
+            self.DOT,
             self.COMMA,
             self.SEMICOLON,
             self.EQUALS,
-            self.DOT,
+            self.ARROW,
+            self.BAR,
             self.OPENBRACKET,
             self.CLOSEDBRACKET,
             self.OPENCURLYBRACKET,
             self.CLOSEDCURLYBRACKET,
-            self.ARROW,
             self.KEYWORD,
             self.DEVICE_ARG,
             self.DEVICE,
@@ -69,15 +73,126 @@ class Scanner:
             self.DTYPE_OP,
             self.NUMBER,
             self.NAME,
-            self.EOF] = range("""number""")  # feel free to change the names,
+            self.EOF] = range("""number""")  
+        # feel free to change the names,
         # esp. bracket stuff names, but I can't think of a good name
         # tell us whether MON and I are keywords
         # do we also need END as a keyword?
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "MON", "I"]
+        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "MON", "I", "END"]
         self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
         self.device_list = ["DTYPE", "XOR"]
         self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
         self.dtype_op_list = ["Q", "QBAR"]
 
+    def error_found(self):
+        """Outputs the current line and a ^ symbol on the next line to
+        highlight the location of the error"""
+        pass
+
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
+        symbol = Symbol()
+        self.skip_spaces()
+
+        #if symbol is a name
+        if self.current_character.isalpha():
+            name_string = self.get_name()
+            if name_string in self.keywords_list:
+                symbol.type = self.KEYWORD
+                #symbol.line = 
+                #symbol.pos = 
+            else:
+                symbol.type = self.NAME
+                [symbol.id] = self.names.lookup([name_string])
+                #symbol.line = 
+                #symbol.pos = 
+
+        #if symbol is a number
+        elif self.current_character.isdigit():
+            symbol.id = self.get_number()
+            symbol.type = self.NUMBER
+            #symbol.line = 
+            #symbol.pos = 
+
+        #if symbol is a dot
+        elif self.current_character == ".":
+            symbol.type = self.DOT
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is a comma
+        elif self.current_character == ",":
+            symbol.type = self.COMMA
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()    
+
+        #if symbol is a semicolon
+        elif self.current_character == ";":
+            symbol.type = self.SEMICOLON
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is a equals
+        elif self.current_character == "=":
+            symbol.type = self.EQUALS
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is an arrow
+        elif self.current_character == "->":
+            symbol.type = self.ARROW
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is a bar
+        elif self.current_character == "|":
+            symbol.type = self.BAR
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is an openbracket
+        elif self.current_character == "(":
+            symbol.type = self.OPENBRACKET
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is an closedbracket
+        elif self.current_character == ")":
+            symbol.type = self.CLOSEDBRACKET
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is an opencurlybracket
+        elif self.current_character == "{":
+            symbol.type = self.OPENCURLYBRACKET
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is an closedcurlybracket
+        elif self.current_character == "}":
+            symbol.type = self.CLOSEDCURLYBRACKET
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is the end of file
+        elif self.current_character == "":
+            symbol.type = self.EOF
+            #symbol.line = 
+            #symbol.pos = 
+            self.advance()
+
+        #if symbol is an invalid character
+        else:
+            self.advance()
+
+        return symbol
