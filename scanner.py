@@ -8,7 +8,10 @@ Classes
 Scanner - reads definition file and translates characters into symbols.
 Symbol - encapsulates a symbol and stores its properties.
 """
+import sys
+import os
 
+from prelim.exercise import get_next_character
 
 class Symbol:
 
@@ -54,6 +57,7 @@ class Scanner:
 
     def __init__(self, path, names):
         """Open specified file and initialise reserved words and IDs."""
+        self.path = os.path.basename(path)
         self.names = names
         self.symbol_type_list = [
             self.DOT,
@@ -73,16 +77,31 @@ class Scanner:
             self.DTYPE_OP,
             self.NUMBER,
             self.NAME,
-            self.EOF] = range("""number""")  
-        # feel free to change the names,
-        # esp. bracket stuff names, but I can't think of a good name
-        # tell us whether MON and I are keywords
-        # do we also need END as a keyword?
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "MON", "I", "END"]
+            self.EOF] = range(18)  
+        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", 
+                                "MON", "I", "END"]
         self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
         self.device_list = ["DTYPE", "XOR"]
         self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
         self.dtype_op_list = ["Q", "QBAR"]
+
+        try:
+            self.file = open(self.path, "r")
+        except IOError:
+            print("Error: can\'t find file or read data")
+            sys.exit()
+
+    def get_next_character(self):
+        """Read and return the next character in input_file."""
+        return(self.file.read(1))
+
+    def skip_spaces(self):
+        """Seek and return the next non-whitespace character in input_file."""
+        nwc = get_next_character()
+        if nwc.isspace() is True:
+            return("")
+        else:
+            return(nwc)
 
     def error_found(self):
         """Outputs the current line and a ^ symbol on the next line to
@@ -92,7 +111,7 @@ class Scanner:
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
         symbol = Symbol()
-        self.skip_spaces()
+        self.current_character = self.skip_spaces()
 
         #if symbol is a name
         if self.current_character.isalpha():
