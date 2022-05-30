@@ -303,6 +303,13 @@ class Gui(wx.Frame):
         self.cmd_input_text_box = wx.TextCtrl(self, wx.BOTTOM, "",
                                               style=wx.TE_PROCESS_ENTER)
 
+        # sidebar_panel = wx.Panel(self)
+        # sidebar_notebook = wx.Notebook(sidebar_panel)
+        # tab_monitor = wx.Panel(sidebar_notebook)
+        # tab_switches = wx.Panel(sidebar_notebook)
+        # sidebar_notebook.AddPage(tab_monitor, "Monitors")
+        # sidebar_notebook.AddPage(tab_switches, "Switches")
+
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
         self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
@@ -333,10 +340,12 @@ class Gui(wx.Frame):
         top_menu_sizer.Add(self.load_button, 1, wx.LEFT | wx.RIGHT, 5)
         top_menu_sizer.Add(self.exit_button, 1, wx.LEFT | wx.RIGHT, 5)
 
+        canvas_sidebar_sizer.Add(sidebar_sizer, 1, wx.LEFT | wx.RIGHT, 5)
         canvas_sidebar_sizer.Add(
             self.canvas, 4, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        canvas_sidebar_sizer.Add(sidebar_sizer, 1, wx.LEFT | wx.RIGHT, 5)
 
+        # sidebar_sizer.Add(sidebar_notebook, 0, wx.ALL, 0)
+        # sidebar_panel.SetSizer(sidebar_sizer)
         sidebar_sizer.Add(self.device_type, 0, wx.ALL, 0)
         sidebar_sizer.Add(self.mon_add_dropdown, 0,
                           wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
