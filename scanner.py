@@ -8,6 +8,7 @@ Classes
 Scanner - reads definition file and translates characters into symbols.
 Symbol - encapsulates a symbol and stores its properties.
 """
+from inspect import FrameInfo, currentframe, getframeinfo
 import sys
 import os
 
@@ -30,9 +31,6 @@ class Symbol:
         """Initialise symbol properties."""
         self.type = None
         self.id = None
-        self.line = None
-        self.pos = None
-        self.init_state = None
 
 
 class Scanner:
@@ -57,7 +55,16 @@ class Scanner:
 
     def __init__(self, path, names):
         """Open specified file and initialise reserved words and IDs."""
+
+        self.char_counter = 0
+
         self.path = os.path.basename(path)
+
+        self.file = open(self.path, 'r')
+        self.lines = len(self.file.readlines())
+        print("number of lines in this file: ", self.lines)
+
+
         self.names = names
         self.symbol_type_list = [
             self.DOT,
@@ -65,7 +72,8 @@ class Scanner:
             self.SEMICOLON,
             self.EQUALS,
             self.ARROW,
-            self.BAR,
+            self.NEXTLINE,
+            self.HASHTAG,
             self.OPENBRACKET,
             self.CLOSEDBRACKET,
             self.OPENCURLYBRACKET,
@@ -77,7 +85,7 @@ class Scanner:
             self.DTYPE_OP,
             self.NUMBER,
             self.NAME,
-            self.EOF] = range(18)  
+            self.EOF] = range(19)  
         self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", 
                                 "MON", "I", "END"]
         self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
@@ -93,6 +101,7 @@ class Scanner:
 
     def get_next_character(self):
         """Read and return the next character in input_file."""
+        self.char_counter += 1 #add 1 to the character counter to track location in line
         return(self.file.read(1))
 
     def skip_spaces(self):
@@ -106,7 +115,11 @@ class Scanner:
     def error_found(self):
         """Outputs the current line and a ^ symbol on the next line to
         highlight the location of the error"""
-        pass
+        line_number = currentframe().f_back.f_lineno #find the line
+        char_number = self.char_counter #find the character
+        newline = "\n" + (self.char_counter - 1)*" " + "^" + "\n" #format the newline with ^ below the error
+        output = self.path.readline() + newline #insert new empty line below 
+        return output  
 
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
@@ -118,96 +131,74 @@ class Scanner:
             name_string = self.get_name()
             if name_string in self.keywords_list:
                 symbol.type = self.KEYWORD
-                #symbol.line = 
-                #symbol.pos = 
             else:
                 symbol.type = self.NAME
                 [symbol.id] = self.names.lookup([name_string])
-                #symbol.line = 
-                #symbol.pos = 
 
         #if symbol is a number
         elif self.current_character.isdigit():
             symbol.id = self.get_number()
             symbol.type = self.NUMBER
-            #symbol.line = 
-            #symbol.pos = 
 
         #if symbol is a dot
         elif self.current_character == ".":
             symbol.type = self.DOT
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is a comma
         elif self.current_character == ",":
             symbol.type = self.COMMA
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()    
 
         #if symbol is a semicolon
         elif self.current_character == ";":
             symbol.type = self.SEMICOLON
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is a equals
         elif self.current_character == "=":
             symbol.type = self.EQUALS
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is an arrow
         elif self.current_character == "->":
             symbol.type = self.ARROW
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
-        #if symbol is a bar
-        elif self.current_character == "|":
-            symbol.type = self.BAR
-            #symbol.line = 
-            #symbol.pos = 
+        #if symbol is a nextline
+        elif self.current_character == "\n":
+            symbol.type = self.NEXTLINE
+            self.advance()
+
+        #if symbol is a hashtag
+        elif self.current_character == "#":
+            symbol.type = self.HASHTAG
+            self.file.next()
             self.advance()
 
         #if symbol is an openbracket
         elif self.current_character == "(":
             symbol.type = self.OPENBRACKET
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is an closedbracket
         elif self.current_character == ")":
             symbol.type = self.CLOSEDBRACKET
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is an opencurlybracket
         elif self.current_character == "{":
             symbol.type = self.OPENCURLYBRACKET
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is an closedcurlybracket
         elif self.current_character == "}":
             symbol.type = self.CLOSEDCURLYBRACKET
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is the end of file
         elif self.current_character == "":
             symbol.type = self.EOF
-            #symbol.line = 
-            #symbol.pos = 
             self.advance()
 
         #if symbol is an invalid character
