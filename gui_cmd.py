@@ -18,7 +18,7 @@ class CmdPanel(wx.Panel):
                                               style=wx.TE_PROCESS_ENTER)
 
         # Add widgets to sizer
-        output_sizer.Add(self.cmd_output_text_box, 0, wx.EXPAND, 0)
+        output_sizer.Add(self.cmd_output_text_box, 1, wx.EXPAND, 0)
         # TODO to set value of textbox: self.textpanel.SetValue(s)
         input_sizer.Add(self.com_text, 0, wx.LEFT |
                         wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 12)
