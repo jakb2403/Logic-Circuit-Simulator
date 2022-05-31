@@ -64,7 +64,6 @@ class Scanner:
         self.lines = len(self.file.readlines())
         print("number of lines in this file: ", self.lines)
 
-
         self.names = names
         self.symbol_type_list = [
             self.DOT,
@@ -130,8 +129,17 @@ class Scanner:
         #if symbol is a name
         if self.current_character.isalpha():
             name_string = self.get_name()
+
             if name_string in self.keywords_list:
                 symbol.type = self.KEYWORD
+            elif name_string in self.device_arg_list:
+                symbol.type = self.DEVICE_ARG
+            elif name_string in self.device_list:
+                symbol.type = self.DEVICE
+            elif name_string in self.dtype_ip_list:
+                symbol.type = self.DTYPE_IP
+            elif name_string in self.dtype_op_list:
+                symbol.type = self.DTYPE_OP
             else:
                 symbol.type = self.NAME
                 [symbol.id] = self.names.lookup([name_string])
@@ -144,66 +152,55 @@ class Scanner:
         #if symbol is a dot
         elif self.current_character == ".":
             symbol.type = self.DOT
-            self.get_next_character()
+            
 
         #if symbol is a comma
         elif self.current_character == ",":
             symbol.type = self.COMMA
-            self.get_next_character()    
 
         #if symbol is a semicolon
         elif self.current_character == ";":
             symbol.type = self.SEMICOLON
-            self.get_next_character()
 
         #if symbol is a equals
         elif self.current_character == "=":
             symbol.type = self.EQUALS
-            self.get_next_character()
 
         #if symbol is an arrow
         elif self.current_character == "->":
             symbol.type = self.ARROW
-            self.get_next_character()
 
         #if symbol is a nextline
         elif self.current_character == "\n":
             symbol.type = self.NEXTLINE
-            self.get_next_character()
 
         #if symbol is a hashtag
         elif self.current_character == "#":
             symbol.type = self.HASHTAG
             self.file.next()
-            self.get_next_character()
 
         #if symbol is an openbracket
         elif self.current_character == "(":
             symbol.type = self.OPENBRACKET
-            self.get_next_character()
 
         #if symbol is an closedbracket
         elif self.current_character == ")":
             symbol.type = self.CLOSEDBRACKET
-            self.get_next_character()
 
         #if symbol is an opencurlybracket
         elif self.current_character == "{":
             symbol.type = self.OPENCURLYBRACKET
-            self.get_next_character()
 
         #if symbol is an closedcurlybracket
         elif self.current_character == "}":
             symbol.type = self.CLOSEDCURLYBRACKET
-            self.get_next_character()
 
         #if symbol is the end of file
         elif self.current_character == "":
             symbol.type = self.EOF
-            self.get_next_character()
 
         #if symbol is an invalid character
         else:
-            self.get_next_character()
+            pass
 
         return symbol
