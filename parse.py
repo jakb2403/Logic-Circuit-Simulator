@@ -214,7 +214,7 @@ class Parser:
             sec_def = self.symbol.id
             self.symbol = self.scanner.get_symbol()
         else:
-            self.syntax_error(self.missing_keyword)     # missing keyword
+            self.syntax_error(self.missing_keyword)
         if self.symbol.type == self.scanner.OPENCURLYBRACKET:
             self.symbol = self.scanner.get_symbol()
         else:
