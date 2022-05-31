@@ -9,7 +9,9 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 import wx
+from wx.core import ROLE_SYSTEM_TOOLBAR
 import wx.glcanvas as wxcanvas
+import wx.lib.agw.aui as aui
 from OpenGL import GL, GLUT, GLU
 
 from names import Names
@@ -228,6 +230,157 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 GLUT.glutBitmapCharacter(font, ord(character))
 
 
+class TopMenuPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(wx.YELLOW)
+        self.sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Create widgets
+        cycles_text = wx.StaticText(self, wx.ID_ANY, "Cycles")
+        spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
+        run_button = wx.Button(self, wx.ID_ANY, "Run")
+        pause_button = wx.Button(self, wx.ID_ANY, "Pause")
+        continue_button = wx.Button(self, wx.ID_ANY, "Continue")
+        load_button = wx.Button(self, wx.ID_ANY, "Load")
+        exit_button = wx.Button(self, wx.ID_ANY, "Exit")
+
+        # Add widgets to sizer
+        self.sizer.Add(run_button, 1, wx.LEFT | wx.RIGHT, 5)
+        self.sizer.Add(cycles_text, 0, wx.LEFT | wx.RIGHT |
+                       wx.ALIGN_CENTER_VERTICAL, 1)
+        self.sizer.Add(spin, 1, wx.LEFT | wx.RIGHT, 5)
+        self.sizer.Add(pause_button, 1, wx.LEFT | wx.RIGHT, 5)
+        self.sizer.Add(continue_button, 1, wx.LEFT | wx.RIGHT, 5)
+        self.sizer.Add(load_button, 1, wx.LEFT | wx.RIGHT, 5)
+        self.sizer.Add(exit_button, 1, wx.LEFT | wx.RIGHT, 5)
+
+        # Bind events to event handlers
+        spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
+        run_button.Bind(wx.EVT_BUTTON, self.on_run_button)        
+        load_button.Bind(wx.EVT_BUTTON, self.on_click_load)
+        exit_button.Bind(wx.EVT_BUTTON, self.on_click_exit)
+
+        self.SetSizer(self.sizer)
+
+    def on_run_button(self, event):
+        """Handle the event when the user clicks the run button."""
+        text = "Run button pressed."
+
+    def on_spin(self, event):
+        """Handle the event when the user changes the spin control value."""
+        spin_value = self.spin.GetValue()
+        text = "".join(["New spin control value: ", str(spin_value)])
+        
+
+    # def on_click_add(self, event):
+    #     """Handle the event when the user clicks the 'Add' button after selecting a signal"""
+    #     device_to_add = self.mon_add_dropdown.GetValue()
+    #     device_index = self.available_devices.index(device_to_add)
+    #     del self.available_devices[device_index]
+    #     self.mon_add_dropdown.Delete(device_index)
+    #     self.mon_add_dropdown.SetSelection(0)
+    #     text = "".join(["Signal added: ", device_to_add])
+    #     
+
+    def on_click_load(self, event):
+        """Handle the event when the user clicks the 'Load' button"""
+        with wx.FileDialog(self, "Load .txt file", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return     # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            pathname = fileDialog.GetPath()
+            text = "".join(["Opening file: ", pathname])
+            
+
+    def on_click_exit(self, event):
+        """Handle the event when the user clicks the 'Exit' button"""
+        self.Close()
+
+
+class SidebarPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(wx.RED)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+
+        self.devices_list = ["G1", "G2", "G3", "G4"]
+        self.device_types_list = ["All", "AND", "NAND",
+                                  "OR", "NOR", "XOR", "SWITCH", "CLOCK", "DTYPE"]
+        self.available_devices = self.devices_list
+
+        # Create widgets
+        device_type = wx.StaticText(self, wx.ID_ANY, "Device type")
+        mon_add_dropdown = wx.ComboBox(
+            self, choices=self.device_types_list, style=wx.CB_READONLY)
+        monitor_checklist = wx.CheckListBox(
+            self, choices=self.available_devices, name="Monitor Signals")
+
+        # Add widgets to sizer
+        # sidebar_sizer.Add(sidebar_notebook, 0, wx.ALL, 0)
+        # sidebar_panel.SetSizer(sidebar_sizer)
+        self.sizer.Add(device_type, 0, wx.ALL, 0)
+        self.sizer.Add(mon_add_dropdown, 0,
+                       wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
+        self.sizer.Add(monitor_checklist, 1,
+                       wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
+
+        # Bind events to event handlers
+        mon_add_dropdown.Bind(wx.EVT_COMBOBOX, self.on_dropdown)        
+
+        self.SetSizer(self.sizer)
+
+    def on_dropdown(self, event):
+        """Handle the event when the user clicks the dropdown menu to add a
+        monitor signal"""
+        self.device_to_add = self.mon_add_dropdown.GetValue()
+        text = "".join(["Signal type to display: ", self.signal_to_add])
+
+
+class CmdPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(wx.GREEN)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+
+        # Create sizers for input and output
+        output_sizer = wx.BoxSizer(wx.VERTICAL)
+        input_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Create widgets
+        self.cmd_output_text_box = wx.TextCtrl(
+            self, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.com_text = wx.StaticText(self, wx.ID_ANY, "$")
+        self.cmd_input_text_box = wx.TextCtrl(self, wx.BOTTOM, "",
+                                              style=wx.TE_PROCESS_ENTER)
+
+        # Add widgets to sizer
+        output_sizer.Add(self.cmd_output_text_box, 0, wx.EXPAND, 0)
+        # TODO to set value of textbox: self.textpanel.SetValue(s)
+        input_sizer.Add(self.com_text, 0, wx.LEFT |
+                        wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 12)
+        input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 5)
+
+        # Add sub-sizers to main sizer
+        self.sizer.Add(output_sizer, 1, wx.EXPAND, 0)
+        self.sizer.Add(input_sizer, 0, wx.EXPAND, 0)
+
+        # Bind events to event handlers
+        self.cmd_input_text_box.Bind(wx.EVT_TEXT_ENTER, self.on_cmd_enter)
+
+        self.SetSizer(self.sizer)
+
+    def on_cmd_enter(self, event):
+        """Handle the event when the user enters text."""
+        text_box_value = self.cmd_input_text_box.GetValue()
+        self.cmd_input_text_box.Clear()
+        self.cmd_output_text_box.AppendText("\n $  " + text_box_value)
+        text = "".join(["New text box value: ", text_box_value])
+        
+
+
 class Gui(wx.Frame):
     """Configure the main window and all the widgets.
 
@@ -254,21 +407,20 @@ class Gui(wx.Frame):
     def __init__(self, title, path, names, devices, network, monitors):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(800, 600))
-        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
-                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
-                     'Courier'))
-
+        
         self.names = names
         self.devices = devices
         self.network = network
         self.monitors = monitors
-
-        # self.devices_list = devices.devices_list
-        self.device_types_list = ["All", "AND", "NAND",
-                                  "OR", "NOR", "XOR", "SWITCH", "CLOCK", "DTYPE"]
-        self.devices_list = ["View all", "G1", "G2", "G3", "G4"]
-        self.available_devices = self.devices_list
-
+        
+        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
+                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
+                     'Courier'))
+        # Create AUI manager
+        self.mgr = aui.AuiManager()
+        # Set the window that the AUI manages
+        self.mgr.SetManagedWindow(self)
+        
         # Configure the file menu
         fileMenu = wx.Menu()
         menuBar = wx.MenuBar()
@@ -277,90 +429,31 @@ class Gui(wx.Frame):
         menuBar.Append(fileMenu, "&File")
         self.SetMenuBar(menuBar)
 
+        # Configure the toolbar
+        self.toolbar = self.CreateToolBar()
+        self.run_button = self.toolbar.AddTool(wx.ID_ANY, "Run", wx.Bitmap("icons/run.png")) 
+        self.open_button = self.toolbar.AddTool(wx.ID_ANY, "Load", wx.Bitmap("icons/folder.png")) 
+
         # Canvas for drawing signals
         self.canvas = MyGLCanvas(self, devices, monitors)
 
-        # Configure the widgets
-        # Top menu
-        self.cycles_text = wx.StaticText(self, wx.ID_ANY, "Cycles")
-        self.device_type = wx.StaticText(self, wx.ID_ANY, "Device type")
-        self.com_text = wx.StaticText(self, wx.ID_ANY, "$")
-        self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
-        self.run_button = wx.Button(self, wx.ID_ANY, "Run")
-        self.pause_button = wx.Button(self, wx.ID_ANY, "Pause")
-        self.continue_button = wx.Button(self, wx.ID_ANY, "Continue")
-        self.load_button = wx.Button(self, wx.ID_ANY, "Load")
-        self.exit_button = wx.Button(self, wx.ID_ANY, "Exit")
-        # Sidebar
-        self.mon_add_dropdown = wx.ComboBox(
-            self, choices=self.device_types_list, style=wx.CB_READONLY)
-        self.monitor_checklist = wx.CheckListBox(
-            self, choices=self.available_devices, name="Monitor Signals")
-        # Terminal output
-        self.cmd_output_text_box = wx.TextCtrl(
-            self, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        # Terminal input
-        self.cmd_input_text_box = wx.TextCtrl(self, wx.BOTTOM, "",
-                                              style=wx.TE_PROCESS_ENTER)
+        self.sidebar = SidebarPanel(self)
+        self.cmd = CmdPanel(self)
 
-        # sidebar_panel = wx.Panel(self)
-        # sidebar_notebook = wx.Notebook(sidebar_panel)
-        # tab_monitor = wx.Panel(sidebar_notebook)
-        # tab_switches = wx.Panel(sidebar_notebook)
-        # sidebar_notebook.AddPage(tab_monitor, "Monitors")
-        # sidebar_notebook.AddPage(tab_switches, "Switches")
+        self.mgr.AddPane(self.canvas, aui.AuiPaneInfo().CenterPane())
+        self.mgr.AddPane(self.sidebar, aui.AuiPaneInfo().Left().Floatable(False))
+        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False))
 
-        # Bind events to widgets
-        self.Bind(wx.EVT_MENU, self.on_menu)
-        self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
-        self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
-        self.cmd_input_text_box.Bind(wx.EVT_TEXT_ENTER, self.on_cmd_enter)
-        self.load_button.Bind(wx.EVT_BUTTON, self.on_click_load)
-        self.exit_button.Bind(wx.EVT_BUTTON, self.on_click_exit)
+        # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
+        agwFlags = self.mgr.GetAGWFlags()
+        self.mgr.SetAGWFlags(agwFlags | aui.AUI_MGR_AERO_DOCKING_GUIDES)
 
-        # Configure sizers for layout
-        main_sizer = wx.BoxSizer(wx.VERTICAL)
-        top_menu_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        canvas_sidebar_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
-        cmd_output_sizer = wx.BoxSizer(wx.VERTICAL)
-        cmd_input_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.mgr.Update()
 
-        main_sizer.Add(top_menu_sizer, 0, wx.TOP | wx.EXPAND, 5)
-        main_sizer.Add(canvas_sidebar_sizer, 1, wx.EXPAND | wx.TOP, 5)
-        main_sizer.Add(cmd_output_sizer, 0, wx.EXPAND, 5)
-        main_sizer.Add(cmd_input_sizer, 0, wx.BOTTOM | wx.EXPAND, 5)
-
-        top_menu_sizer.Add(self.run_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.cycles_text, 0, wx.LEFT | wx.RIGHT |
-                           wx.ALIGN_CENTER_VERTICAL, 1)
-        top_menu_sizer.Add(self.spin, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.pause_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.continue_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.load_button, 1, wx.LEFT | wx.RIGHT, 5)
-        top_menu_sizer.Add(self.exit_button, 1, wx.LEFT | wx.RIGHT, 5)
-
-        canvas_sidebar_sizer.Add(sidebar_sizer, 1, wx.LEFT | wx.RIGHT, 5)
-        canvas_sidebar_sizer.Add(
-            self.canvas, 4, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-
-        # sidebar_sizer.Add(sidebar_notebook, 0, wx.ALL, 0)
-        # sidebar_panel.SetSizer(sidebar_sizer)
-        sidebar_sizer.Add(self.device_type, 0, wx.ALL, 0)
-        sidebar_sizer.Add(self.mon_add_dropdown, 0,
-                          wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
-        sidebar_sizer.Add(self.monitor_checklist, 1,
-                          wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
-
-        cmd_output_sizer.Add(self.cmd_output_text_box, 0, wx.EXPAND, 0)
-        # TODO to set value of textbox: self.textpanel.SetValue(s)
-
-        cmd_input_sizer.Add(self.com_text, 0, wx.LEFT |
-                            wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 12)
-        cmd_input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 5)
-
-        self.SetSizeHints(600, 600)
-        self.SetSizer(main_sizer)
+        self.Bind(wx.EVT_CLOSE, self.on_close)
+        self.toolbar.Realize()
+        self.Centre()
+        self.Show(True)
 
     def on_menu(self, event):
         """Handle the event when the user selects a menu item."""
@@ -371,54 +464,7 @@ class Gui(wx.Frame):
             wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",
                           "About Logsim", wx.ICON_INFORMATION | wx.OK)
 
-    def on_spin(self, event):
-        """Handle the event when the user changes the spin control value."""
-        spin_value = self.spin.GetValue()
-        text = "".join(["New spin control value: ", str(spin_value)])
-        self.canvas.render(text)
-
-    def on_run_button(self, event):
-        """Handle the event when the user clicks the run button."""
-        text = "Run button pressed."
-        self.canvas.render(text)
-
-    def on_cmd_enter(self, event):
-        """Handle the event when the user enters text."""
-        text_box_value = self.cmd_input_text_box.GetValue()
-        self.cmd_input_text_box.Clear()
-        self.cmd_output_text_box.AppendText("\n $  " + text_box_value)
-        text = "".join(["New text box value: ", text_box_value])
-        self.canvas.render(text)
-
-    def on_dropdown(self, event):
-        """Handle the event when the user clicks the dropdown menu to add a
-        monitor signal"""
-        self.device_to_add = self.mon_add_dropdown.GetValue()
-        text = "".join(["Signal to add: ", self.signal_to_add])
-        self.canvas.render(text)
-
-    def on_click_add(self, event):
-        """Handle the event when the user clicks the 'Add' button after selecting a signal"""
-        device_to_add = self.mon_add_dropdown.GetValue()
-        device_index = self.available_devices.index(device_to_add)
-        del self.available_devices[device_index]
-        self.mon_add_dropdown.Delete(device_index)
-        self.mon_add_dropdown.SetSelection(0)
-        text = "".join(["Signal added: ", device_to_add])
-        self.canvas.render(text)
-
-    def on_click_load(self, event):
-        """Handle the event when the user clicks the 'Load' button"""
-        with wx.FileDialog(self, "Load .txt file", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
-
-            if fileDialog.ShowModal() == wx.ID_CANCEL:
-                return     # the user changed their mind
-
-            # Proceed loading the file chosen by the user
-            pathname = fileDialog.GetPath()
-            text = "".join(["Opening file: ", pathname])
-            self.canvas.render(text)
-
-    def on_click_exit(self, event):
-        """Handle the event when the user clicks the 'Exit' button"""
-        self.Close()
+    def on_close(self, event):
+        # deinitialise the frame manager
+        self.mgr.UnInit()
+        self.Destroy()
