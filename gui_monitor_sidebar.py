@@ -3,7 +3,7 @@ import wx
 class MonitorSidebarPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        self.SetBackgroundColour(wx.RED)
+        # self.SetBackgroundColour(wx.RED)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.devices_list = ["G1", "G2", "G3", "G4"]

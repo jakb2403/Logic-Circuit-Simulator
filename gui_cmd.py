@@ -3,7 +3,7 @@ import wx
 class CmdPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        self.SetBackgroundColour(wx.GREEN)
+        # self.SetBackgroundColour(wx.GREEN)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Create sizers for input and output
