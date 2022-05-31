@@ -144,66 +144,66 @@ class Scanner:
         #if symbol is a dot
         elif self.current_character == ".":
             symbol.type = self.DOT
-            self.advance()
+            self.get_next_character()
 
         #if symbol is a comma
         elif self.current_character == ",":
             symbol.type = self.COMMA
-            self.advance()    
+            self.get_next_character()    
 
         #if symbol is a semicolon
         elif self.current_character == ";":
             symbol.type = self.SEMICOLON
-            self.advance()
+            self.get_next_character()
 
         #if symbol is a equals
         elif self.current_character == "=":
             symbol.type = self.EQUALS
-            self.advance()
+            self.get_next_character()
 
         #if symbol is an arrow
         elif self.current_character == "->":
             symbol.type = self.ARROW
-            self.advance()
+            self.get_next_character()
 
         #if symbol is a nextline
         elif self.current_character == "\n":
             symbol.type = self.NEXTLINE
-            self.advance()
+            self.get_next_character()
 
         #if symbol is a hashtag
         elif self.current_character == "#":
             symbol.type = self.HASHTAG
             self.file.next()
-            self.advance()
+            self.get_next_character()
 
         #if symbol is an openbracket
         elif self.current_character == "(":
             symbol.type = self.OPENBRACKET
-            self.advance()
+            self.get_next_character()
 
         #if symbol is an closedbracket
         elif self.current_character == ")":
             symbol.type = self.CLOSEDBRACKET
-            self.advance()
+            self.get_next_character()
 
         #if symbol is an opencurlybracket
         elif self.current_character == "{":
             symbol.type = self.OPENCURLYBRACKET
-            self.advance()
+            self.get_next_character()
 
         #if symbol is an closedcurlybracket
         elif self.current_character == "}":
             symbol.type = self.CLOSEDCURLYBRACKET
-            self.advance()
+            self.get_next_character()
 
         #if symbol is the end of file
         elif self.current_character == "":
             symbol.type = self.EOF
-            self.advance()
+            self.get_next_character()
 
         #if symbol is an invalid character
         else:
-            self.advance()
+            self.get_next_character()
 
         return symbol
