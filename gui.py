@@ -20,7 +20,8 @@ from scanner import Scanner
 from parse import Parser
 
 from gui_cmd import CmdPanel
-from gui_sidebar import SidebarPanel
+from gui_monitor_sidebar import MonitorSidebarPanel
+from gui_switches_sidebar import SwitchesSidebarPanel
 from gui_gl_canvas import MyGLCanvas
 
 
@@ -88,14 +89,18 @@ class Gui(wx.Frame):
         # Canvas for drawing signals
         self.canvas = MyGLCanvas(self, devices, monitors)
 
-        # Create instance of sidebar and command panel classes
-        self.sidebar = SidebarPanel(self)
+        # Create instance of panel classes
+        self.monitor_sidebar = MonitorSidebarPanel(self)
+        self.switches_sidebar = SwitchesSidebarPanel(self)
         self.cmd = CmdPanel(self)
 
-        self.mgr.AddPane(self.canvas, aui.AuiPaneInfo().CenterPane(), "Monitor")
+        # Add panels to AUI manager
+        self.mgr.AddPane(self.canvas, aui.AuiPaneInfo().CenterPane())
         self.mgr.AddPane(
-            self.sidebar, aui.AuiPaneInfo().Left().Floatable(False))
-        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False))
+            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).Caption("Monitor Points"))
+        self.mgr.AddPane(
+            self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).Caption("Control Switches"))
+        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False).Caption("Command Line"))
 
         # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
         agwFlags = self.mgr.GetAGWFlags()

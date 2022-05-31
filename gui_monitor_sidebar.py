@@ -1,6 +1,6 @@
 import wx
 
-class SidebarPanel(wx.Panel):
+class MonitorSidebarPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.SetBackgroundColour(wx.RED)
@@ -18,9 +18,6 @@ class SidebarPanel(wx.Panel):
         monitor_checklist = wx.CheckListBox(
             self, choices=self.available_devices, name="Monitor Signals")
 
-        # Add widgets to sizer
-        # sidebar_sizer.Add(sidebar_notebook, 0, wx.ALL, 0)
-        # sidebar_panel.SetSizer(sidebar_sizer)
         self.sizer.Add(device_type, 0, wx.ALL, 0)
         self.sizer.Add(mon_add_dropdown, 0,
                        wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
