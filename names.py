@@ -56,14 +56,47 @@ class Names:
         If the name string is not present in the names list, return None.
         """
 
-    def lookup(self, name_string_list):
-        """Return a list of name IDs for each name string in name_string_list.
+        if name_string in self.names_list:
+            return self.names_list.index(name_string)
+        else:
+            return None
+
+    def lookup(self, name_string):
+        """Return the corresponding name ID for the given name_string.
 
         If the name string is not present in the names list, add it.
         """
+        if type(name_string) == list:
+            # iterate through name_strings in list and perform lookup
+            for item in name_string:
+                if item.name in self.names_list:
+                    return self.names_list.index(name_string)
+                else:
+                    if not(name_string[0].isalpha()):
+                        raise TypeError("Name string must start with a letter, not a number.")
+                    self.names_list.append(name_string)
+                    return len(self.names_list) - 1
+        else:
+            # perform lookup for 1 name_string item
+            if name_string in self.names_list:
+                return self.names_list.index(name_string)
+            else:
+                if not(name_string[0].isalpha()):
+                    raise TypeError(
+                        "Name string must start with a letter, not a number.")
+                self.names_list.append(name_string)
+                return len(self.names_list) - 1
+
 
     def get_name_string(self, name_id):
-        """Return the corresponding name string for name_id.
+        """Return the corresponding name string for the given name_id.
 
-        If the name_id is not an index in the names list, return None.
+        If the name ID is not a valid index into the names list, return None.
         """
+        if name_id < 0:
+            raise ValueError(
+                "Invalid name_id. Only positive integers allowed.")
+        if name_id < len(self.names_list):
+            return self.names_list[name_id]
+        else:
+            return None
