@@ -118,7 +118,8 @@ class Scanner:
         line_number = currentframe().f_back.f_lineno #find the line
         char_number = self.char_counter #find the character
         newline = "\n" + (self.char_counter - 1)*" " + "^" + "\n" #format the newline with ^ below the error
-        output = self.path.readline() + newline #insert new empty line below 
+        error_line = "\n" + "***Error detected***"
+        output = self.path.readline() + newline + error_line #insert new empty line below 
         return output  
 
     def get_symbol(self):
