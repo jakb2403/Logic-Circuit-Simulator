@@ -43,14 +43,19 @@ class Parser:
 
         self.error_count = 0
         [self.output_to_output, self.input_to_input, self.input_to_output,
-         self.invalid_device_name, self.invalid_monitor_name,
-         self.invalid_device_input_name, self.unrecognised_device_type,
-         self.invalid_argument_type, self.missing_argument,
-         self.missing_symbol, self.unexpected_symbol,
-         self.section_order_error] = self.names.unique_error_codes(13)
+         self.invalid_device_name, self.invalid_device_inOut_name,
+         self.unrecognised_device_type, self.invalid_argument_type,
+         self.missing_argument, self.missing_keyword,
+         self.missing_symbol,
+         self.section_order_error] = self.names.unique_error_codes(12)
+
+        self.keyword = [self.scanner.DEVICES_ID,
+                        self.scanner.CONNECT_ID,
+                        self.scanner.MONITOR_ID]
 
     def syntax_error(self, error_type, dev=None, sym=None):
-        """print error type and count total number of syntax errors"""
+        """Print error type and count total number of syntax 
+        errors."""
         self.error_count += 1
         print("Syntax_error: ", end="")
         if error_type == self.output_to_output:
@@ -61,10 +66,8 @@ class Parser:
             print("input connected to output")
         elif error_type == self.invalid_device_name:
             print("invalid device name")
-        elif error_type == self.invalid_monitor_name:
-            print("invalid monitor name")
-        elif error_type == self.invalid_device_input_name:
-            print("invalid input name")
+        elif error_type == self.invalid_device_inOut_name:
+            print("invalid input/output name")
         elif error_type == self.unrecognised_device_type:
             print("unrecognised device type")
         elif error_type == self.invalid_argument_type:
@@ -73,8 +76,8 @@ class Parser:
             print("missing argument for device type: " + dev)
         elif error_type == self.missing_symbol:
             print("missing symbol: " + sym)
-        elif error_type == self.unexpected_symbol:
-            print("unexpected symbol")   # ideally, we don't need this one
+        elif error_type == self.missing_keyword:
+            print("missing keyword")
         elif error_type == self.section_order_error:
             print("incorrect ordering of sections")
         while (self.symbol.type != self.scanner.SEMICOLON
@@ -82,14 +85,14 @@ class Parser:
             self.symbol = self.scanner.get_symbol()
 
     def name(self):
-        """name = letter, { letter | digit } ;"""
+        """Pass when symbol is name."""
         if self.symbol.type == self.scanner.NAME:
             self.symbol = self.scanner.get_symbol()
         else:
             self.syntax_error(self.invalid_device_name)
 
     def argument(self):
-        """argument = digit , { digit } ;"""
+        """Pass until symbol is not number."""
         if self.symbol.type == self.scanner.NUMBER:
             self.symbol = self.scanner.get_symbol()
             while self.symbol.type == self.scanner.NUMBER:
@@ -99,112 +102,36 @@ class Parser:
         else:
             self.syntax_error(self.invalid_argument_type)
 
-    """    def input(self):
-                input = name, ".", "I", argument ;
-                self.name()
-                if self.symbol.type == self.scanner.DOT:
-                    self.symbol = self.scanner.get_symbol()
-                else:
-                    self.syntax_error()  # missing symbols: .
-                if (self.symbol.type == self.scanner.KEYWORD
-                        and self.symbol.id == self.scanner.I_id):
-                    self.argument()
-                else:
-                    self.syntax_error()  # invalid device input name
-
-            def dtype_ip(self):
-                dtype_ip = name, ".", dtype_ip_name ;
-                self.name()
-                if self.symbol.type == self.scanner.DOT:
-                    self.symbol = self.scanner.get_symbol()
-                else:
-                    self.syntax_error()   # missing symbols: .
-                if self.symbol.type == self.scanner.DTYPE_IP:
-                    self.symbol = self.scanner.get_symbol()
-                else:
-                    self.syntax_error()  # unrecognised dtype input
-
-            def dtype_op(self):
-                dtype_op = name, ".", dtype_op_name ;
-                self.name()
-                if self.symbol.type == self.scanner.DOT:
-                    self.symbol = self.scanner.get_symbol()
-                else:
-                    self.syntax_error()   # missing symbols: .
-                if self.symbol.type == self.scanner.DTYPE_OP:
-                    self.symbol = self.scanner.get_symbol()
-                else:
-                    self.syntax_error()  # unrecognised dtype output    """
-
-    def monitor_name(self):
-        """monitor_name = "MON", argument ;"""
-        if (self.symbol.type == self.scanner.KEYWORD
-                and self.symbol.id == self.scanner.MON_id):
-            self.symbol = self.scanner.get_symbol()
-            self.argument()
-        else:
-            self.syntax_error(self.invalid_monitor_name)
-
-    def nameOrDtypeOP(self):
+    def inputOrOutput(self, st_type):
+        # st_type has to be one of "conlhs", "conrhs", and "mon"
+        """Return True if output and false if input"""
         self.name()
-        if self.symbol.type == self.scanner.ARROW:
-            return True
-        elif self.symbol.type == self.scanner.DOT:
+        if st_type == "conlhs":
+            if self.symbol.type == self.scanner.ARROW:
+                return True     # True means output
+        elif st_type == "conrhs":
+            if (self.symbol.type == self.scanner.COMMA
+                    or self.symbol.type == self.scanner.SEMICOLON):
+                return True
+        elif st_type == "mon":
+            if self.symbol.type == self.scanner.SEMICOLON:
+                return True
+        if self.symbol.type == self.scanner.DOT:
             self.symbol = self.scanner.get_symbol()
             if self.symbol.type == self.scanner.DTYPE_OP:
                 self.symbol = self.scanner.get_symbol()
                 return True
             elif self.symbol.type == self.scanner.DTYPE_IP:
                 self.symbol = self.scanner.get_symbol()
-                return False
+                return False     # False means input
             elif (self.symbol.type == self.scanner.KEYWORD
                     and self.symbol.id == self.scanner.I_id):
                 self.argument()
                 return False
             else:
-                self.syntax_error(self.unexpected_symbol)  # .
+                self.syntax_error(self.invalid_device_inOut_name)
         else:
-            self.syntax_error(self.unexpected_symbol)
-
-    def inputOrDtypeIP(self):
-        self.name()
-        if (self.symbol.type == self.scanner.COMMA
-                or self.symbol.type == self.scanner.SEMICOLON):
-            return False
-        elif self.symbol.type == self.scanner.DOT:
-            self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.DTYPE_OP:
-                self.symbol = self.scanner.get_symbol()
-                return False
-            elif self.symbol.type == self.scanner.DTYPE_IP:
-                self.symbol = self.scanner.get_symbol()
-                return True
-            elif (self.symbol.type == self.scanner.KEYWORD
-                    and self.symbol.id == self.scanner.I_id):
-                self.argument()
-                return True
-            else:
-                self.syntax_error(self.unexpected_symbol)
-        else:
-            self.syntax_error(self.unexpected_symbol)
-
-    def monitor_point(self):
-        self.name()
-        if self.symbol.type == self.scanner.SEMICOLON:
-            pass
-        elif self.symbol.type == self.scanner.DOT:
-            self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.DTYPE_OP:
-                self.symbol = self.scanner.get_symbol()
-            elif self.symbol.type == self.scanner.DTYPE_IP:
-                self.symbol = self.scanner.get_symbol()
-            elif (self.symbol.type == self.scanner.KEYWORD
-                    and self.symbol.id == self.scanner.I_id):
-                self.argument()
-            else:
-                self.syntax_error(self.unexpected_symbol)
-        else:
-            self.syntax_error(self.unexpected_symbol)
+            self.syntax_error(self.missing_symbol, sym=".")
 
     def device(self):
         """device = "DTYPE" | "XOR" ;"""
@@ -222,29 +149,9 @@ class Parser:
             if self.symbol.type == self.scanner.CLOSEDBRACKET:
                 self.symbol = self.scanner.get_symbol()
             else:
-                self.syntax_error(self.missing_argument, sym=")")
+                self.syntax_error(self.missing_symbol, sym=")")
         else:
             self.syntax_error(self.unrecognised_device_type)
-
-    """     if (current_id == self.scanner.AND_ID or self.scanner.NAND_ID
-                    or self.scanner.OR_ID or self.scanner.NOR_ID):
-                if 2 <= self.symbol.id <= 16:               # NOR(2
-                    arg_val = self.symbol.id
-                    self.symbol = self.scanner.get_symbol()
-                else:                                       # NOR(18
-                    self.semantic_error()   # invalid argument
-            elif current_id == self.scanner.SWITCH_ID:      # SWITCH(1
-                if self.symbol == 0 or 1:
-                    arg_val = self.symbol.id
-                    self.symbol = self.scanner.get_symbol()
-                else:                                       # SWITCH(3
-                    self.semantic_error()   # invalid argument
-            elif current_id == self.scanner.CLOCK_ID:       # CLOCK(20
-                if self.symbol < 10000:     # limit clock cycle to 10000
-                    arg_val = self.symbol.id
-                    self.symbol = self.scanner.get_symbol()
-                else:
-                    self.semantic_error()   # invalid argument    """
 
     def assignment(self):
         """assignment = name, { "," , name }, "=",
@@ -268,23 +175,23 @@ class Parser:
     def connection(self):
         """connection = ( name | dtype_op), "->", ( input | dtype_ip ),
         { "," , ( input | dtype_ip ) }, ";" ;"""
-        x = self.nameOrDtypeOP()
+        x = self.inputOrOutput("conlhs")
         if self.symbol.type == self.scanner.ARROW:
             self.symbol = self.scanner.get_symbol()
         else:
             self.syntax_error(self.missing_symbol, sym="->")
-        y = self.inputOrDtypeIP()
-        if x is True and y is True:
+        y = self.inputOrOutput("conrhs")
+        if x is True and y is False:
             while self.symbol.type == self.scanner.COMMA:
                 self.symbol = self.scanner.get_symbol()
-                z = self.inputOrDtypeIP()
-                if z is False:
+                z = self.inputOrOutput("conrhs")
+                if z is True:
                     self.syntax_error(self.output_to_output)
                 if self.symbol == self.scanner.EOF:
                     break
-        elif x is True and y is False:
+        elif x is True and y is True:
             self.syntax_error(self.output_to_output)
-        elif x is False and y is True:
+        elif x is False and y is False:
             self.syntax_error(self.input_to_input)
         else:
             self.syntax_error(self.input_to_output)
@@ -295,80 +202,50 @@ class Parser:
 
     def monitor(self):
         """monitor = monitor_name, "=", ( name | input ), ";" ;"""
-        self.monitor_name()
-        if self.symbol.type == self.scanner.EQUALS:
-            self.monitor_point()
+        self.inputOrOutput("mon")
         if self.symbol.type == self.scanner.SEMICOLON:
             pass
         else:
             self.syntax_error(self.missing_symbol, ";")
 
-    def section_dev(self):
+    def section(self):
         if (self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.DEVICES_ID):
+                self.symbol.id in self.keyword):
+            sec_def = self.symbol.id
             self.symbol = self.scanner.get_symbol()
         else:
-            self.syntax_error(self.section_order_error)
+            self.syntax_error(self.missing_keyword)     # missing keyword
         if self.symbol.type == self.scanner.OPENCURLYBRACKET:
             self.symbol = self.scanner.get_symbol()
         else:
             self.syntax_error(self.missing_symbol, sym="{")
-        self.assignment()
+        if sec_def == self.scanner.DEVICES_ID:
+            self.assignment()
+        elif sec_def == self.scanner.CONNECT_ID:
+            self.connection()
+        else:
+            self.monitor()
+        indic = True
         while self.symbol.type == self.scanner.SEMICOLON:
             self.symbol = self.scanner.get_symbol()
-            if (self.symbol.type == self.scanner.CLOSEDCURLYBRACKET
-                    or self.symbol.type == self.scanner.EOF):
+            if self.symbol.type == self.scanner.CLOSEDCURLYBRACKET:
+                indic = False
+                break
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                    self.symbol.id in self.keyword and indic is True):
+                break
+            elif self.symbol.type == self.scanner.EOF:
                 break
             else:
-                self.assignment()
-        if self.symbol.type == self.scanner.CLOSEDCURLYBRACKET:
+                if sec_def == self.scanner.DEVICES_ID:
+                    self.assignment()
+                elif sec_def == self.scanner.CONNECT_ID:
+                    self.connection()
+                else:
+                    self.monitor()
+        if indic is False:
             self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.missing_symbol, sym="}")
-
-    def section_con(self):
-        if (self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.CONNECT_ID):
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.section_order_error)
-        if self.symbol.type == self.scanner.OPENCURLYBRACKET:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.missing_symbol, sym="{")
-        self.connection()
-        while self.symbol.type == self.scanner.SEMICOLON:
-            self.symbol = self.scanner.get_symbol()
-            if (self.symbol.type == self.scanner.CLOSEDCURLYBRACKET
-                    or self.symbol.type == self.scanner.EOF):
-                break
-            else:
-                self.connection()
-        if self.symbol.type == self.scanner.CLOSEDCURLYBRACKET:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.missing_symbol, sym="}")
-
-    def section_mon(self):
-        if (self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.MONITOR_ID):
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.section_order_error)
-        if self.symbol.type == self.scanner.OPENCURLYBRACKET:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.missing_symbol, sym="{")
-        self.monitor()
-        while self.symbol.type == self.scanner.SEMICOLON:
-            self.symbol = self.scanner.get_symbol()
-            if (self.symbol.type == self.scanner.CLOSEDCURLYBRACKET
-                    or self.symbol.type == self.scanner.EOF):
-                break
-            else:
-                self.monitor()
-        if self.symbol.type == self.scanner.CLOSEDCURLYBRACKET:
-            self.symbol = self.scanner.get_symbol()
+            return sec_def
         else:
             self.syntax_error(self.missing_symbol, sym="}")
 
@@ -378,9 +255,15 @@ class Parser:
         # skeleton code. When complete, should return False when there are
         # errors in the circuit definition file.
         self.symbol = self.scanner.get_symbol()
-        self.section_dev()
-        self.section_con()
-        self.section_mon()
+        dev = self.section()
+        con = self.section()
+        mon = self.section()
+        if dev != self.scanner.DEVICES_ID:
+            self.syntax_error(self.section_order_error)
+        if con != self.scanner.CONNECT_ID:
+            self.syntax_error(self.section_order_error)
+        if mon != self.scanner.MONITOR_ID:
+            self.syntax_error(self.section_order_error)
         if self.error_count == 0:
             return True
         else:
