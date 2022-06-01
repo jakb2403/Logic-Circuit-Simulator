@@ -24,9 +24,8 @@ class CmdPanel(wx.Panel):
         # Add widgets to sizer
         output_sizer.Add(self.cmd_output_text_box, 1, wx.EXPAND, 0)
         # TODO to set value of textbox: self.textpanel.SetValue(s)
-        input_sizer.Add(self.com_text, 0, wx.LEFT |
-                        wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 12)
-        input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 5)
+        input_sizer.Add(self.com_text, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
+        input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 15)
 
         # Add sub-sizers to main sizer
         self.sizer.Add(output_sizer, 1, wx.EXPAND, 0)
@@ -41,7 +40,7 @@ class CmdPanel(wx.Panel):
         """Handle the event when the user enters text."""
         text_box_value = self.cmd_input_text_box.GetValue()
         self.cmd_input_text_box.Clear()
-        self.cmd_output_text_box.AppendText("\n $  " + text_box_value)
+        self.cmd_output_text_box.AppendText("\n$ " + text_box_value)
         text = "".join(["New cmd input: ", text_box_value])
         self.parent.statusbar.PushStatusText(text)
         

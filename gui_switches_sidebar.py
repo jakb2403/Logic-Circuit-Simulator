@@ -34,7 +34,7 @@ class SwitchesSidebarPanel(wx.Panel):
             toggle.SetValue(True)
         switch_sizer = wx.BoxSizer(wx.HORIZONTAL)
         switch_sizer.Add(text, 1, wx.ALIGN_CENTER | wx.ALL, 5)
-        switch_sizer.Add(toggle, 1, wx.EXPAND | wx.ALL, 0)
+        switch_sizer.Add(toggle, 1, wx.EXPAND | wx.ALL, 1)
         toggle.Bind(wx.EVT_TOGGLEBUTTON, self.on_toggle_switch)
         self.sizer.Add(switch_sizer, 0, wx.EXPAND, 0)
 

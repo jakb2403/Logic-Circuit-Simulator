@@ -87,27 +87,35 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
         # Draw specified text at position (10, 10)
-        self.render_text(text, 10, 10)
+        # self.render_text(text, 10, 10)
 
         # Draw a sample signal trace
-        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-        GL.glBegin(GL.GL_LINE_STRIP)
-        for i in range(10):
-            x = (i * 20) + 10
-            x_next = (i * 20) + 30
-            if i % 2 == 0:
-                y = 75
-            else:
-                y = 100
-            GL.glVertex2f(x, y)
-            GL.glVertex2f(x_next, y)
-        GL.glEnd()
+        for j in range(5):
+            spacing = 80
+            y_low = 10 + (spacing * j)
+            y_high = 55 + (spacing * j)
+            x_offset = 50
+            # Draw the signal
+            GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+            GL.glBegin(GL.GL_LINE_STRIP)
+            for i in range(10):
+                x = (i * 20) + 10 + x_offset
+                x_next = (i * 20) + 30 + x_offset
+                if i % 2 == 0:
+                    y = y_low
+                else:
+                    y = y_high
+                GL.glVertex2f(x, y)
+                GL.glVertex2f(x_next, y)
+            GL.glEnd()
+            # Display signal name
+            display_text = "Signal " + str(j + 1)
+            self.render_text(display_text, 10, 0.5*(y_low + y_high))
 
         counter = 1
         # for device_id, output_id in self.monitors.monitors_dictionary:
         #     monitor_name = self.devices.get_signal_name(device_id, output_id)
         #     signal_list = self.monitors.monitors_dictionary[(device_id, output_id)]
-        #     self.render_text(monitor_name, 10, (10+150*counter))
         #     for signal in signal_list:
         #         x = (i * 20) + 10
         #         x_next = (i * 20) + 30
@@ -122,23 +130,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #         if signal == self.devices.BLANK:
 
         #     counter += 1
-
-        # for signal in signals_to_draw:
-        #     # Draw specified text at position (10, 10)
-        #     self.render_text(signal_name_text, 10, 10)
-        #     # Draw a sample signal trace
-        #     GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-        #     GL.glBegin(GL.GL_LINE_STRIP)
-        #     for i in range(len(signal)):
-        #         x = (i * 20) + 10
-        #         x_next = (i * 20) + 30
-        #         if signal[i] == 0:
-        #             y = 75
-        #         else:
-        #             y = 100
-        #         GL.glVertex2f(x, y)
-        #         GL.glVertex2f(x_next, y)
-        #     GL.glEnd()
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front
@@ -156,6 +147,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         size = self.GetClientSize()
         text = "".join(["Canvas redrawn on paint event, size is ",
                         str(size.width), ", ", str(size.height)])
+        self.render(text)
         self.parent.statusbar.PushStatusText(text)
 
     def on_size(self, event):
@@ -211,6 +203,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             text = "".join(["Positive mouse wheel rotation. Zoom is now: ",
                             str(self.zoom)])
         if text:
+            self.render(text)
             self.parent.statusbar.PushStatusText(text)
         else:
             self.Refresh()  # triggers the paint event
