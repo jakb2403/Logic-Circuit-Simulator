@@ -4,6 +4,8 @@ import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT, GLU
 from dataclasses import dataclass
+
+
 @dataclass
 class coord:
     x: int = 0
@@ -94,77 +96,90 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Clear everything
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        # Draw specified text at position (10, 10)
-        # self.render_text(text, 10, 10)
+        # _______________________________________________________
+        # Draw a few test signals
+        # v_space = 60
+        # one_clk = 40
+        # half_clk = one_clk // 2
+        # signal_x_offset = 50
+        # text_x_offset = 10
+        # signal_height = v_space * 2 // 3
+        # tick_y_offset = 10
+        # tick_height = 5
+        # # Draw a sample signal trace
+        # for j in range(5):
+        #     bottom_left = coord(0, j * v_space)
+        #     y_low = bottom_left.y + v_space - signal_height
+        #     y_high = bottom_left.y + v_space
+        #     # Draw the signal
+        #     GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+        #     GL.glBegin(GL.GL_LINE_STRIP)
+        #     sig_current = coord()
+        #     sig_next = coord()
+        #     for i in range(10):
+        #         sig_current.x = signal_x_offset + (i * half_clk)
+        #         sig_next.x = signal_x_offset + ((i + 1) * half_clk)
+        #         if i % 2 == 0:
+        #             sig_current.y = y_low
+        #             sig_next.y = y_low
+        #         else:
+        #             sig_current.y = y_high
+        #             sig_next.y = y_high
+        #         GL.glVertex2f(sig_current.x, sig_current.y)
+        #         GL.glVertex2f(sig_next.x, sig_next.y)
+        #     GL.glEnd()
 
-        v_space = 60
-        one_clk = 40
-        half_clk = one_clk // 2
-        signal_x_offset = 50
-        text_x_offset = 10
-        signal_height = v_space * 2 // 3
-        tick_y_offset = 10
-        tick_height = 5
-        # Draw a sample signal trace
-        for j in range(5):
-            bottom_left = coord(0, j * v_space)
-            y_low =  bottom_left.y + v_space - signal_height
-            y_high = bottom_left.y + v_space
-            # Draw the signal
-            GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-            GL.glBegin(GL.GL_LINE_STRIP)
-            sig_current = coord()
-            sig_next = coord()
-            for i in range(10):
-                sig_current.x = signal_x_offset + (i * half_clk)
-                sig_next.x = signal_x_offset + ((i + 1) * half_clk)
-                if i % 2 == 0:
-                    sig_current.y = y_low
-                    sig_next.y = y_low
-                else:
-                    sig_current.y = y_high
-                    sig_next.y = y_high
-                GL.glVertex2f(sig_current.x, sig_current.y)
-                GL.glVertex2f(sig_next.x, sig_next.y)
-            GL.glEnd()
+        #     # Draw the tickmarks
+        #     tick_bottom = coord()
+        #     tick_top = coord()
+        #     for i in range(10):
+        #         tick_bottom.x = signal_x_offset + (i * one_clk)
+        #         tick_bottom.y = bottom_left.y + tick_y_offset
+        #         tick_top.x = signal_x_offset + (i * one_clk)
+        #         tick_top.y = bottom_left.y + tick_y_offset + tick_height
+        #         GL.glColor3f(1.0, 0.0, 0.0)  # tick marks are red
+        #         GL.glBegin(GL.GL_LINE_STRIP)
+        #         GL.glVertex2f(tick_bottom.x, tick_bottom.y)
+        #         GL.glVertex2f(tick_top.x, tick_top.y)
+        #         GL.glEnd()
+        #         self.render_text(str(i), tick_bottom.x + 1, tick_bottom.y)
 
-            # Draw the tickmarks               
-            tick_bottom = coord()
-            tick_top = coord()
-            for i in range(10):
-                tick_bottom.x = signal_x_offset + (i * one_clk)
-                tick_bottom.y = bottom_left.y + tick_y_offset
-                tick_top.x = signal_x_offset + (i * one_clk)
-                tick_top.y = bottom_left.y + tick_y_offset + tick_height
-                GL.glColor3f(1.0, 0.0, 0.0)  # tick marks are red
-                GL.glBegin(GL.GL_LINE_STRIP)
-                GL.glVertex2f(tick_bottom.x, tick_bottom.y)
-                GL.glVertex2f(tick_top.x, tick_top.y)
-                GL.glEnd()
-                self.render_text(str(i), tick_bottom.x + 1, tick_bottom.y)
-            
-            # Display signal name
-            display_text = "Signal " + str(j + 1)
-            self.render_text(display_text, text_x_offset, (bottom_left.y + v_space//2))
+        #     # Display signal name
+        #     display_text = "Signal " + str(j + 1)
+        #     self.render_text(display_text, text_x_offset,
+        #                      (bottom_left.y + v_space//2))
+        # _______________________________________________________
+        
+        test_signal = [0, 1, 1 ,0, 1, 1, 1, 0]
+        self.draw_signal("TEST", test_signal, 0)
 
-        # counter = 1
+        # test_signal = [self.devices.HIGH,
+        #                 self.devices.HIGH,
+        #                 self.devices.FALLING,
+        #                 self.devices.LOW,
+        #                 self.devices.LOW,
+        #                 self.devices.RISING,
+        #                 self.devices.HIGH,
+        #                 self.devices.HIGH,
+        #                 self.devices.HIGH,
+        #                 self.devices.FALLING,
+        #                 self.devices.LOW,
+        #                 self.devices.LOW,
+        #                 self.devices.LOW]
+        # test_signal_bin = self.context(test_signal)
+        # self.draw_signal("Test", test_signal_bin, 0)
+
+
+        # Draw the monitor signals
+        # index = 0
         # for device_id, output_id in self.monitors.monitors_dictionary:
         #     monitor_name = self.devices.get_signal_name(device_id, output_id)
-        #     signal_list = self.monitors.monitors_dictionary[(device_id, output_id)]
-        #     for signal in signal_list:
-        #         x = (i * 20) + 10
-        #         x_next = (i * 20) + 30
-        #         if signal == self.devices.HIGH:
-        #             y = 100
-        #         if signal == self.devices.LOW:
-        #             y = 75
-        #         if signal == self.devices.RISING:
-
-        #         if signal == self.devices.FALLING:
-
-        #         if signal == self.devices.BLANK:
-
-        #     counter += 1
+        #     signal_list = self.monitors.monitors_dictionary[(
+        #         device_id, output_id)]
+        #     signal_list_bin = self.convert_signal(signal_list)
+        #     self.draw_signal(monitor_name, signal_list_bin, index)
+        #     index += 1
+            
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front
@@ -252,7 +267,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
         GL.glColor3f(0.0, 0.0, 0.0)  # text is black
         GL.glRasterPos2f(x_pos, y_pos)
-        # Alternative font 
+        # Alternative font
         # font = GLUT.GLUT_STROKE_ROMAN
         font = GLUT.GLUT_BITMAP_HELVETICA_12
         for character in text:
@@ -261,3 +276,84 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 GL.glRasterPos2f(x_pos, y_pos)
             else:
                 GLUT.glutBitmapCharacter(font, ord(character))
+
+    def convert_signal(self, signal_list):
+        """Converts signal from output type of network module to 1s and 0s"""
+        output_signal = []
+        for i in range(len(signal_list) - 1):
+            current_sig = signal_list[i]
+            next_sig = signal_list[i + 1]
+            # HIGH to HIGH
+            if current_sig == self.devices.HIGH and next_sig == self.devices.HIGH:
+                output_signal.append(1)
+            # LOW to LOW
+            elif current_sig == self.devices.LOW and next_sig == self.devices.LOW:
+                output_signal.append(0)
+            # HIGH to FALLING
+            elif current_sig == self.devices.HIGH and next_sig == self.devices.FALLING:
+                output_signal.append(1)
+            # LOW to RISING
+            elif current_sig == self.devices.LOW and next_sig == self.devices.RISING:
+                output_signal.append(0)
+            else:
+                continue
+
+        if signal_list[-1] == self.devices.HIGH:
+            output_signal.append(1)
+        elif signal_list[-1] == self.devices.LOW:
+            output_signal.append(0)
+
+        return output_signal
+
+    
+    def draw_signal(self, monitor_name, signal_list_bin, index):
+        
+        v_space = 60
+        one_clk = 40
+        half_clk = one_clk // 2
+        signal_x_offset = 50
+        text_x_offset = 10
+        signal_height = v_space * 2 // 3
+        tick_y_offset = 10
+        tick_height = 5
+
+        bottom_left = coord(0, index * v_space)
+        y_low = bottom_left.y + v_space - signal_height
+        y_high = bottom_left.y + v_space
+
+        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+        GL.glBegin(GL.GL_LINE_STRIP)
+        sig_current = coord()
+        sig_next = coord()
+        for i in range(len(signal_list_bin)):
+            sig_current.x = signal_x_offset + (i * half_clk)
+            sig_next.x = signal_x_offset + ((i + 1) * half_clk)
+            if signal_list_bin[i] == 0:
+                sig_current.y = y_low
+                sig_next.y = y_low
+            elif signal_list_bin[i] == 1:
+                sig_current.y = y_high
+                sig_next.y = y_high
+            GL.glVertex2f(sig_current.x, sig_current.y)
+            GL.glVertex2f(sig_next.x, sig_next.y)
+        GL.glEnd()
+
+        # Draw the tickmarks
+        tick_bottom = coord()
+        tick_top = coord()
+        for i in range(10):
+            tick_bottom.x = signal_x_offset + (i * one_clk)
+            tick_bottom.y = bottom_left.y + tick_y_offset
+            tick_top.x = signal_x_offset + (i * one_clk)
+            tick_top.y = bottom_left.y + tick_y_offset + tick_height
+            GL.glColor3f(1.0, 0.0, 0.0)  # tick marks are red
+            GL.glBegin(GL.GL_LINE_STRIP)
+            GL.glVertex2f(tick_bottom.x, tick_bottom.y)
+            GL.glVertex2f(tick_top.x, tick_top.y)
+            GL.glEnd()
+            self.render_text(str(i), tick_bottom.x + 1, tick_bottom.y)
+
+        # Display signal name
+        display_text = monitor_name
+        self.render_text(display_text, text_x_offset,
+                            (bottom_left.y + v_space//2))
