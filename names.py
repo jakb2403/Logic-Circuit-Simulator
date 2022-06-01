@@ -73,7 +73,7 @@ class Names:
                 if item in self.names_list:
                     output_list.append(self.names_list.index(item))
                 else:
-                    if not(name_input[item][0].isalpha()):
+                    if not(item[0].isalpha()):
                         raise TypeError(
                             "Name string must start with a letter, not a number.")
                     else:
