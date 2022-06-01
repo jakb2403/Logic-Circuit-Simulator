@@ -97,7 +97,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
         # _______________________________________________________
-        # Draw a few test signals
+        # Draw 5 test signals (basically clocks)
+        #
         # v_space = 60
         # one_clk = 40
         # half_clk = one_clk // 2
@@ -150,27 +151,40 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #                      (bottom_left.y + v_space//2))
         # _______________________________________________________
         
-        test_signal = [0, 1, 1 ,0, 1, 1, 1, 0]
-        self.draw_signal("TEST", test_signal, 0)
 
-        # test_signal = [self.devices.HIGH,
-        #                 self.devices.HIGH,
-        #                 self.devices.FALLING,
-        #                 self.devices.LOW,
-        #                 self.devices.LOW,
-        #                 self.devices.RISING,
-        #                 self.devices.HIGH,
-        #                 self.devices.HIGH,
-        #                 self.devices.HIGH,
-        #                 self.devices.FALLING,
-        #                 self.devices.LOW,
-        #                 self.devices.LOW,
-        #                 self.devices.LOW]
-        # test_signal_bin = self.context(test_signal)
-        # self.draw_signal("Test", test_signal_bin, 0)
+        # _______________________________________________________
+        # Draw 1 test signal using draw_signal function
+        # 
+        # test_signal = [0, 1, 1 ,0, 1, 1, 1, 0]
+        # self.draw_signal("TEST", test_signal, 0)
+        # _______________________________________________________
 
 
+        # _______________________________________________________
+        # Draw test signal from devices class
+        # Signal should be --\__/---\___
+        test_signal = [self.devices.HIGH,
+                        self.devices.HIGH,
+                        self.devices.FALLING,
+                        self.devices.LOW,
+                        self.devices.LOW,
+                        self.devices.RISING,
+                        self.devices.HIGH,
+                        self.devices.HIGH,
+                        self.devices.HIGH,
+                        self.devices.FALLING,
+                        self.devices.LOW,
+                        self.devices.LOW,
+                        self.devices.LOW]
+        test_signal_bin = self.convert_signal(test_signal)
+        self.draw_signal("Test", test_signal_bin, 0)
+        self.draw_signal("Test", test_signal_bin, 1)
+        
+        # _______________________________________________________
+
+        # _______________________________________________________
         # Draw the monitor signals
+        # 
         # index = 0
         # for device_id, output_id in self.monitors.monitors_dictionary:
         #     monitor_name = self.devices.get_signal_name(device_id, output_id)
@@ -179,7 +193,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #     signal_list_bin = self.convert_signal(signal_list)
         #     self.draw_signal(monitor_name, signal_list_bin, index)
         #     index += 1
-            
+        # _______________________________________________________
+ 
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front
