@@ -216,6 +216,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         size = self.GetClientSize()
         text = "".join(["Canvas redrawn on paint event, size is ",
                         str(size.width), ", ", str(size.height)])
+        self.update_size(size.width, size.height)
         self.render()
         self.parent.statusbar.PushStatusText(text)
 
@@ -337,10 +338,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         tick_height = 5
         signal_length = len(signal_list_bin)
 
-        new_width = signal_x_offset + signal_length * one_clk + 20
-        new_height = index * v_space + 20
-        self.update_size(new_width, new_height)
-
         bottom_left = coord(0, (index+1) * v_space)
         y_low = bottom_left.y + v_space - signal_height
         y_high = bottom_left.y + v_space
@@ -387,7 +384,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.width = width
         if not(height == None) and height > self.height:
             self.height = height
-        print(self.width, self.height)
 
     
     def save_to_png(self, filename):
