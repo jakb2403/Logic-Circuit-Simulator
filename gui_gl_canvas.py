@@ -1,5 +1,3 @@
-from typing_extensions import clear_overloads
-from OpenGL.raw.GL.VERSION.GL_1_0 import glScalef
 import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT, GLU

@@ -15,10 +15,17 @@ class CanvasPanel(wx.Panel):
         self.vert_scroll = wx.ScrollBar(self, style=wx.SB_VERTICAL)
         self.horiz_scroll = wx.ScrollBar(self, style=wx.SB_HORIZONTAL)
 
-
         self.sizer.Add(self.canvas, 1, wx.EXPAND, 0)
         self.sizer.Add(self.vert_scroll, 1, wx.EXPAND, 0)
         self.sizer.Add(self.horiz_scroll, 0, wx.EXPAND, 0)
 
+        self.vert_scroll.Bind(wx.EVT_COMBOBOX, self.on_vert_scroll)
+        self.vert_scroll.Bind(wx.EVT_COMBOBOX, self.on_horiz_scroll)
 
         self.SetSizer(self.sizer)
+
+    def on_vert_scroll(self, event):
+        pass
+
+    def on_horiz_scroll(self, event):
+        pass
