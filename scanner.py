@@ -56,6 +56,7 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
 
         self.char_counter = 0
+        self.line_counter = 0
         file_name = os.path.basename(path)
 
         try:
@@ -112,7 +113,13 @@ class Scanner:
         """Read and return the next character."""
         # add 1 to the character counter to track location in line
         self.char_counter += 1
-        return(self.file.read(1))
+        nc = (self.file.read(1))
+        if nc == "\n":
+            self.char_counter -= 1
+            self.line_length.append(self.char_counter)
+            self.line_counter += 1
+            self.char_counter = -1
+        return nc
 
     def skip_spaces(self):
         """Seek and return the next non-whitespace character."""
@@ -152,25 +159,13 @@ class Scanner:
     def error_found(self):
         """Outputs the current line and a ^ symbol on the next line to
         highlight the location of the error"""
-        current_location = self.file.tell()
-        self.file.seek(0,0)
-        line_counter = 0
-        char_counter = 0
-        for i in range(current_location):
-            x = self.get_next_character()
-            char_counter += 1
-            if x =="\n":
-                char_counter -= 1
-                self.line_length.append(char_counter)
-                line_counter += 1
-                char_counter = -1
-        if char_counter == -1:
-            line_counter -= 1
-            char_counter = self.line_length[-2]
+        if self.char_counter == -1:
+            self.char_counter = self.line_length[-1]
 
         self.file.seek(0,0)
-        line_text = self.file.read().split("\n")[line_counter-1]
-        output = line_text + "\n" + " "*char_counter +"^" 
+        line_text = self.file.read().split("\n")[self.line_counter-1]
+        output = line_text + "\n" + " "*self.char_counter +"^" 
+        
         return output
 
     def get_symbol(self):
