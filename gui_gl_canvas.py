@@ -4,6 +4,7 @@ import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT, GLU
 from dataclasses import dataclass
+from PIL import Image
 
 
 @dataclass
@@ -55,6 +56,9 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GLUT.glutInit()
         self.init = False
         self.context = wxcanvas.GLContext(self)
+
+        self.width = 0
+        self.height = 0
 
         # Initialise variables for panning
         self.pan_x = 0
@@ -331,8 +335,13 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         signal_height = v_space * 2 // 3
         tick_y_offset = 10
         tick_height = 5
+        signal_length = len(signal_list_bin)
 
-        bottom_left = coord(0, index * v_space)
+        new_width = signal_x_offset + signal_length * one_clk + 20
+        new_height = index * v_space + 20
+        self.update_size(new_width, new_height)
+
+        bottom_left = coord(0, (index+1) * v_space)
         y_low = bottom_left.y + v_space - signal_height
         y_high = bottom_left.y + v_space
 
@@ -340,7 +349,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glBegin(GL.GL_LINE_STRIP)
         sig_current = coord()
         sig_next = coord()
-        for i in range(len(signal_list_bin)):
+        for i in range(signal_length):
             sig_current.x = signal_x_offset + (i * half_clk)
             sig_next.x = signal_x_offset + ((i + 1) * half_clk)
             if signal_list_bin[i] == 0:
@@ -356,7 +365,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Draw the tickmarks
         tick_bottom = coord()
         tick_top = coord()
-        for i in range(10):
+        for i in range(signal_length):
             tick_bottom.x = signal_x_offset + (i * one_clk)
             tick_bottom.y = bottom_left.y + tick_y_offset
             tick_top.x = signal_x_offset + (i * one_clk)
@@ -372,3 +381,17 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         display_text = monitor_name
         self.render_text(display_text, text_x_offset,
                             (bottom_left.y + v_space//2))
+
+    def update_size(self, width=None, height=None):
+        if not(width == None) and width > self.width:
+            self.width = width
+        if not(height == None) and height > self.height:
+            self.height = height
+        print(self.width, self.height)
+
+    
+    def save_to_png(self, filename):
+        data = GL.glReadPixels(0, 0, self.width, self.height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, None)
+        image = Image.frombytes("RGB", (self.width, self.height), data)
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        image.save(filename, format="png")

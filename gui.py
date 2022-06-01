@@ -83,8 +83,9 @@ class Gui(wx.Frame):
             102, "Continue", wx.Bitmap("icons/continue.png"))
         self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
         self.toolbar.AddControl(self.cycle_spin)
+        self.save_button = self.toolbar.AddTool(103, "Save", wx.Bitmap("icons/save.png"))
         self.exit_button = self.toolbar.AddTool(
-            103, "Exit", wx.Bitmap("icons/exit.png"))
+            104, "Exit", wx.Bitmap("icons/exit.png"))
 
         # Configure the status bar
         self.statusbar = self.CreateStatusBar()
@@ -145,7 +146,24 @@ class Gui(wx.Frame):
         elif tool_id == 102: # Continue button
             text = "Continue button pressed."
             self.statusbar.PushStatusText(text)
-        elif tool_id == 103: # Exit button
+        elif tool_id == 103: # Save button
+            with wx.FileDialog(self, "Save monitor plot", wildcard="PNG files (*.png)|*.png",
+                       style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+                if fileDialog.ShowModal() == wx.ID_CANCEL:
+                    return     # the user changed their mind
+
+                # save the current contents in the file
+                pathname = fileDialog.GetPath()
+                try:
+                    with open(pathname, 'w') as file:
+                        self.canvas.save_to_png(pathname)
+                        # self.doSaveData(bitmap)
+                except IOError:
+                    wx.LogError("Cannot save current data in file '%s'." % pathname)
+            text = "".join(["Saved file as: ", pathname])
+            self.statusbar.PushStatusText(text)
+
+        elif tool_id == 104: # Exit button
             text = "Exiting"
             self.statusbar.PushStatusText(text)
             self.mgr.UnInit()
