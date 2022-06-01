@@ -301,18 +301,11 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         output_signal = []
         for i in range(len(signal_list) - 1):
             current_sig = signal_list[i]
-            next_sig = signal_list[i + 1]
-            # HIGH to HIGH
-            if current_sig == self.devices.HIGH and next_sig == self.devices.HIGH:
+            # HIGH
+            if current_sig == self.devices.HIGH:
                 output_signal.append(1)
-            # LOW to LOW
-            elif current_sig == self.devices.LOW and next_sig == self.devices.LOW:
-                output_signal.append(0)
-            # HIGH to FALLING
-            elif current_sig == self.devices.HIGH and next_sig == self.devices.FALLING:
-                output_signal.append(1)
-            # LOW to RISING
-            elif current_sig == self.devices.LOW and next_sig == self.devices.RISING:
+            # LOW
+            elif current_sig == self.devices.LOW:
                 output_signal.append(0)
             else:
                 continue

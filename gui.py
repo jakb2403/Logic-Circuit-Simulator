@@ -84,8 +84,9 @@ class Gui(wx.Frame):
         self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
         self.toolbar.AddControl(self.cycle_spin)
         self.save_button = self.toolbar.AddTool(103, "Save", wx.Bitmap("icons/save.png"))
+        self.reset_button = self.toolbar.AddTool(104, "Reset", wx.Bitmap("icons/reset.png"))
         self.exit_button = self.toolbar.AddTool(
-            104, "Exit", wx.Bitmap("icons/exit.png"))
+            105, "Exit", wx.Bitmap("icons/exit.png"))
 
         # Configure the status bar
         self.statusbar = self.CreateStatusBar()
@@ -162,7 +163,10 @@ class Gui(wx.Frame):
             text = "".join(["Saved file as: ", pathname])
             self.push_status(text)
 
-        elif tool_id == 104: # Exit button
+        elif tool_id == 104: # Reset button
+            text = "Resetting"
+            self.push_status(text)
+        elif tool_id == 105: # Exit button
             text = "Exiting"
             self.push_status(text)
             self.mgr.UnInit()
