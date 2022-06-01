@@ -6,42 +6,44 @@ class SwitchesSidebarPanel(wx.Panel):
         # self.SetBackgroundColour(wx.YELLOW)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
+        self.parent = parent
+
         self.switches_dict = {
-            "SW1": 0,
-            "SW2": 1,
-            "SW3": 0,
-            "SW4": 1,
-            "SW5": 0,
+            "SW1": [0, 1],
+            "SW2": [1, 2],
+            "SW3": [0, 3],
+            "SW4": [1, 4],
+            "SW5": [0, 5],
         }
 
         # Create widgets
-        test_text = wx.StaticText(self, wx.ID_ANY, "This is a test")
-        self.sizer.Add(test_text, 0, wx.ALL, 0)
-
         for switch in self.switches_dict:
-            # name = switch
-            # init_state = self.switches_dict[switch]
-            # text, toggle = self.create_switch(name, init_state)
-            # self.sizer.Add(text, 0, wx.ALL, 0)
-            # self.sizer.Add(toggle, 0, wx.ALL, 0)
 
             name = switch
-            init_state = self.switches_dict[switch]
-            switch_sizer = self.create_switch(name, init_state)
-            self.sizer.Add(switch_sizer, 0, wx.EXPAND, 0)
+            init_state = self.switches_dict[switch][0]
+            device_id = self.switches_dict[switch][1]
+            self.create_switch(name, device_id, init_state)
 
         self.SetSizer(self.sizer)
 
 
-    def create_switch(self, name, init_state):
-        horiz_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        text = wx.StaticText(self, wx.ID_ANY, name)
+    def create_switch(self, name, device_id, init_state):
+        text = wx.StaticText(self, device_id, name)
         toggle = wx.ToggleButton(self, wx.ID_ANY, label=str(init_state))
         if init_state == 1:
             toggle.SetValue(True)
-        horiz_sizer.Add(text, 1, wx.ALIGN_CENTER | wx.ALL, 5)
-        horiz_sizer.Add(toggle, 1, wx.EXPAND | wx.ALL, 0)
+        switch_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        switch_sizer.Add(text, 1, wx.ALIGN_CENTER | wx.ALL, 5)
+        switch_sizer.Add(toggle, 1, wx.EXPAND | wx.ALL, 0)
+        toggle.Bind(wx.EVT_TOGGLEBUTTON, self.on_toggle_switch)
+        self.sizer.Add(switch_sizer, 0, wx.EXPAND, 0)
 
-        return horiz_sizer
 
-    # def on_click_switch(self):
+    def on_toggle_switch(self, event):
+        toggle = event.GetEventObject()
+        if toggle.GetLabel() == "1":
+            toggle.SetLabel("0")
+        elif toggle.GetLabel() == "0":
+            toggle.SetLabel("1")
+        
+        

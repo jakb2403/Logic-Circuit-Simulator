@@ -3,7 +3,11 @@ import wx
 class CmdPanel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
+        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
+                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
+                     'Courier'))
         # self.SetBackgroundColour(wx.GREEN)
+        self.parent = parent
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Create sizers for input and output
@@ -38,5 +42,6 @@ class CmdPanel(wx.Panel):
         text_box_value = self.cmd_input_text_box.GetValue()
         self.cmd_input_text_box.Clear()
         self.cmd_output_text_box.AppendText("\n $  " + text_box_value)
-        text = "".join(["New text box value: ", text_box_value])
+        text = "".join(["New cmd input: ", text_box_value])
+        self.parent.statusbar.PushStatusText(text)
         

@@ -33,6 +33,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
     def __init__(self, parent, devices, monitors):
         """Initialise canvas properties and useful variables."""
 
+        self.parent = parent
+
         self.devices = devices
         self.monitors = monitors
 
@@ -83,6 +85,23 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
         # Clear everything
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
+
+        # Draw specified text at position (10, 10)
+        self.render_text(text, 10, 10)
+
+        # Draw a sample signal trace
+        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+        GL.glBegin(GL.GL_LINE_STRIP)
+        for i in range(10):
+            x = (i * 20) + 10
+            x_next = (i * 20) + 30
+            if i % 2 == 0:
+                y = 75
+            else:
+                y = 100
+            GL.glVertex2f(x, y)
+            GL.glVertex2f(x_next, y)
+        GL.glEnd()
 
         counter = 1
         # for device_id, output_id in self.monitors.monitors_dictionary:
@@ -137,7 +156,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         size = self.GetClientSize()
         text = "".join(["Canvas redrawn on paint event, size is ",
                         str(size.width), ", ", str(size.height)])
-        self.render(text)
+        self.parent.statusbar.PushStatusText(text)
 
     def on_size(self, event):
         """Handle the canvas resize event."""
@@ -192,7 +211,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             text = "".join(["Positive mouse wheel rotation. Zoom is now: ",
                             str(self.zoom)])
         if text:
-            self.render(text)
+            self.parent.statusbar.PushStatusText(text)
         else:
             self.Refresh()  # triggers the paint event
 

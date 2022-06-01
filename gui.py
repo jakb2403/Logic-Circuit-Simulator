@@ -52,14 +52,14 @@ class Gui(wx.Frame):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(800, 600))
 
+        self.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT,
+                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+
         self.names = names
         self.devices = devices
         self.network = network
         self.monitors = monitors
 
-        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
-                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
-                     'Courier'))
         # Create AUI manager
         self.mgr = aui.AuiManager()
         # Set the window that the AUI manages
@@ -85,6 +85,10 @@ class Gui(wx.Frame):
         self.toolbar.AddControl(self.cycle_spin)
         self.exit_button = self.toolbar.AddTool(
             103, "Exit", wx.Bitmap("icons/exit.png"))
+
+        # Configure the status bar
+        self.statusbar = self.CreateStatusBar()
+        self.statusbar.SetStatusText("Status")
 
         # Canvas for drawing signals
         self.canvas = MyGLCanvas(self, devices, monitors)
@@ -133,12 +137,17 @@ class Gui(wx.Frame):
                 # Proceed loading the file chosen by the user
                 pathname = fileDialog.GetPath()
                 text = "".join(["Opening file: ", pathname])
+                self.statusbar.PushStatusText(text)
 
         elif tool_id == 101: # Run button 
             text = "Run button pressed."
+            self.statusbar.PushStatusText(text)
         elif tool_id == 102: # Continue button
             text = "Continue button pressed."
+            self.statusbar.PushStatusText(text)
         elif tool_id == 103: # Exit button
+            text = "Exiting"
+            self.statusbar.PushStatusText(text)
             self.mgr.UnInit()
             self.Destroy()
 
