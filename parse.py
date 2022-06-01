@@ -95,10 +95,7 @@ class Parser:
         """Pass until symbol is not number."""
         if self.symbol.type == self.scanner.NUMBER:
             self.symbol = self.scanner.get_symbol()
-            while self.symbol.type == self.scanner.NUMBER:
-                self.symbol = self.scanner.get_symbol()
-                if self.symbol == self.scanner.EOF:
-                    break
+            return int(self.symbol.id)
         else:
             self.syntax_error(self.invalid_argument_type)
 
