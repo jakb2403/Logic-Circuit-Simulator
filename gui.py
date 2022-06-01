@@ -9,7 +9,7 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 import wx
-from wx.core import ROLE_SYSTEM_TOOLBAR, VERTICAL
+from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL
 import wx.lib.agw.aui as aui
 
 from names import Names
@@ -22,7 +22,7 @@ from parse import Parser
 from gui_cmd import CmdPanel
 from gui_monitor_sidebar import MonitorSidebarPanel
 from gui_switches_sidebar import SwitchesSidebarPanel
-from gui_gl_canvas import MyGLCanvas
+from gui_canvas import CanvasPanel
 
 
 class Gui(wx.Frame):
@@ -91,18 +91,17 @@ class Gui(wx.Frame):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText("Status")
 
-        # Canvas for drawing signals
-        self.canvas = MyGLCanvas(self, devices, monitors)
 
         # Create instance of panel classes
         self.monitor_sidebar = MonitorSidebarPanel(self)
         self.switches_sidebar = SwitchesSidebarPanel(self)
         self.cmd = CmdPanel(self)
+        self.canvas_panel = CanvasPanel(self, self.devices, self.monitors)
 
         # Add panels to AUI manager
-        self.mgr.AddPane(self.canvas, aui.AuiPaneInfo().CenterPane())
+        self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
         self.mgr.AddPane(
-            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
+            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).Caption("Monitor Points"))
         self.mgr.AddPane(
             self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
         self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False).CloseButton(False).Caption("Command Line"))
