@@ -62,30 +62,34 @@ class Names:
         else:
             return None
 
-    def lookup(self, name_string):
+    def lookup(self, name_input):
         """Return the corresponding name ID for the given name_string.
-
         If the name string is not present in the names list, add it.
         """
-        if type(name_string) == list:
+        if type(name_input) == list:
+            output_list = []
             # iterate through name_strings in list and perform lookup
-            for item in name_string:
-                if item.name in self.names_list:
-                    return self.names_list.index(name_string)
+            for item in name_input:
+                if item in self.names_list:
+                    output_list.append(self.names_list.index(item))
                 else:
-                    if not(name_string[0].isalpha()):
+                    if not(name_input[0].isalpha()):
                         raise TypeError("Name string must start with a letter, not a number.")
-                    self.names_list.append(name_string)
-                    return len(self.names_list) - 1
+                    else:
+                        self.names_list.append(item)
+                        output_list.append(len(self.names_list) - 1)
+
+            return output_list
         else:
+            print("list bypassed")
             # perform lookup for 1 name_string item
-            if name_string in self.names_list:
-                return self.names_list.index(name_string)
+            if name_input in self.names_list:
+                return self.names_list.index(name_input)
             else:
-                if not(name_string[0].isalpha()):
+                if not(name_input[0].isalpha()):
                     raise TypeError(
                         "Name string must start with a letter, not a number.")
-                self.names_list.append(name_string)
+                self.names_list.append(name_input)
                 return len(self.names_list) - 1
 
 
