@@ -56,18 +56,24 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
 
         self.char_counter = 0
-        self.path = os.path.basename(path)
+        file_name = os.path.basename(path)
 
         try:
-            self.file = open(self.path, "r")
+            self.file = open(file_name, "r")
         except IOError:
             print("Error: can\'t find file or read data")
             sys.exit()
 
+        self.lines = len(self.file.readlines())
+        self.total_char = self.file.tell()
         self.file.seek(0, 0)
+        # indicate get_symbol which state current_character is
+        self.indicator_types = [self.NORMAL, self.MISSING,
+                                self.AFTERDOT, self.NONE] = range(4)
+        self.indicator = self.NONE
+        self.missed_symbol = ""
         self.current_character = ""
 
-        self.lines = len(self.file.readlines())
         self.names = names
 
         self.symbol_type_list = [
@@ -87,15 +93,14 @@ class Scanner:
             self.DTYPE_OP,
             self.NUMBER,
             self.NAME,
-            self.EOF] = range(19)
+            self.EOF] = range(17)
 
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR",
-                              "MON", "I"]
+        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "I"]
         self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
         self.device_list = ["DTYPE", "XOR"]
         self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
         self.dtype_op_list = ["Q", "QBAR"]
-        [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID, self.MON_ID,
+        [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID,
             self.I_ID] = self.names.lookup(self.keywords_list)
         [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID, self.NOR_ID,
             self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
@@ -105,38 +110,46 @@ class Scanner:
         [self.Q_ID, self.QBAR_ID] = self.names.lookup(self.dtype_op_list)
 
     def get_next_character(self):
-        """Read and return the next character in input_file."""
+        """Read and return the next character."""
         # add 1 to the character counter to track location in line
         self.char_counter += 1
         return(self.file.read(1))
 
     def skip_spaces(self):
-        """Seek and return the next non-whitespace character in input_file."""
+        """Seek and return the next non-whitespace character."""
         nwc = self.get_next_character()
-        if nwc.isspace() is True:
-            return("")
-        else:
-            return(nwc)
+        for i in range(100):
+            if nwc.isspace():
+                nwc = self.get_next_character()
+            else:
+                return(nwc)
 
     def get_number(self):
-        """Seek the next number in input_file."""
+        """Seek and return the next number."""
         num = ""
         num += self.current_character
+        missed_symbol = ""
         for i in range(100):
             next_num = self.get_next_character()
-            if next_num.isdigit() is True:
+            if next_num.isdigit():
                 num += next_num
+                self.current_character = next_num
             else:
+                self.missed_symbol = next_num
                 return num
 
     def get_name(self):
+        """Seek and return the next name."""
         name = ""
         name += self.current_character
+        missed_symbol = ""
         for i in range(100):
             next_char = self.get_next_character()
-            if next_char.isalnum() is True:
+            if next_char.isalnum():
                 name += next_char
+                self.current_character = next_char
             else:
+                self.missed_symbol = next_char
                 return name
 
     def error_found(self):
@@ -154,76 +167,109 @@ class Scanner:
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
         symbol = Symbol()
-        self.current_character = self.skip_spaces()
+        if (self.indicator == self.NORMAL or self.indicator == self.AFTERDOT
+                or self.indicator == self.NONE):
+            self.current_character = self.skip_spaces()
+        elif self.indicator == self.MISSING:
+            self.current_character = self.missed_symbol
+            if self.current_character.isspace():
+                self.current_character = self.skip_spaces()
 
         # if symbol is a name
         if self.current_character.isalpha():
-            name_string = self.get_name()
-            if name_string in self.keywords_list:
+            # differntiate I from name
+            if (self.indicator == self.AFTERDOT and
+                    self.current_character in self.keywords_list):
+                self.indicator = self.NORMAL
                 symbol.type = self.KEYWORD
-            elif name_string in self.device_arg_list:
-                symbol.type = self.DEVICE_ARG
-            elif name_string in self.device_list:
-                symbol.type = self.DEVICE
-            elif name_string in self.dtype_ip_list:
-                symbol.type = self.DTYPE_IP
-            elif name_string in self.dtype_op_list:
-                symbol.type = self.DTYPE_OP
+                symbol.id = self.names.lookup(self.current_character)
             else:
-                symbol.type = self.NAME
-            [symbol.id] = self.names.lookup([name_string])
+                self.indicator = self.MISSING
+                name_string = self.get_name()
+                if name_string in self.keywords_list:
+                    symbol.type = self.KEYWORD
+                elif name_string in self.device_arg_list:
+                    symbol.type = self.DEVICE_ARG
+                elif name_string in self.device_list:
+                    symbol.type = self.DEVICE
+                elif name_string in self.dtype_ip_list:
+                    symbol.type = self.DTYPE_IP
+                elif name_string in self.dtype_op_list:
+                    symbol.type = self.DTYPE_OP
+                else:
+                    symbol.type = self.NAME
+                [symbol.id] = self.names.lookup([name_string])
 
         # if symbol is a number
         elif self.current_character.isdigit():
+            self.indicator = self.MISSING
             symbol.id = self.get_number()
             symbol.type = self.NUMBER
 
         # if symbol is a dot
         elif self.current_character == ".":
+            self.indicator = self.AFTERDOT
             symbol.type = self.DOT
 
         # if symbol is a comma
         elif self.current_character == ",":
+            self.indicator = self.NORMAL
             symbol.type = self.COMMA
 
         # if symbol is a semicolon
         elif self.current_character == ";":
+            self.indicator = self.NORMAL
             symbol.type = self.SEMICOLON
 
         # if symbol is a equals
         elif self.current_character == "=":
+            self.indicator = self.NORMAL
             symbol.type = self.EQUALS
 
         # if symbol is an arrow
-        elif self.current_character == "->":
-            symbol.type = self.ARROW
+        elif self.current_character == "-":
+            self.current_character = self.skip_spaces()
+            if self.current_character == ">":
+                self.indicator = self.NORMAL
+                symbol.type = self.ARROW
+            else:
+                pass
 
         # if symbol is an openbracket
         elif self.current_character == "(":
+            self.indicator = self.NORMAL
             symbol.type = self.OPENBRACKET
 
         # if symbol is an closedbracket
         elif self.current_character == ")":
+            self.indicator = self.NORMAL
             symbol.type = self.CLOSEDBRACKET
 
         # if symbol is an opencurlybracket
         elif self.current_character == "{":
+            self.indicator = self.NORMAL
             symbol.type = self.OPENCURLYBRACKET
 
         # if symbol is an closedcurlybracket
         elif self.current_character == "}":
+            self.indicator = self.NORMAL
             symbol.type = self.CLOSEDCURLYBRACKET
 
         # if symbol is the end of file
         elif self.current_character == "":
+            self.indicator = self.NORMAL
             symbol.type = self.EOF
 
         # if symbol is a hashtag - comment
         elif self.current_character == "#":
-            self.file.next()
+            self.indicator = self.NORMAL
+            while True:
+                self.current_character = self.get_next_character()
+                if self.current_character == "\n":
+                    break
+            return self.get_symbol()
 
         # if symbol is an invalid character
         else:
             pass
-
         return symbol
