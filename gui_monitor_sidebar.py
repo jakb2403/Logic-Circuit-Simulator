@@ -1,11 +1,12 @@
 import wx
 
 class MonitorSidebarPanel(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, push_status):
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.RED)
 
         self.parent = parent
+        self.push_status = push_status
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -39,4 +40,4 @@ class MonitorSidebarPanel(wx.Panel):
         monitor signal"""
         self.signal_to_add = self.mon_add_dropdown.GetValue()
         text = "".join(["Signal type to display: ", self.signal_to_add])
-        self.parent.statusbar.PushStatusText(text)
+        self.push_status(text)

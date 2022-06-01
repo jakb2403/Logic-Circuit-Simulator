@@ -39,10 +39,11 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                                            operations.
     """
 
-    def __init__(self, parent, devices, monitors):
+    def __init__(self, parent, devices, monitors, push_status):
         """Initialise canvas properties and useful variables."""
 
         self.parent = parent
+        self.push_status = push_status
 
         self.devices = devices
         self.monitors = monitors
@@ -216,7 +217,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                         str(size.width), ", ", str(size.height)])
         self.update_size(size.width, size.height)
         self.render()
-        self.parent.statusbar.PushStatusText(text)
+        self.push_status(text)
 
     def on_size(self, event):
         """Handle the canvas resize event."""
@@ -272,7 +273,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                             str(self.zoom)])
         if text:
             self.render()
-            self.parent.statusbar.PushStatusText(text)
+            self.push_status(text)
         else:
             self.Refresh()  # triggers the paint event
 

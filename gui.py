@@ -93,15 +93,15 @@ class Gui(wx.Frame):
 
 
         # Create instance of panel classes
-        self.monitor_sidebar = MonitorSidebarPanel(self)
-        self.switches_sidebar = SwitchesSidebarPanel(self)
-        self.cmd = CmdPanel(self)
-        self.canvas_panel = CanvasPanel(self, self.devices, self.monitors)
+        self.monitor_sidebar = MonitorSidebarPanel(self, self.push_status)
+        self.switches_sidebar = SwitchesSidebarPanel(self, self.push_status)
+        self.cmd = CmdPanel(self, self.push_status)
+        self.canvas_panel = CanvasPanel(self, self.devices, self.monitors, self.push_status)
 
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
         self.mgr.AddPane(
-            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).Caption("Monitor Points"))
+            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
         self.mgr.AddPane(
             self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
         self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False).CloseButton(False).Caption("Command Line"))
@@ -137,14 +137,14 @@ class Gui(wx.Frame):
                 # Proceed loading the file chosen by the user
                 pathname = fileDialog.GetPath()
                 text = "".join(["Opening file: ", pathname])
-                self.statusbar.PushStatusText(text)
+                self.push_status(text)
 
         elif tool_id == 101: # Run button 
             text = "Run button pressed."
-            self.statusbar.PushStatusText(text)
+            self.push_status(text)
         elif tool_id == 102: # Continue button
             text = "Continue button pressed."
-            self.statusbar.PushStatusText(text)
+            self.push_status(text)
         elif tool_id == 103: # Save button
             with wx.FileDialog(self, "Save monitor plot", wildcard="PNG files (*.png)|*.png",
                        style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
@@ -160,11 +160,11 @@ class Gui(wx.Frame):
                 except IOError:
                     wx.LogError("Cannot save current data in file '%s'." % pathname)
             text = "".join(["Saved file as: ", pathname])
-            self.statusbar.PushStatusText(text)
+            self.push_status(text)
 
         elif tool_id == 104: # Exit button
             text = "Exiting"
-            self.statusbar.PushStatusText(text)
+            self.push_status(text)
             self.mgr.UnInit()
             self.Destroy()
 
@@ -177,6 +177,9 @@ class Gui(wx.Frame):
         if Id == wx.ID_ABOUT:
             wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",
                           "About Logsim", wx.ICON_INFORMATION | wx.OK)
+
+    def push_status(self, text):
+        self.statusbar.PushStatusText(text)
 
     def on_close(self, event):
         # deinitialise the frame manager

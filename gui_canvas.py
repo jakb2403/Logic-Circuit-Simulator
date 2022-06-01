@@ -3,13 +3,14 @@ from gui_gl_canvas import MyGLCanvas
 
 
 class CanvasPanel(wx.Panel):
-    def __init__(self, parent, devices, monitors):
+    def __init__(self, parent, devices, monitors, push_status):
         wx.Panel.__init__(self, parent)
         self.parent = parent
+        self.push_status = push_status
         self.sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=0, hgap=0)
         self.sizer.AddGrowableCol(0)
         self.sizer.AddGrowableRow(0)
-        self.canvas = MyGLCanvas(self, devices, monitors)
+        self.canvas = MyGLCanvas(self, devices, monitors, self.push_status)
 
         # Configure the scrollbars for the canvas main panel
         self.vert_scroll = wx.ScrollBar(self, style=wx.SB_VERTICAL)

@@ -1,12 +1,13 @@
 import wx
 
 class SwitchesSidebarPanel(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, push_status):
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.YELLOW)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-
         self.parent = parent
+        self.push_status = push_status
+
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.switches_dict = {
             "SW1": [0, 1],
