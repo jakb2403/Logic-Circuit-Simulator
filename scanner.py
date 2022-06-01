@@ -64,8 +64,7 @@ class Scanner:
             print("Error: can\'t find file or read data")
             sys.exit()
 
-        self.lines = len(self.file.readlines())
-        self.total_char = self.file.tell()
+        self.line_length = []
         self.file.seek(0, 0)
         # indicate get_symbol which state current_character is
         self.indicator_types = [self.NORMAL, self.MISSING,
@@ -118,7 +117,7 @@ class Scanner:
     def skip_spaces(self):
         """Seek and return the next non-whitespace character."""
         nwc = self.get_next_character()
-        for i in range(100):
+        for i in range(1000):
             if nwc.isspace():
                 nwc = self.get_next_character()
             else:
@@ -128,8 +127,7 @@ class Scanner:
         """Seek and return the next number."""
         num = ""
         num += self.current_character
-        missed_symbol = ""
-        for i in range(100):
+        for i in range(1000):
             next_num = self.get_next_character()
             if next_num.isdigit():
                 num += next_num
@@ -142,8 +140,7 @@ class Scanner:
         """Seek and return the next name."""
         name = ""
         name += self.current_character
-        missed_symbol = ""
-        for i in range(100):
+        for i in range(1000):
             next_char = self.get_next_character()
             if next_char.isalnum():
                 name += next_char
@@ -155,13 +152,25 @@ class Scanner:
     def error_found(self):
         """Outputs the current line and a ^ symbol on the next line to
         highlight the location of the error"""
-        line_number = currentframe().f_back.f_lineno  # find the line
-        char_number = self.char_counter  # find the character
-        # format the newline with ^ below the error
-        newline = "\n" + (self.char_counter - 1)*" " + "^" + "\n"
-        error_line = "\n" + "***Error detected***"
-        # insert new empty line below
-        output = self.path.readline() + newline + error_line
+        current_location = self.file.tell()
+        self.file.seek(0,0)
+        line_counter = 0
+        char_counter = 0
+        for i in range(current_location):
+            x = self.get_next_character()
+            char_counter += 1
+            if x =="\n":
+                char_counter -= 1
+                self.line_length.append(char_counter)
+                line_counter += 1
+                char_counter = -1
+        if char_counter == -1:
+            line_counter -= 1
+            char_counter = self.line_length[-2]
+
+        self.file.seek(0,0)
+        line_text = self.file.read().split("\n")[line_counter-1]
+        output = line_text + "\n" + " "*char_counter +"^" 
         return output
 
     def get_symbol(self):

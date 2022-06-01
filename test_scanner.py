@@ -5,98 +5,98 @@ from names import Names
 from scanner import Scanner
 
 
-@pytest.fixture
-def new_scanner():
-    """Return a new instance of the Scanner class,
-        which opens test_scanner1.txt."""
+def new_scanner(path):
+    """Return a new instance of the Scanner class."""
     new_names = Names()
-    path = os.getcwd() + "\\test_scanner1.txt"
     new_scanner = Scanner(path, new_names)
     return new_scanner
 
 
-def test_get_symbol(new_scanner):
-    """Test if get_symbol returns the correct symbol type and id."""
-    names = new_scanner.names
+def test_scanner1():
+    """Test if get_symbol returns the correct symbol_id and
+        symbol_type for test_scanner1.txt"""
+    path1 = os.getcwd() + "\\test_scanner1.txt"
+    test_scanner1 = new_scanner(path1)
+    names = test_scanner1.names
 
     [SW1_ID, SW2_ID, G1_ID, IN1_ID, G2_ID] = names.lookup(
         ["SW1", "SW2", "G1", "IN1", "G2"]
     )
     expected_symbol_type_id = [
-        (new_scanner.KEYWORD, new_scanner.DEVICES_ID),
-        (new_scanner.OPENCURLYBRACKET, None),
-        (new_scanner.NAME, SW1_ID),
-        (new_scanner.COMMA, None),
-        (new_scanner.NAME, SW2_ID),
-        (new_scanner.EQUALS, None),
-        (new_scanner.DEVICE_ARG, new_scanner.SWITCH_ID),
-        (new_scanner.OPENBRACKET, None),
-        (new_scanner.NUMBER, '0'),
-        (new_scanner.CLOSEDBRACKET, None),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, G1_ID),
-        (new_scanner.EQUALS, None),
-        (new_scanner.DEVICE_ARG, new_scanner.NAND_ID),
-        (new_scanner.OPENBRACKET, None),
-        (new_scanner.NUMBER, '2'),
-        (new_scanner.CLOSEDBRACKET, None),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, IN1_ID),
-        (new_scanner.EQUALS, None),
-        (new_scanner.DEVICE_ARG, new_scanner.CLOCK_ID),
-        (new_scanner.OPENBRACKET, None),
-        (new_scanner.NUMBER, '50'),
-        (new_scanner.CLOSEDBRACKET, None),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, G2_ID),
-        (new_scanner.EQUALS, None),
-        (new_scanner.DEVICE, new_scanner.DTYPE_ID),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.CLOSEDCURLYBRACKET, None),
-        (new_scanner.KEYWORD, new_scanner.CONNECT_ID),
-        (new_scanner.OPENCURLYBRACKET, None),
-        (new_scanner.NAME, SW1_ID),
-        (new_scanner.ARROW, None),
-        (new_scanner.NAME, G1_ID),
-        (new_scanner.DOT, None),
-        (new_scanner.KEYWORD, new_scanner.I_ID),
-        (new_scanner.NUMBER, '1'),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, SW2_ID),
-        (new_scanner.ARROW, None),
-        (new_scanner.NAME, G1_ID),
-        (new_scanner.DOT, None),
-        (new_scanner.KEYWORD, new_scanner.I_ID),
-        (new_scanner.NUMBER, '2'),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, G1_ID),
-        (new_scanner.ARROW, None),
-        (new_scanner.NAME, G2_ID),
-        (new_scanner.DOT, None),
-        (new_scanner.DTYPE_IP, new_scanner.DATA_ID),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, IN1_ID),
-        (new_scanner.ARROW, None),
-        (new_scanner.NAME, G2_ID),
-        (new_scanner.DOT, None),
-        (new_scanner.DTYPE_IP, new_scanner.CLK_ID),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.CLOSEDCURLYBRACKET, None),
-        (new_scanner.KEYWORD, new_scanner.MONITOR_ID),
-        (new_scanner.OPENCURLYBRACKET, None),
-        (new_scanner.NAME, G2_ID),
-        (new_scanner.DOT, None),
-        (new_scanner.DTYPE_OP, new_scanner.Q_ID),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.NAME, G2_ID),
-        (new_scanner.DOT, None),
-        (new_scanner.DTYPE_OP, new_scanner.QBAR_ID),
-        (new_scanner.SEMICOLON, None),
-        (new_scanner.CLOSEDCURLYBRACKET, None),
-        (new_scanner.EOF, None)
+        (test_scanner1.KEYWORD, test_scanner1.DEVICES_ID),
+        (test_scanner1.OPENCURLYBRACKET, None),
+        (test_scanner1.NAME, SW1_ID),
+        (test_scanner1.COMMA, None),
+        (test_scanner1.NAME, SW2_ID),
+        (test_scanner1.EQUALS, None),
+        (test_scanner1.DEVICE_ARG, test_scanner1.SWITCH_ID),
+        (test_scanner1.OPENBRACKET, None),
+        (test_scanner1.NUMBER, '0'),
+        (test_scanner1.CLOSEDBRACKET, None),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, G1_ID),
+        (test_scanner1.EQUALS, None),
+        (test_scanner1.DEVICE_ARG, test_scanner1.NAND_ID),
+        (test_scanner1.OPENBRACKET, None),
+        (test_scanner1.NUMBER, '2'),
+        (test_scanner1.CLOSEDBRACKET, None),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, IN1_ID),
+        (test_scanner1.EQUALS, None),
+        (test_scanner1.DEVICE_ARG, test_scanner1.CLOCK_ID),
+        (test_scanner1.OPENBRACKET, None),
+        (test_scanner1.NUMBER, '50'),
+        (test_scanner1.CLOSEDBRACKET, None),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, G2_ID),
+        (test_scanner1.EQUALS, None),
+        (test_scanner1.DEVICE, test_scanner1.DTYPE_ID),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.CLOSEDCURLYBRACKET, None),
+        (test_scanner1.KEYWORD, test_scanner1.CONNECT_ID),
+        (test_scanner1.OPENCURLYBRACKET, None),
+        (test_scanner1.NAME, SW1_ID),
+        (test_scanner1.ARROW, None),
+        (test_scanner1.NAME, G1_ID),
+        (test_scanner1.DOT, None),
+        (test_scanner1.KEYWORD, test_scanner1.I_ID),
+        (test_scanner1.NUMBER, '1'),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, SW2_ID),
+        (test_scanner1.ARROW, None),
+        (test_scanner1.NAME, G1_ID),
+        (test_scanner1.DOT, None),
+        (test_scanner1.KEYWORD, test_scanner1.I_ID),
+        (test_scanner1.NUMBER, '2'),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, G1_ID),
+        (test_scanner1.ARROW, None),
+        (test_scanner1.NAME, G2_ID),
+        (test_scanner1.DOT, None),
+        (test_scanner1.DTYPE_IP, test_scanner1.DATA_ID),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, IN1_ID),
+        (test_scanner1.ARROW, None),
+        (test_scanner1.NAME, G2_ID),
+        (test_scanner1.DOT, None),
+        (test_scanner1.DTYPE_IP, test_scanner1.CLK_ID),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.CLOSEDCURLYBRACKET, None),
+        (test_scanner1.KEYWORD, test_scanner1.MONITOR_ID),
+        (test_scanner1.OPENCURLYBRACKET, None),
+        (test_scanner1.NAME, G2_ID),
+        (test_scanner1.DOT, None),
+        (test_scanner1.DTYPE_OP, test_scanner1.Q_ID),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.NAME, G2_ID),
+        (test_scanner1.DOT, None),
+        (test_scanner1.DTYPE_OP, test_scanner1.QBAR_ID),
+        (test_scanner1.SEMICOLON, None),
+        (test_scanner1.CLOSEDCURLYBRACKET, None),
+        (test_scanner1.EOF, None)
     ]
-
+    
     for i in range(len(expected_symbol_type_id)):
-        symbol = new_scanner.get_symbol()
+        symbol = test_scanner1.get_symbol()
         assert symbol.type == expected_symbol_type_id[i][0]
         assert symbol.id == expected_symbol_type_id[i][1]

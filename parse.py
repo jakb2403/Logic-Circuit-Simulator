@@ -47,17 +47,18 @@ class Parser:
          self.unrecognised_device_type, self.invalid_argument_type,
          self.missing_argument, self.missing_keyword,
          self.missing_symbol,
-         self.section_order_error] = self.names.unique_error_codes(12)
+         self.section_order_error] = self.names.unique_error_codes(11)
 
         self.keyword = [self.scanner.DEVICES_ID,
                         self.scanner.CONNECT_ID,
                         self.scanner.MONITOR_ID]
 
     def syntax_error(self, error_type, dev=None, sym=None):
-        """Print error type and count total number of syntax 
+        """Print error type and count total number of syntax
         errors."""
         self.error_count += 1
-        print("Syntax_error: ", end="")
+        print(self.scanner.error_found())
+        print("SyntaxError: ", end="")
         if error_type == self.output_to_output:
             print("output connected to output")
         elif error_type == self.input_to_input:
@@ -95,10 +96,6 @@ class Parser:
         """Pass until symbol is not number."""
         if self.symbol.type == self.scanner.NUMBER:
             self.symbol = self.scanner.get_symbol()
-            while self.symbol.type == self.scanner.NUMBER:
-                self.symbol = self.scanner.get_symbol()
-                if self.symbol == self.scanner.EOF:
-                    break
         else:
             self.syntax_error(self.invalid_argument_type)
 
@@ -125,7 +122,8 @@ class Parser:
                 self.symbol = self.scanner.get_symbol()
                 return False     # False means input
             elif (self.symbol.type == self.scanner.KEYWORD
-                    and self.symbol.id == self.scanner.I_id):
+                    and self.symbol.id == self.scanner.I_ID):
+                self.symbol = self.scanner.get_symbol()
                 self.argument()
                 return False
             else:
@@ -139,7 +137,7 @@ class Parser:
         if self.symbol.type == self.scanner.DEVICE:
             self.symbol = self.scanner.get_symbol()
         elif self.symbol.type == self.scanner.DEVICE_ARG:
-            x = self.scanner.id
+            x = self.symbol.id
             self.symbol = self.scanner.get_symbol()
             if self.symbol.type == self.scanner.OPENBRACKET:
                 self.symbol = self.scanner.get_symbol()
