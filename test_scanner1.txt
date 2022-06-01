@@ -1,0 +1,19 @@
+DEVICES{
+      SW1, SW2 = SWITCH(0);
+      G1 = NAND(2);
+      IN1 = CLOCK(50);
+      G2 = DTYPE;
+      # this line is a comment
+}
+# this line is a comment
+CONNECT {
+      SW1 -> G1.I1;
+      SW2 -> G1.I2;
+      G1 -> G2.DATA;
+      IN1 -> G2.CLK;
+
+}
+MONITOR {
+      G2.Q;
+      G2.QBAR;
+}
