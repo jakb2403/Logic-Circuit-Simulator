@@ -81,7 +81,6 @@ class Names:
 
             return output_list
         else:
-            print("list bypassed")
             # perform lookup for 1 name_string item
             if name_input in self.names_list:
                 return self.names_list.index(name_input)
