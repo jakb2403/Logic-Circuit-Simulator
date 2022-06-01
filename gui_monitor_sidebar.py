@@ -15,15 +15,17 @@ class MonitorSidebarPanel(wx.Panel):
         self.available_devices = self.devices_list
 
         # Create widgets
-        device_type = wx.StaticText(self, wx.ID_ANY, "Device type")
+        device_type = wx.StaticText(self, wx.ID_ANY, "Device type:")
         self.mon_add_dropdown = wx.ComboBox(
             self, choices=self.device_types_list, style=wx.CB_READONLY)
+        info_text = wx.StaticText(self, wx.ID_ANY, "Choose devices to monitor:")
         monitor_checklist = wx.CheckListBox(
             self, choices=self.available_devices, name="Monitor Signals")
 
-        self.sizer.Add(device_type,  0, wx.ALL, 3)
+        self.sizer.Add(device_type, 0, wx.ALL, 3)
         self.sizer.Add(self.mon_add_dropdown, 0,
                        wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
+        self.sizer.Add(info_text, 0, wx.ALL, 3)
         self.sizer.Add(monitor_checklist, 1,
                        wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
 

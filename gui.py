@@ -101,10 +101,10 @@ class Gui(wx.Frame):
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas, aui.AuiPaneInfo().CenterPane())
         self.mgr.AddPane(
-            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).Caption("Monitor Points"))
+            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
         self.mgr.AddPane(
-            self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).Caption("Control Switches"))
-        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False).Caption("Command Line"))
+            self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
+        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False).CloseButton(False).Caption("Command Line"))
 
         # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
         agwFlags = self.mgr.GetAGWFlags()
