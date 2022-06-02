@@ -1,7 +1,7 @@
 import wx
 
 class CmdPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network, monitors, push_status):
+    def __init__(self, parent, names, devices, network, monitors, userint, push_status):
         wx.Panel.__init__(self, parent)
         self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
                      wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
@@ -14,6 +14,7 @@ class CmdPanel(wx.Panel):
         self.network = network
         self.monitors = monitors
         self.push_status = push_status
+        self.userint = userint
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -23,8 +24,8 @@ class CmdPanel(wx.Panel):
 
         # Create widgets
         self.cmd_output_text_box = wx.TextCtrl(
-            self, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        self.com_text = wx.StaticText(self, wx.ID_ANY, "$")
+            self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=wx.Size(400,10))
+        self.com_text = wx.StaticText(self, wx.ID_ANY, "#")
         self.cmd_input_text_box = wx.TextCtrl(self, wx.BOTTOM, "",
                                               style=wx.TE_PROCESS_ENTER)
 
@@ -43,11 +44,23 @@ class CmdPanel(wx.Panel):
 
         self.SetSizer(self.sizer)
 
+        self.cmd_output_init()
+    
+    def cmd_output_init(self):
+        start_statement = "Logic Simulator: interactive command line user interface.\nEnter 'h' for help."
+        self.output_cmd(start_statement)
+
+
     def on_cmd_enter(self, event):
         """Handle the event when the user enters text."""
-        text_box_value = self.cmd_input_text_box.GetValue()
+        user_input = self.cmd_input_text_box.GetValue()
         self.cmd_input_text_box.Clear()
-        self.cmd_output_text_box.AppendText("\n$ " + text_box_value)
-        text = "".join(["New cmd input: ", text_box_value])
+        self.output_cmd("\n#:" + user_input)
+        if user_input == "q":
+            self.parent.shutdown()
+        self.userint.command_interface(user_input, self.output_cmd)
+        text = "".join(["New cmd input: ", user_input])
         self.push_status(text)
         
+    def output_cmd(self, text):
+        self.cmd_output_text_box.AppendText("\n" + text)

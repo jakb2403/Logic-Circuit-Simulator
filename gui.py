@@ -9,7 +9,7 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 import wx
-from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL
+from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL, Shutdown
 import wx.lib.agw.aui as aui
 
 from names import Names
@@ -23,6 +23,7 @@ from gui_cmd import CmdPanel
 from gui_monitor_sidebar import MonitorSidebarPanel
 from gui_switches_sidebar import SwitchesSidebarPanel
 from gui_canvas import CanvasPanel
+from gui_userint import GuiUserInterface
 
 
 class Gui(wx.Frame):
@@ -50,7 +51,7 @@ class Gui(wx.Frame):
 
     def __init__(self, title, path, names, devices, network, monitors):
         """Initialise widgets and layout."""
-        super().__init__(parent=None, title=title, size=(800, 600))
+        super().__init__(parent=None, title=title, size=(1200, 600))
 
         self.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT,
                      wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
@@ -59,6 +60,7 @@ class Gui(wx.Frame):
         self.devices = devices
         self.network = network
         self.monitors = monitors
+        self.userint = GuiUserInterface(self.names, self.devices, self.network, self.monitors)
 
         self.cycles_completed = 0
 
@@ -98,7 +100,7 @@ class Gui(wx.Frame):
         # Create instance of panel classes
         self.monitor_sidebar = MonitorSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
         self.switches_sidebar = SwitchesSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
-        self.cmd = CmdPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
+        self.cmd = CmdPanel(self, self.names, self.devices, self.network, self.monitors, self.userint, self.push_status)
         self.canvas_panel = CanvasPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
 
         # Add panels to AUI manager
@@ -107,7 +109,7 @@ class Gui(wx.Frame):
             self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
         self.mgr.AddPane(
             self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
-        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Bottom().Floatable(False).CloseButton(False).Caption("Command Line"))
+        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Right().Floatable(False).CloseButton(False).Caption("Command Line"))
 
         # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
         agwFlags = self.mgr.GetAGWFlags()
@@ -171,8 +173,7 @@ class Gui(wx.Frame):
         elif tool_id == 105: # Exit button
             text = "Exiting"
             self.push_status(text)
-            self.mgr.UnInit()
-            self.Destroy()
+            self.shutdown()
 
 
     def on_menu(self, event):
@@ -188,6 +189,9 @@ class Gui(wx.Frame):
         self.statusbar.PushStatusText(text)
 
     def on_close(self, event):
+        self.shutdown()
+
+    def shutdown(self):
         # deinitialise the frame manager
         self.mgr.UnInit()
         self.Destroy()
