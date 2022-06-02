@@ -104,7 +104,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #
         # v_space = 60
         # one_clk = 40
-        # half_clk = one_clk // 2
+        # one_clk = one_clk // 2
         # signal_x_offset = 50
         # text_x_offset = 10
         # signal_height = v_space * 2 // 3
@@ -121,8 +121,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #     sig_current = coord()
         #     sig_next = coord()
         #     for i in range(10):
-        #         sig_current.x = signal_x_offset + (i * half_clk)
-        #         sig_next.x = signal_x_offset + ((i + 1) * half_clk)
+        #         sig_current.x = signal_x_offset + (i * one_clk)
+        #         sig_next.x = signal_x_offset + ((i + 1) * one_clk)
         #         if i % 2 == 0:
         #             sig_current.y = y_low
         #             sig_next.y = y_low
@@ -325,21 +325,74 @@ class MyGLCanvas(wxcanvas.GLCanvas):
     
     def draw_signal(self, monitor_name, signal_list_bin, index):
         
-        v_space = 60
-        one_clk = 40
-        half_clk = one_clk // 2
-        signal_x_offset = 50
+        v_space = 100
+        one_cycle = 20
         text_x_offset = 10
         signal_height = v_space * 2 // 3
-        tick_y_offset = 15
-        tick_height = 5
+        signal_x_offset = 30
+        signal_y_offset = v_space - signal_height
+        tick_length = 10
+        tick_y_offset = v_space - signal_height - tick_length
         signal_length = len(signal_list_bin)
 
         bottom_left = coord(0, (index+1) * v_space)
         y_low = bottom_left.y + v_space - signal_height
         y_high = bottom_left.y + v_space
+        
+        # Draw the tickmarks
+        tick_start = coord()
+        tick_end = coord()
+        for i in range(signal_length):
+            if i % 5 == 0:
+                tick_start.x = signal_x_offset + (i * one_cycle)
+                tick_start.y = bottom_left.y + tick_y_offset
+                tick_end.x = signal_x_offset + (i * one_cycle)
+                tick_end.y = bottom_left.y + tick_y_offset + tick_length
+                GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # tick marks are grey
+                GL.glBegin(GL.GL_LINE_STRIP)
+                GL.glVertex2f(tick_start.x, tick_start.y)
+                GL.glVertex2f(tick_end.x, tick_end.y)
+                GL.glEnd()
+                self.render_text(str(i), tick_start.x + 1, tick_start.y)
+        
+        # Draw the last tick
+        if signal_length % 5 != 0:
+            tick_start.x = signal_x_offset + (signal_length * one_cycle)
+            tick_start.y = bottom_left.y + tick_y_offset
+            tick_end.x = signal_x_offset + (signal_length * one_cycle)
+            tick_end.y = bottom_left.y + tick_y_offset + tick_length
+            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # tick marks are grey
+            GL.glBegin(GL.GL_LINE_STRIP)
+            GL.glVertex2f(tick_start.x, tick_start.y)
+            GL.glVertex2f(tick_end.x, tick_end.y)
+            GL.glEnd()
+            self.render_text(str(signal_length), tick_start.x + 1, tick_start.y)
 
-        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+        # Draw the horizontal tickmarks for 1 and 0
+        for i in range(2):
+            tick_start.x = signal_x_offset - tick_length
+            tick_start.y = bottom_left.y + signal_y_offset + (i * signal_height)
+            tick_end.x = signal_x_offset
+            tick_end.y = bottom_left.y + signal_y_offset + (i * signal_height)
+            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # tick marks are grey
+            GL.glBegin(GL.GL_LINE_STRIP)
+            GL.glVertex2f(tick_start.x, tick_start.y)
+            GL.glVertex2f(tick_end.x, tick_end.y)
+            GL.glEnd()
+            self.render_text(str(i), tick_start.x, tick_start.y + 1)
+
+        # Draw the x axis
+        GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # axis is grey
+        GL.glBegin(GL.GL_LINE_STRIP)
+        axis_start = coord(signal_x_offset, bottom_left.y + tick_y_offset + tick_length)
+        axis_end = coord(signal_x_offset + signal_length * one_cycle, bottom_left.y + tick_y_offset + tick_length)
+        GL.glVertex2f(axis_start.x, axis_start.y)
+        GL.glVertex2f(axis_end.x, axis_end.y)
+        GL.glEnd()
+
+        # Draw the signal trace
+        GL.glColor3f(87.0/256.0, 184.0/256.0, 255.0/256.0)  # signal trace is blue
+        GL.glLineWidth(2)
         GL.glBegin(GL.GL_LINE_STRIP)
         sig_current = coord()
         sig_next = coord()
@@ -348,8 +401,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             if just_blank:
                 GL.glBegin(GL.GL_LINE_STRIP)
                 just_blank = not(just_blank)
-            sig_current.x = signal_x_offset + (i * half_clk)
-            sig_next.x = signal_x_offset + ((i + 1) * half_clk)
+            sig_current.x = signal_x_offset + (i * one_cycle)
+            sig_next.x = signal_x_offset + ((i + 1) * one_cycle)
             if signal_list_bin[i] == 0:
                 sig_current.y = y_low
                 sig_next.y = y_low
@@ -365,26 +418,13 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 just_blank = not(just_blank)
                 continue
         GL.glEnd()
+        GL.glLineWidth(1)
 
-        # Draw the tickmarks
-        tick_bottom = coord()
-        tick_top = coord()
-        for i in range(signal_length):
-            tick_bottom.x = signal_x_offset + (i * one_clk)
-            tick_bottom.y = bottom_left.y + tick_y_offset
-            tick_top.x = signal_x_offset + (i * one_clk)
-            tick_top.y = bottom_left.y + tick_y_offset + tick_height
-            GL.glColor3f(1.0, 0.0, 0.0)  # tick marks are red
-            GL.glBegin(GL.GL_LINE_STRIP)
-            GL.glVertex2f(tick_bottom.x, tick_bottom.y)
-            GL.glVertex2f(tick_top.x, tick_top.y)
-            GL.glEnd()
-            self.render_text(str(i), tick_bottom.x + 1, tick_bottom.y)
 
         # Display signal name
         display_text = monitor_name
         self.render_text(display_text, text_x_offset,
-                            (bottom_left.y + v_space//2))
+                            (bottom_left.y + signal_y_offset + signal_height//2))
 
     def update_size(self, width=None, height=None):
         if not(width == None) and width > self.width:

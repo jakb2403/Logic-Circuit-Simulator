@@ -89,7 +89,7 @@ class Gui(wx.Frame):
         self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
         self.toolbar.AddControl(self.cycle_spin)
         self.save_button = self.toolbar.AddTool(103, "Save", wx.Bitmap("icons/save.png"))
-        self.reset_button = self.toolbar.AddTool(104, "Reset", wx.Bitmap("icons/reset.png"))
+        # self.reset_button = self.toolbar.AddTool(104, "Reset", wx.Bitmap("icons/reset.png"))
         self.exit_button = self.toolbar.AddTool(
             105, "Exit", wx.Bitmap("icons/exit.png"))
 
@@ -132,7 +132,7 @@ class Gui(wx.Frame):
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
         self.spin_value = self.cycle_spin.GetValue()
-        text = "".join(["New spin control value: ", str(spin_value)])
+        text = "".join(["New spin control value: ", str(self.spin_value)])
 
     def on_click_tool(self, event):
         """Handle the event when the user clicks a button in the toolbar"""
