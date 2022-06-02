@@ -114,7 +114,6 @@ class Scanner:
         if self.current_character == "\n":
             self.line_counter += 1
             self.char_counter = 0
-        
 
     def skip_spaces(self):
         """Skip all whitespace character."""
@@ -139,7 +138,7 @@ class Scanner:
         while self.current_character.isalnum():
             name += self.current_character
             self.advance()
-            
+
         return name
 
     def error_found(self):
@@ -164,7 +163,8 @@ class Scanner:
 
         # if symbol is a name
         if self.current_character.isalpha():
-            if (self.afterdot == True and self.current_character in self.keywords_list):
+            if (self.afterdot is True and
+                    self.current_character in self.keywords_list):
                 self.afterdot = False
                 symbol.type = self.KEYWORD
                 symbol.id = self.I_ID

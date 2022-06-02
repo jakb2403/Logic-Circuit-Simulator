@@ -10,6 +10,9 @@ Parser - parses the definition file and builds the logic network.
 """
 
 
+from distutils.log import error
+
+
 class Parser:
 
     """Parse the definition file and build the logic network.
@@ -47,7 +50,7 @@ class Parser:
          self.unrecognised_device_type, self.invalid_argument_type,
          self.missing_argument, self.missing_keyword,
          self.missing_symbol,
-         self.section_order_error] = self.names.unique_error_codes(11)
+         self.section_order_error, self.device_as_name, self.keyword_as_name, self.dtype_as_name] = self.names.unique_error_codes(14)
 
         self.keyword = [self.scanner.DEVICES_ID,
                         self.scanner.CONNECT_ID,
@@ -81,101 +84,188 @@ class Parser:
             print("missing keyword")
         elif error_type == self.section_order_error:
             print("incorrect ordering of sections")
-        elif error_type == None:
+        elif error_type == self.keyword_as_name:
+            print("keyword cannot be device name")
+        elif error_type == self.device_as_name:
+            print("device type cannot be device name")
+        elif error_type == self.dtype_as_name:
+            print("dtype input/output cannot be device name")
+        elif error_type is None:
             print("fuck off")
         while (self.symbol.type != self.scanner.SEMICOLON
                 and self.symbol.type != self.scanner.EOF):
             self.symbol = self.scanner.get_symbol()
-            print(self.scanner.current_character)
 
     def name(self):
         """Pass when symbol is name."""
+        print(self.scanner.current_character)
         if self.symbol.type == self.scanner.NAME:
+            device_id = self.symbol.id
             self.symbol = self.scanner.get_symbol()
+            return device_id
+        elif (self.symbol.type == self.scanner.DEVICE or
+                self.symbol.type == self.scanner.DEVICE_ARG):
+            self.syntax_error(self.device_as_name)
+            return None
+        elif (self.symbol.type == self.scanner.DTYPE_IP or
+                self.symbol.type == self.scanner.DTYPE_OP):
+            self.syntax_error(self.dtype_as_name)
+            return None
+        elif self.symbol.type == self.scanner.KEYWORD:
+            self.syntax_error(self.keyword_as_name)
+            return None
         else:
             self.syntax_error(self.invalid_device_name)
+            return None
 
     def argument(self):
         """Pass until symbol is not number."""
         if self.symbol.type == self.scanner.NUMBER:
+            integer = self.symbol.id
             self.symbol = self.scanner.get_symbol()
+            return int(integer)
         else:
             self.syntax_error(self.invalid_argument_type)
+            return None
 
-    def input(self):
+    def inputOroutput(self):
         self.name()
         if self.symbol.type == self.scanner.DOT:
             self.symbol = self.scanner.get_symbol()
+            if self.symbol.type == self.scanner.DTYPE_OP:
+                self.symbol = self.scanner.get_symbol()
+                return True
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                    self.symbol.id == self.scanner.I_ID):
+                self.argument()
+                return False
+            elif self.symbol.type == self.scanner.DTYPE_IP:
+                self.symbol = self.scanner.get_symbol()
+                return False
+            else:
+                self.syntax_error()
         else:
-            self.syntax_error(self.missing_symbol, sym=".")
-        if (self.symbol.type == self.scanner.KEYWORD and
-            self.symbol.id == self.scanner.I_ID):
-            self.argument()
-        elif self.symbol.type == self.scanner.DTYPE_IP:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error()
-
-    def output(self):
-        self.name()
-        if self.symbol.type == self.scanner.DOT:
-            self.symbol = self.scanner.get_symbol()
+            return True
 
     def device(self):
         """device = "DTYPE" | "XOR" ;"""
         """device_arg = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;"""
         if self.symbol.type == self.scanner.DEVICE:
+            device_type = self.symbol.type
+            if self.symbol.id == self.scanner.DTYPE_ID:
+                device_kind = self.devices.D_TYPE
+                dev_name = "DTYPE"
+            else:
+                device_kind = self.devices.XOR
+                dev_name = "XOR"
             self.symbol = self.scanner.get_symbol()
         elif self.symbol.type == self.scanner.DEVICE_ARG:
-            x = self.symbol.id
+            device_type = self.symbol.type
+            if self.symbol.id == self.scanner.CLOCK_ID:
+                device_kind = self.devices.CLOCK
+                dev_name = "CLOCK"
+            elif self.symbol.id == self.scanner.AND_ID:
+                device_kind = self.devices.AND
+                dev_name = "AND"
+            elif self.symbol.id == self.scanner.OR_ID:
+                device_kind = self.devices.OR
+                dev_name = "OR"
+            elif self.symbol.id == self.scanner.NAND_ID:
+                device_kind = self.devices.NAND
+                dev_name = "NAND"
+            elif self.symbol.id == self.scanner.NOR_ID:
+                device_kind = self.devices.NOR
+                dev_name = "NOR"
+            else:
+                device_kind = self.devices.SWITCH
+                dev_name = "SWITCH"
             self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.OPENBRACKET:
-                self.symbol = self.scanner.get_symbol()
-            else:
-                self.syntax_error(self.missing_argument, dev=x)
-            self.argument()
-            if self.symbol.type == self.scanner.CLOSEDBRACKET:
-                self.symbol = self.scanner.get_symbol()
-            else:
-                self.syntax_error(self.missing_symbol, sym=")")
         else:
+            device_type = None
             self.syntax_error(self.unrecognised_device_type)
+            return [None, None]
+        if device_type is not None:
+            if self.symbol.type == self.scanner.OPENBRACKET:
+                if device_type == self.scanner.DEVICE_ARG:
+                    self.symbol = self.scanner.get_symbol()
+                    device_property = self.argument()
+                    if type(device_property) == int:
+                        if self.symbol.type == self.scanner.CLOSEDBRACKET:
+                            self.symbol = self.scanner.get_symbol()
+                            return [device_kind, device_property]
+                        else:
+                            self.syntax_error(self.missing_symbol, sym=")")
+                            return [None, None]
+                else:
+                    self.symbol = self.scanner.get_symbol()
+                    if self.symbol.type == self.scanner.NUMBER:
+                        device_property = self.argument()
+                        if type(device_property) == int:
+                            if self.symbol.type == self.scanner.CLOSEDBRACKET:
+                                self.symbol = self.scanner.get_symbol()
+                                return [device_kind, device_property]
+                            else:
+                                self.syntax_error(self.missing_symbol, sym=";")
+                                return [None, None]
+                    else:
+                        self.syntax_error(self.missing_symbol, sym=";")
+                        return [None, None]
+            elif self.symbol.type == self.scanner.SEMICOLON:
+                if device_type == self.scanner.DEVICE:
+                    return [device_kind, None]
+                else:
+                    self.syntax_error(self.missing_argument, dev=dev_name)
+                    return [None, None]
+            else:
+                if device_type == self.scanner.DEVICE:
+                    self.syntax_error(self.missing_symbol, sym=";")
+                    return [None, None]
+                else:
+                    self.syntax_error(self.missing_argument, dev=dev_name)
+                    return [None, None]
 
     def assignment(self):
-        """assignment = name, { "," , name }, "=",
-        ( device_arg_dec | device ), ";" ;"""
-        self.name()
-        while self.symbol.type == self.scanner.COMMA:
-            self.symbol = self.scanner.get_symbol()
-            self.name()
-            if self.symbol.type == self.scanner.EOF:
-                break
-        if self.symbol.type == self.scanner.EQUALS:
-            self.symbol = self.scanner.get_symbol()
-            self.device()
-        else:
-            self.syntax_error(self.missing_symbol, sym="=")
-        if self.symbol.type == self.scanner.SEMICOLON:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.syntax_error(self.missing_symbol, sym=";")
+        name_list = []
+        device_id = self.name()
+        if device_id is not None:
+            name_list.append(device_id)
+            while self.symbol.type == self.scanner.COMMA:
+                self.symbol = self.scanner.get_symbol()
+                device_id = self.name()
+                if device_id is not None:
+                    name_list.append(device_id)
+                else:
+                    break
+                if self.symbol.type == self.scanner.EOF:
+                    break
+            if self.symbol.type == self.scanner.EQUALS:
+                self.symbol = self.scanner.get_symbol()
+                [device_kind, device_property] = self.device()
+                if device_kind is not None:
+                    if self.symbol.type == self.scanner.SEMICOLON:
+                        self.symbol = self.scanner.get_symbol()
+                    else:
+                        self.syntax_error(self.missing_symbol, sym=";")
+            else:
+                self.syntax_error(self.missing_symbol, sym="=")
 
     def connection(self):
         """connection = ( name | dtype_op), "->", ( input | dtype_ip ),
         { "," , ( input | dtype_ip ) }, ";" ;"""
-        x = self.inputOrOutput("conlhs")
+        x = self.inputOroutput()
         if self.symbol.type == self.scanner.ARROW:
             self.symbol = self.scanner.get_symbol()
         else:
-            self.syntax_error(self.missing_symbol, sym="->")
-        y = self.inputOrOutput("conrhs")
+            self.syntax_error()
+        y = self.inputOroutput()
         if x is True and y is False:
             while self.symbol.type == self.scanner.COMMA:
                 self.symbol = self.scanner.get_symbol()
-                z = self.inputOrOutput("conrhs")
+                z = self.inputOroutput()
                 if z is True:
                     self.syntax_error(self.output_to_output)
-                if self.symbol == self.scanner.EOF:
+                    break
+                if self.symbol.type == self.scanner.EOF:
                     break
         elif x is True and y is True:
             self.syntax_error(self.output_to_output)
@@ -184,15 +274,15 @@ class Parser:
         else:
             self.syntax_error(self.input_to_output)
         if self.symbol.type == self.scanner.SEMICOLON:
-            pass
+            self.symbol = self.scanner.get_symbol()
         else:
-            self.syntax_error(self.missing_symbol, sym=";")
+            self.syntax_error(self.missing_symbol, ";")
 
     def monitor(self):
         """monitor = monitor_name, "=", ( name | input ), ";" ;"""
-        self.inputOrOutput("mon")
+        self.inputOroutput()
         if self.symbol.type == self.scanner.SEMICOLON:
-            pass
+            self.symbol = self.scanner.get_symbol()
         else:
             self.syntax_error(self.missing_symbol, ";")
 
@@ -213,16 +303,9 @@ class Parser:
             self.connection()
         else:
             self.monitor()
-        indic = True
-        while self.symbol.type == self.scanner.SEMICOLON:
+        while self.symbol.type != self.scanner.CLOSEDCURLYBRACKET:
             self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.CLOSEDCURLYBRACKET:
-                indic = False
-                break
-            elif (self.symbol.type == self.scanner.KEYWORD and
-                    self.symbol.id in self.keyword and indic is True):
-                break
-            elif self.symbol.type == self.scanner.EOF:
+            if self.symbol.type == self.scanner.EOF:
                 break
             else:
                 if sec_def == self.scanner.DEVICES_ID:
@@ -231,7 +314,7 @@ class Parser:
                     self.connection()
                 else:
                     self.monitor()
-        if indic is False:
+        if self.symbol.type == self.scanner.CLOSEDCURLYBRACKET:
             self.symbol = self.scanner.get_symbol()
             return sec_def
         else:
