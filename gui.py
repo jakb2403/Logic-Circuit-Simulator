@@ -9,7 +9,7 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 import wx
-from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL, Shutdown
+from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL, Command, Shutdown
 import wx.lib.agw.aui as aui
 
 from names import Names
@@ -63,6 +63,7 @@ class Gui(wx.Frame):
         self.userint = GuiUserInterface(self.names, self.devices, self.network, self.monitors)
 
         self.cycles_completed = 0
+        self.spin_value = 10
 
         # Create AUI manager
         self.mgr = aui.AuiManager()
@@ -103,6 +104,8 @@ class Gui(wx.Frame):
         self.cmd = CmdPanel(self, self.names, self.devices, self.network, self.monitors, self.userint, self.push_status)
         self.canvas_panel = CanvasPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
 
+        self.input_cmd = self.cmd.input_cmd
+
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
         self.mgr.AddPane(
@@ -127,7 +130,7 @@ class Gui(wx.Frame):
 
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
-        spin_value = self.spin.GetValue()
+        self.spin_value = self.cycle_spin.GetValue()
         text = "".join(["New spin control value: ", str(spin_value)])
 
     def on_click_tool(self, event):
@@ -145,9 +148,13 @@ class Gui(wx.Frame):
                 self.push_status(text)
 
         elif tool_id == 101: # Run button 
-            text = "Run button pressed."
+            command = f"r {self.spin_value}"
+            self.input_cmd(command)
+            text = "Run button pressed"
             self.push_status(text)
         elif tool_id == 102: # Continue button
+            command = f"c {self.spin_value}"
+            self.input_cmd(command)
             text = "Continue button pressed."
             self.push_status(text)
         elif tool_id == 103: # Save button
@@ -171,9 +178,7 @@ class Gui(wx.Frame):
             text = "Resetting"
             self.push_status(text)
         elif tool_id == 105: # Exit button
-            text = "Exiting"
-            self.push_status(text)
-            self.shutdown()
+            self.on_close(None)
 
 
     def on_menu(self, event):
@@ -189,10 +194,6 @@ class Gui(wx.Frame):
         self.statusbar.PushStatusText(text)
 
     def on_close(self, event):
-        self.shutdown()
-
-    def shutdown(self):
         # deinitialise the frame manager
         self.mgr.UnInit()
         self.Destroy()
-        self.Close()

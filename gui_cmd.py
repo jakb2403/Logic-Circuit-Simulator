@@ -57,10 +57,16 @@ class CmdPanel(wx.Panel):
         self.cmd_input_text_box.Clear()
         self.output_cmd("\n#:" + user_input)
         if user_input == "q":
-            self.parent.shutdown()
-        self.userint.command_interface(user_input, self.output_cmd)
+            self.parent.on_close(None)
+            quit()
+        self.userint.command_interface(user_input, self.output_cmd, self.input_cmd)
         text = "".join(["New cmd input: ", user_input])
         self.push_status(text)
         
+    def input_cmd(self, command):
+        self.cmd_input_text_box.Clear()
+        self.cmd_input_text_box.AppendText(command)
+        self.on_cmd_enter(None)
+
     def output_cmd(self, text):
         self.cmd_output_text_box.AppendText("\n" + text)

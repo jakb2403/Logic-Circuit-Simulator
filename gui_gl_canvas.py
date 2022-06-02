@@ -291,7 +291,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glRasterPos2f(x_pos, y_pos)
         # Alternative font
         # font = GLUT.GLUT_STROKE_ROMAN
-        font = GLUT.GLUT_BITMAP_HELVETICA_12
+        font = GLUT.GLUT_BITMAP_HELVETICA_10
         for character in text:
             if character == '\n':
                 y_pos = y_pos - 20

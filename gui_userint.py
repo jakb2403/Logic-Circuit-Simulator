@@ -79,12 +79,13 @@ class GuiUserInterface:
         self.line = ""  # current string entered by the user
         self.cursor = 0  # cursor position
 
-    def command_interface(self, user_input, output_cmd):
+    def command_interface(self, user_input, output_cmd, input_cmd):
         """Read the command entered and call the corresponding function."""
         self.cursor = 0
         self.output_cmd = output_cmd
+        self.input_cmd = input_cmd
         self.line = user_input  # get the user entry
-        command = self.read_command()  # read the first character
+        command = self.read_command()
         if command != "q":
             if command == "h":
                 self.help_command()
