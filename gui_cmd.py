@@ -1,14 +1,20 @@
 import wx
 
 class CmdPanel(wx.Panel):
-    def __init__(self, parent, push_status):
+    def __init__(self, parent, names, devices, network, monitors, push_status):
         wx.Panel.__init__(self, parent)
         self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
                      wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
                      'Courier'))
         # self.SetBackgroundColour(wx.GREEN)
+        
         self.parent = parent
+        self.names = names
+        self.devices = devices
+        self.network = network
+        self.monitors = monitors
         self.push_status = push_status
+
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Create sizers for input and output

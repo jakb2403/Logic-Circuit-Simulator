@@ -166,7 +166,10 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # _______________________________________________________
         # Draw test signal from devices class
         # Signal should be --\__/---\___
-        test_signal = [self.devices.HIGH,
+        test_signal = [self.devices.BLANK,
+                        self.devices.BLANK,
+                        self.devices.BLANK,
+                        self.devices.HIGH,
                         self.devices.HIGH,
                         self.devices.FALLING,
                         self.devices.LOW,
@@ -307,6 +310,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             # LOW
             elif current_sig == self.devices.LOW:
                 output_signal.append(0)
+            elif current_sig == self.devices.BLANK:
+                output_signal.append(None)
             else:
                 continue
 
@@ -326,7 +331,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         signal_x_offset = 50
         text_x_offset = 10
         signal_height = v_space * 2 // 3
-        tick_y_offset = 10
+        tick_y_offset = 15
         tick_height = 5
         signal_length = len(signal_list_bin)
 
@@ -338,17 +343,27 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glBegin(GL.GL_LINE_STRIP)
         sig_current = coord()
         sig_next = coord()
+        just_blank = False
         for i in range(signal_length):
+            if just_blank:
+                GL.glBegin(GL.GL_LINE_STRIP)
+                just_blank = not(just_blank)
             sig_current.x = signal_x_offset + (i * half_clk)
             sig_next.x = signal_x_offset + ((i + 1) * half_clk)
             if signal_list_bin[i] == 0:
                 sig_current.y = y_low
                 sig_next.y = y_low
+                GL.glVertex2f(sig_current.x, sig_current.y)
+                GL.glVertex2f(sig_next.x, sig_next.y)
             elif signal_list_bin[i] == 1:
                 sig_current.y = y_high
                 sig_next.y = y_high
-            GL.glVertex2f(sig_current.x, sig_current.y)
-            GL.glVertex2f(sig_next.x, sig_next.y)
+                GL.glVertex2f(sig_current.x, sig_current.y)
+                GL.glVertex2f(sig_next.x, sig_next.y)
+            elif signal_list_bin == None:
+                GL.glEnd()
+                just_blank = not(just_blank)
+                continue
         GL.glEnd()
 
         # Draw the tickmarks
