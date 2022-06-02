@@ -73,15 +73,15 @@ class Names:
                 if item in self.names_list:
                     output_list.append(self.names_list.index(item))
                 else:
-                    if not(name_input[0].isdigit()):
-                        raise TypeError("Name string must start with a letter, not a number.")
+                    if not(item[0].isalpha()):
+                        raise TypeError(
+                            "Name string must start with a letter, not a number.")
                     else:
                         self.names_list.append(item)
                         output_list.append(len(self.names_list) - 1)
 
             return output_list
-        else:
-            print("list bypassed")
+        elif type(name_input) == str:
             # perform lookup for 1 name_string item
             if name_input in self.names_list:
                 return self.names_list.index(name_input)
@@ -91,17 +91,21 @@ class Names:
                         "Name string must start with a letter, not a number.")
                 self.names_list.append(name_input)
                 return len(self.names_list) - 1
-
+        else:
+            raise TypeError("Expect list or string for name_input.")
 
     def get_string(self, name_id):
         """Return the corresponding name string for the given name_id.
 
         If the name ID is not a valid index into the names list, return None.
         """
-        if name_id < 0:
-            raise ValueError(
-                "Invalid name_id. Only positive integers allowed.")
-        if name_id < len(self.names_list):
-            return self.names_list[name_id]
+        if type(name_id) == int:
+            if name_id < 0:
+                raise ValueError(
+                    "Invalid name_id. Only positive integers allowed.")
+            if name_id < len(self.names_list):
+                return self.names_list[name_id]
+            else:
+                return None
         else:
-            return None
+            raise TypeError("Expect integer for name_id")
