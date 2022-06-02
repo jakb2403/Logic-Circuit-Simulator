@@ -46,12 +46,17 @@ class Parser:
         # initialise error counter
         self.error_count = 0
 
+        self.error_categories = [self.SYNTAX, self.SEMANTIC] = range(2)
+
         # [] = self.names.unique_error_codes()
 
-    def syntax_error(self):
+    def error(self, category, type=None):
         print(self.scanner.error_found())
         self.error_count += 1
-        print("Error encountered")
+        if category == self.SYNTAX:
+            print("SyntaxError: ", end="\n") # TODO change end to ""
+        elif category == self.SEMANTIC:
+            print("SemanticError: ", end="\n")
 
     def name(self):
         """Parse a name and return the name ID if it is a valid name
@@ -61,7 +66,7 @@ class Parser:
             self.symbol = self.scanner.get_symbol()
             return device_id
         else:
-            self.syntax_error() # TODO invalid device name
+            self.error(self.SYNTAX) # TODO invalid device name
             return None
 
     def argument(self):
@@ -72,7 +77,7 @@ class Parser:
             self.symbol = self.scanner.get_symbol()
             return argument
         else:
-            self.syntax_error() # TODO invalid argument type
+            self.error(self.SYNTAX) # TODO invalid argument type
             return None
     
     def signal_name(self):
@@ -105,7 +110,7 @@ class Parser:
                     elif self.symbol.id == self.devices.QBAR_ID:
                         port_id = self.devices.QBAR_ID
                 else: # unrecognised port 
-                    self.syntax_error() # TODO unrecognised port 
+                    self.error(self.SYNTAX) # TODO unrecognised port 
                     device_id = None
                     port_id = None
             else: # there was no "."
@@ -148,23 +153,63 @@ class Parser:
                         self.symbol = self.scanner.get_symbol()
                         return device_kind, device_property
                     else: # we forgot to close the bracket
-                        self.syntax_error() # TODO missing ")"
+                        self.error(self.SYNTAX) # TODO missing ")"
                         return None, None
                 else: # the argument was not valid
                     return None, None
             else: # we forgot an "("
-                self.syntax_error() # TODO missing symbol, expected "("
+                self.error(self.SYNTAX) # TODO missing symbol, expected "("
                 return None, None
         else: # device is not recoginised
             device_type = None
-            self.syntax_error() # TODO unrecognised device type
+            self.error(self.SYNTAX) # TODO unrecognised device type
             return None, None  
 
     def assignment(self):
         """Parse an assigment line.
         This could be a list of names or a single name.
         Make all the devices, as required."""
+        name_list = [] # to store any names, single or multiple
+        device_id = self.name()
+        if device_id is not None:
+            name_list.append(device_id) # store valid name in list
+            while self.symbol.type == self.scanner.COMMA: # see a ","
+                self.symbol = self.scanner.get_symbol()
+                device_id = self.name()
+                if device_id is not None: # it's a valid name
+                    name_list.append(device_id) # store valid name in list
+                else: # it's not a valid name
+                    break
+                if self.symbol.type == self.scanner.EOF: # stop infinite loop
+                    break
+            if self.symbol.type == self.scanner.NAME: # we encountered another name without a ","
+                self.error(self.SYNTAX) # TODO missing symbol ","
+            elif self.symbol.type == self.scanner.EQUALS: # finished reading in names
+                self.symbol = self.scanner.get_symbol()
+                device_kind, device_property = self.device()
+                if device_kind is not None: # it's a valid device
+                    error_list = [] # create list of errors to catch duplicate names and arguments outside range
+                    for i in range(len(name_list)):
+                        error_type = self.devices.make_device(name_list[i], device_kind, device_property)
+                        error_list.append(error_type)
+                    if self.devices.INVALID_QUALIFIER in error_list: # argument for device outside of range
+                        self.error(self.SEMANTIC) # TODO invalid argument
+                    if self.devices.DEVICE_PRESENT in error_list or len(name_list) != len(set(name_list)): # used name in device declaration (duplicate name used)
+                        self.error(self.SEMANTIC) # TODO used name in device declaration
+                    if all(item == self.devices.NO_ERROR for item in error_list): # there is no error
+                        self.symbol = self.scanner.get_symbol()
+                else: # it's not a valid device
+                    pass # device outputs error for us here
+            else: # not another name or "=", therefore an error
+                self.error(self.SYNTAX) # TODO missing "="
+
+
+    def section_assign(self):
+        """
+        Parse a section of assignments.
+        """
         pass
+                
 
     def parse_network(self):
         """Parse the circuit definition file."""
