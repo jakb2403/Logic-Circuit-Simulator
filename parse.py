@@ -53,7 +53,7 @@ class Parser:
                         self.scanner.CONNECT_ID,
                         self.scanner.MONITOR_ID]
 
-    def syntax_error(self, error_type, dev=None, sym=None):
+    def syntax_error(self, error_type=None, dev=None, sym=None):
         """Print error type and count total number of syntax
         errors."""
         self.error_count += 1
@@ -81,9 +81,12 @@ class Parser:
             print("missing keyword")
         elif error_type == self.section_order_error:
             print("incorrect ordering of sections")
+        elif error_type == None:
+            print("fuck off")
         while (self.symbol.type != self.scanner.SEMICOLON
                 and self.symbol.type != self.scanner.EOF):
             self.symbol = self.scanner.get_symbol()
+            print(self.scanner.current_character)
 
     def name(self):
         """Pass when symbol is name."""
@@ -99,37 +102,24 @@ class Parser:
         else:
             self.syntax_error(self.invalid_argument_type)
 
-    def inputOrOutput(self, st_type):
-        # st_type has to be one of "conlhs", "conrhs", and "mon"
-        """Return True if output and false if input"""
+    def input(self):
         self.name()
-        if st_type == "conlhs":
-            if self.symbol.type == self.scanner.ARROW:
-                return True     # True means output
-        elif st_type == "conrhs":
-            if (self.symbol.type == self.scanner.COMMA
-                    or self.symbol.type == self.scanner.SEMICOLON):
-                return True
-        elif st_type == "mon":
-            if self.symbol.type == self.scanner.SEMICOLON:
-                return True
         if self.symbol.type == self.scanner.DOT:
             self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.DTYPE_OP:
-                self.symbol = self.scanner.get_symbol()
-                return True
-            elif self.symbol.type == self.scanner.DTYPE_IP:
-                self.symbol = self.scanner.get_symbol()
-                return False     # False means input
-            elif (self.symbol.type == self.scanner.KEYWORD
-                    and self.symbol.id == self.scanner.I_ID):
-                self.symbol = self.scanner.get_symbol()
-                self.argument()
-                return False
-            else:
-                self.syntax_error(self.invalid_device_inOut_name)
         else:
             self.syntax_error(self.missing_symbol, sym=".")
+        if (self.symbol.type == self.scanner.KEYWORD and
+            self.symbol.id == self.scanner.I_ID):
+            self.argument()
+        elif self.symbol.type == self.scanner.DTYPE_IP:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.syntax_error()
+
+    def output(self):
+        self.name()
+        if self.symbol.type == self.scanner.DOT:
+            self.symbol = self.scanner.get_symbol()
 
     def device(self):
         """device = "DTYPE" | "XOR" ;"""
@@ -166,7 +156,7 @@ class Parser:
         else:
             self.syntax_error(self.missing_symbol, sym="=")
         if self.symbol.type == self.scanner.SEMICOLON:
-            pass
+            self.symbol = self.scanner.get_symbol()
         else:
             self.syntax_error(self.missing_symbol, sym=";")
 

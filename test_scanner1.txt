@@ -6,14 +6,13 @@ DEVICES{
       # this line is a comment
 }
 # this line is a comment
-CONNECT {\n
+CONNECT {
       SW1 -> G1.I1;
       SW2 -> G1.I2;
       G1 -> G2.DATA;
       IN1 -> G2.CLK;
 
 }
-
 MONITOR {
       G2.Q;
       G2.QBAR;

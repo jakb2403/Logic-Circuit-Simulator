@@ -95,8 +95,11 @@ def test_scanner1():
         (test_scanner1.CLOSEDCURLYBRACKET, None),
         (test_scanner1.EOF, None)
     ]
+    print(expected_symbol_type_id)
     
     for i in range(len(expected_symbol_type_id)):
         symbol = test_scanner1.get_symbol()
+        print(symbol.type, symbol.id, i)
         assert symbol.type == expected_symbol_type_id[i][0]
         assert symbol.id == expected_symbol_type_id[i][1]
+        
