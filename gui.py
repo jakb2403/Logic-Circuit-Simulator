@@ -151,6 +151,7 @@ class Gui(wx.Frame):
                                  self.network, self.monitors, self.scanner)
             text = "".join(["Opening file: ", self.path])
             self.push_status(text)
+            return True
 
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
