@@ -1,9 +1,9 @@
 from typing import Counter
 import wx
-from wx.core import SingleChoiceDialog
+from wx.core import Command, SingleChoiceDialog
 
 class MonitorSidebarPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network, monitors, push_status):
+    def __init__(self, parent, names, devices, network, monitors, push_status, input_cmd):
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.RED)
 
@@ -13,6 +13,7 @@ class MonitorSidebarPanel(wx.Panel):
         self.network = network
         self.monitors = monitors
         self.push_status = push_status
+        self.input_cmd = input_cmd
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -50,15 +51,20 @@ class MonitorSidebarPanel(wx.Panel):
 
     def on_check(self, event):
         """Handle the event when the user clicks one of the checkbox items"""
-        checked_items_index = self.monitor_checklist.GetCheckedItems()
-        checked_names = []
-        for checkbox_index in checked_items_index:
-            device_id = self.monitor_dict[checkbox_index][1]
-            output_id = self.monitor_dict[checkbox_index][2]
-            cycles_completed = self.parent.cycles_completed
-            self.monitors.make_monitor(device_id, output_id, cycles_completed)
-            
-            checked_names.append(self.monitor_dict[checkbox_index][0])
+        changed = wx.CommandEvent.GetInt(event)
+        new_state = self.monitor_checklist.IsChecked(changed)
+        
+        monitor_name = self.monitor_dict[changed][0]
+        output_id = self.monitor_dict[changed][2]
 
-        text = f"These signals are now being shown: {(', '.join(checked_names))}"
+        if new_state == True: # adding a monitor point
+            command = f"m {monitor_name}.{output_id}"
+            self.input_cmd(command)
+            text = f"Device {monitor_name}.{output_id} added to monitor points"
+
+        else: # zapping a monitor point
+            command = f"z {monitor_name}.{output_id}"
+            self.input_cmd(command)
+            text = f"Device {monitor_name}.{output_id} zapped from monitor points"
+            
         self.push_status(text)

@@ -99,12 +99,13 @@ class Gui(wx.Frame):
 
 
         # Create instance of panel classes
-        self.monitor_sidebar = MonitorSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
-        self.switches_sidebar = SwitchesSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
         self.cmd = CmdPanel(self, self.names, self.devices, self.network, self.monitors, self.userint, self.push_status)
+        self.input_cmd = self.cmd.input_cmd
+
+        self.monitor_sidebar = MonitorSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+        self.switches_sidebar = SwitchesSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
         self.canvas_panel = CanvasPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
 
-        self.input_cmd = self.cmd.input_cmd
 
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
