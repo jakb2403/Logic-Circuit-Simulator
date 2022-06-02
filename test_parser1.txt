@@ -1,1 +1,0 @@
-mydad = DTYPE(2);

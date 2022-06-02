@@ -147,7 +147,7 @@ class Scanner:
         error_location = self.file.tell()
         self.file.seek(0, 0)
         line_text = self.file.read().split("\n")[self.line_counter-1]
-        output = line_text + "\n" + " "*(self.char_counter-2) + "^"
+        output = line_text + "\n" + " "*(self.char_counter-1) + "^"
 
         self.file.seek(0, 0)
         self.line_counter = 1

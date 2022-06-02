@@ -15,7 +15,7 @@ def new_scanner(path):
 def test_scanner1():
     """Test if get_symbol returns the correct symbol_id and
         symbol_type for test_scanner1.txt"""
-    path1 = os.getcwd() + "\\test_scanner1.txt"
+    path1 = os.getcwd() + "/test_scanner1.txt"
     test_scanner1 = new_scanner(path1)
     names = test_scanner1.names
 

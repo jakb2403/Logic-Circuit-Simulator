@@ -1,7 +1,7 @@
 import pytest
 import os
 from names import Names
-from parse import Parser
+from parse2 import Parser
 from scanner import Scanner
 from devices import Devices
 from network import Network
