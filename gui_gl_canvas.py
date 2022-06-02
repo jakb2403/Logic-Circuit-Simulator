@@ -153,44 +153,42 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #     self.render_text(display_text, text_x_offset,
         #                      (bottom_left.y + v_space//2))
         # _______________________________________________________
-        
 
         # _______________________________________________________
         # Draw 1 test signal using draw_signal function
-        # 
+        #
         # test_signal = [0, 1, 1 ,0, 1, 1, 1, 0]
         # self.draw_signal("TEST", test_signal, 0)
         # _______________________________________________________
-
 
         # _______________________________________________________
         # Draw test signal from devices class
         # Signal should be --\__/---\___
         test_signal = [self.devices.BLANK,
-                        self.devices.BLANK,
-                        self.devices.BLANK,
-                        self.devices.HIGH,
-                        self.devices.HIGH,
-                        self.devices.FALLING,
-                        self.devices.LOW,
-                        self.devices.LOW,
-                        self.devices.RISING,
-                        self.devices.HIGH,
-                        self.devices.HIGH,
-                        self.devices.HIGH,
-                        self.devices.FALLING,
-                        self.devices.LOW,
-                        self.devices.LOW,
-                        self.devices.LOW]
+                       self.devices.BLANK,
+                       self.devices.BLANK,
+                       self.devices.HIGH,
+                       self.devices.HIGH,
+                       self.devices.FALLING,
+                       self.devices.LOW,
+                       self.devices.LOW,
+                       self.devices.RISING,
+                       self.devices.HIGH,
+                       self.devices.HIGH,
+                       self.devices.HIGH,
+                       self.devices.FALLING,
+                       self.devices.LOW,
+                       self.devices.LOW,
+                       self.devices.LOW]
         test_signal_bin = self.convert_signal(test_signal)
         self.draw_signal("Test", test_signal_bin, 0)
         self.draw_signal("Test", test_signal_bin, 1)
-        
+
         # _______________________________________________________
 
         # _______________________________________________________
         # Draw the monitor signals
-        # 
+        #
         # index = 0
         # for device_id, output_id in self.monitors.monitors_dictionary:
         #     monitor_name = self.devices.get_signal_name(device_id, output_id)
@@ -200,7 +198,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         #     self.draw_signal(monitor_name, signal_list_bin, index)
         #     index += 1
         # _______________________________________________________
- 
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front
@@ -322,9 +319,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
         return output_signal
 
-    
     def draw_signal(self, monitor_name, signal_list_bin, index):
-        
+
         v_space = 100
         one_cycle = 20
         text_x_offset = 10
@@ -338,7 +334,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         bottom_left = coord(0, (index+1) * v_space)
         y_low = bottom_left.y + v_space - signal_height
         y_high = bottom_left.y + v_space
-        
+
         # Draw the tickmarks
         tick_start = coord()
         tick_end = coord()
@@ -348,33 +344,38 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 tick_start.y = bottom_left.y + tick_y_offset
                 tick_end.x = signal_x_offset + (i * one_cycle)
                 tick_end.y = bottom_left.y + tick_y_offset + tick_length
-                GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # tick marks are grey
+                GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0 /
+                             256.0)  # tick marks are grey
                 GL.glBegin(GL.GL_LINE_STRIP)
                 GL.glVertex2f(tick_start.x, tick_start.y)
                 GL.glVertex2f(tick_end.x, tick_end.y)
                 GL.glEnd()
                 self.render_text(str(i), tick_start.x + 1, tick_start.y)
-        
+
         # Draw the last tick
         if signal_length % 5 != 0:
             tick_start.x = signal_x_offset + (signal_length * one_cycle)
             tick_start.y = bottom_left.y + tick_y_offset
             tick_end.x = signal_x_offset + (signal_length * one_cycle)
             tick_end.y = bottom_left.y + tick_y_offset + tick_length
-            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # tick marks are grey
+            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0 /
+                         256.0)  # tick marks are grey
             GL.glBegin(GL.GL_LINE_STRIP)
             GL.glVertex2f(tick_start.x, tick_start.y)
             GL.glVertex2f(tick_end.x, tick_end.y)
             GL.glEnd()
-            self.render_text(str(signal_length), tick_start.x + 1, tick_start.y)
+            self.render_text(str(signal_length),
+                             tick_start.x + 1, tick_start.y)
 
         # Draw the horizontal tickmarks for 1 and 0
         for i in range(2):
             tick_start.x = signal_x_offset - tick_length
-            tick_start.y = bottom_left.y + signal_y_offset + (i * signal_height)
+            tick_start.y = bottom_left.y + \
+                signal_y_offset + (i * signal_height)
             tick_end.x = signal_x_offset
             tick_end.y = bottom_left.y + signal_y_offset + (i * signal_height)
-            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # tick marks are grey
+            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0 /
+                         256.0)  # tick marks are grey
             GL.glBegin(GL.GL_LINE_STRIP)
             GL.glVertex2f(tick_start.x, tick_start.y)
             GL.glVertex2f(tick_end.x, tick_end.y)
@@ -384,14 +385,17 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Draw the x axis
         GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # axis is grey
         GL.glBegin(GL.GL_LINE_STRIP)
-        axis_start = coord(signal_x_offset, bottom_left.y + tick_y_offset + tick_length)
-        axis_end = coord(signal_x_offset + signal_length * one_cycle, bottom_left.y + tick_y_offset + tick_length)
+        axis_start = coord(signal_x_offset, bottom_left.y +
+                           tick_y_offset + tick_length)
+        axis_end = coord(signal_x_offset + signal_length *
+                         one_cycle, bottom_left.y + tick_y_offset + tick_length)
         GL.glVertex2f(axis_start.x, axis_start.y)
         GL.glVertex2f(axis_end.x, axis_end.y)
         GL.glEnd()
 
         # Draw the signal trace
-        GL.glColor3f(87.0/256.0, 184.0/256.0, 255.0/256.0)  # signal trace is blue
+        GL.glColor3f(87.0/256.0, 184.0/256.0, 255.0 /
+                     256.0)  # signal trace is blue
         GL.glLineWidth(2)
         GL.glBegin(GL.GL_LINE_STRIP)
         sig_current = coord()
@@ -420,11 +424,10 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glEnd()
         GL.glLineWidth(1)
 
-
         # Display signal name
         display_text = monitor_name
         self.render_text(display_text, text_x_offset,
-                            (bottom_left.y + signal_y_offset + signal_height//2))
+                         (bottom_left.y + signal_y_offset + signal_height//2))
 
     def update_size(self, width=None, height=None):
         if not(width == None) and width > self.width:
@@ -432,9 +435,9 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         if not(height == None) and height > self.height:
             self.height = height
 
-    
     def save_to_png(self, filename):
-        data = GL.glReadPixels(0, 0, self.width, self.height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, None)
+        data = GL.glReadPixels(0, 0, self.width, self.height,
+                               GL.GL_RGB, GL.GL_UNSIGNED_BYTE, None)
         image = Image.frombytes("RGB", (self.width, self.height), data)
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         image.save(filename, format="png")

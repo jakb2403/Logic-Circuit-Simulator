@@ -1,5 +1,6 @@
 import wx
 
+
 class SwitchesSidebarPanel(wx.Panel):
     def __init__(self, parent, names, devices, network, monitors, push_status, input_cmd):
         wx.Panel.__init__(self, parent)
@@ -29,7 +30,6 @@ class SwitchesSidebarPanel(wx.Panel):
         #     state = self.devices.get_device().switch_state
         #     name = self.devices.get_signal_name(id, None)
         #     self.switches_dict[id] = [name, state]
-        
 
         # Create widgets
         for switch in self.switches_dict:
@@ -39,7 +39,6 @@ class SwitchesSidebarPanel(wx.Panel):
             self.create_switch(name, device_id, init_state)
 
         self.SetSizer(self.sizer)
-
 
     def create_switch(self, name, device_id, init_state):
         text = wx.StaticText(self, wx.ID_ANY, name)
@@ -51,7 +50,6 @@ class SwitchesSidebarPanel(wx.Panel):
         switch_sizer.Add(toggle, 1, wx.EXPAND | wx.ALL, 1)
         toggle.Bind(wx.EVT_TOGGLEBUTTON, self.on_toggle_switch)
         self.sizer.Add(switch_sizer, 0, wx.EXPAND, 0)
-
 
     def on_toggle_switch(self, event):
         toggle = event.GetEventObject()
@@ -70,4 +68,3 @@ class SwitchesSidebarPanel(wx.Panel):
 
         text = f"Switch {switch_name} toggled to {new_state}"
         self.push_status(text)
-        

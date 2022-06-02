@@ -12,7 +12,7 @@ class CanvasPanel(wx.Panel):
         self.network = network
         self.monitors = monitors
         self.push_status = push_status
-        
+
         self.sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=0, hgap=0)
         self.sizer.AddGrowableCol(0)
         self.sizer.AddGrowableRow(0)

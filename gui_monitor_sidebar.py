@@ -2,6 +2,7 @@ from typing import Counter
 import wx
 from wx.core import Command, SingleChoiceDialog
 
+
 class MonitorSidebarPanel(wx.Panel):
     def __init__(self, parent, names, devices, network, monitors, push_status, input_cmd):
         wx.Panel.__init__(self, parent)
@@ -24,7 +25,8 @@ class MonitorSidebarPanel(wx.Panel):
             3: ["NOR1", 3, 1],
             4: ["XOR1", 4, 1],
         }
-        self.monitor_names = [item[0] for item in [*self.monitor_dict.values()]]
+        self.monitor_names = [item[0]
+                              for item in [*self.monitor_dict.values()]]
 
         # self.monitor_dict = {}
         # checkbox_index = 0
@@ -35,10 +37,10 @@ class MonitorSidebarPanel(wx.Panel):
         #     checkbox_index += 1
 
         # Create widgets
-        info_text = wx.StaticText(self, wx.ID_ANY, "Choose devices to monitor:")
+        info_text = wx.StaticText(
+            self, wx.ID_ANY, "Choose devices to monitor:")
         self.monitor_checklist = wx.CheckListBox(
             self, choices=self.monitor_names, name="Monitor Signals")
-
 
         self.sizer.Add(info_text, 0, wx.ALL, 3)
         self.sizer.Add(self.monitor_checklist, 1,
@@ -53,18 +55,18 @@ class MonitorSidebarPanel(wx.Panel):
         """Handle the event when the user clicks one of the checkbox items"""
         changed = wx.CommandEvent.GetInt(event)
         new_state = self.monitor_checklist.IsChecked(changed)
-        
+
         monitor_name = self.monitor_dict[changed][0]
         output_id = self.monitor_dict[changed][2]
 
-        if new_state == True: # adding a monitor point
+        if new_state == True:  # adding a monitor point
             command = f"m {monitor_name}.{output_id}"
             self.input_cmd(command)
             text = f"Device {monitor_name}.{output_id} added to monitor points"
 
-        else: # zapping a monitor point
+        else:  # zapping a monitor point
             command = f"z {monitor_name}.{output_id}"
             self.input_cmd(command)
             text = f"Device {monitor_name}.{output_id} zapped from monitor points"
-            
+
         self.push_status(text)

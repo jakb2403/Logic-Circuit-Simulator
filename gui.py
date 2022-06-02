@@ -49,7 +49,7 @@ class Gui(wx.Frame):
     on_text_box(self, event): Event handler for when the user enters text.
     """
 
-    def __init__(self, title, path, names, devices, network, monitors):
+    def __init__(self, title, names, devices, network, monitors):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(1200, 600))
 
@@ -60,7 +60,8 @@ class Gui(wx.Frame):
         self.devices = devices
         self.network = network
         self.monitors = monitors
-        self.userint = GuiUserInterface(self.names, self.devices, self.network, self.monitors)
+        self.userint = GuiUserInterface(
+            self.names, self.devices, self.network, self.monitors)
 
         self.cycles_completed = 0
         self.spin_value = 10
@@ -83,12 +84,13 @@ class Gui(wx.Frame):
         self.load_button = self.toolbar.AddTool(
             100, "Load", wx.Bitmap("icons/folder.png"))
         self.run_button = self.toolbar.AddTool(
-            101 , "Run", wx.Bitmap("icons/run.png"))
+            101, "Run", wx.Bitmap("icons/run.png"))
         self.cont_button = self.toolbar.AddTool(
             102, "Continue", wx.Bitmap("icons/continue.png"))
         self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
         self.toolbar.AddControl(self.cycle_spin)
-        self.save_button = self.toolbar.AddTool(103, "Save", wx.Bitmap("icons/save.png"))
+        self.save_button = self.toolbar.AddTool(
+            103, "Save", wx.Bitmap("icons/save.png"))
         # self.reset_button = self.toolbar.AddTool(104, "Reset", wx.Bitmap("icons/reset.png"))
         self.exit_button = self.toolbar.AddTool(
             105, "Exit", wx.Bitmap("icons/exit.png"))
@@ -97,15 +99,17 @@ class Gui(wx.Frame):
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText("Status")
 
-
         # Create instance of panel classes
-        self.cmd = CmdPanel(self, self.names, self.devices, self.network, self.monitors, self.userint, self.push_status)
+        self.cmd = CmdPanel(self, self.names, self.devices, self.network,
+                            self.monitors, self.userint, self.push_status)
         self.input_cmd = self.cmd.input_cmd
 
-        self.monitor_sidebar = MonitorSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
-        self.switches_sidebar = SwitchesSidebarPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
-        self.canvas_panel = CanvasPanel(self, self.names, self.devices, self.network, self.monitors, self.push_status)
-
+        self.monitor_sidebar = MonitorSidebarPanel(
+            self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+        self.switches_sidebar = SwitchesSidebarPanel(
+            self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+        self.canvas_panel = CanvasPanel(
+            self, self.names, self.devices, self.network, self.monitors, self.push_status)
 
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
@@ -113,7 +117,8 @@ class Gui(wx.Frame):
             self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
         self.mgr.AddPane(
             self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
-        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Right().Floatable(False).CloseButton(False).Caption("Command Line"))
+        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Right().Floatable(
+            False).CloseButton(False).Caption("Command Line"))
 
         # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
         agwFlags = self.mgr.GetAGWFlags()
@@ -129,6 +134,24 @@ class Gui(wx.Frame):
         self.Centre()
         self.Show(True)
 
+        if not self.startup():
+            print("\nYou closed the file dialog box.\nYou must choose a file to load in order to run a simulation.\n")
+            self.on_close(None)
+
+    def startup(self):
+        with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return False    # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            self.path = fileDialog.GetPath()
+            self.scanner = Scanner(self.path, self.names)
+            self.parser = Parser(self.names, self.devices,
+                                 self.network, self.monitors, self.scanner)
+            text = "".join(["Opening file: ", self.path])
+            self.push_status(text)
+
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
         self.spin_value = self.cycle_spin.GetValue()
@@ -137,50 +160,53 @@ class Gui(wx.Frame):
     def on_click_tool(self, event):
         """Handle the event when the user clicks a button in the toolbar"""
         tool_id = event.GetId()
-        if tool_id == 100: # Load button
-            with wx.FileDialog(self, "Load .txt file", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+        if tool_id == 100:  # Load button
+            with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
                 if fileDialog.ShowModal() == wx.ID_CANCEL:
                     return     # the user changed their mind
 
                 # Proceed loading the file chosen by the user
-                pathname = fileDialog.GetPath()
-                text = "".join(["Opening file: ", pathname])
+                self.path = fileDialog.GetPath()
+                self.scanner = Scanner(self.path, self.names)
+                self.parser = Parser(
+                    self.names, self.devices, self.network, self.monitors, self.scanner)
+                text = "".join(["Opening file: ", self.path])
                 self.push_status(text)
 
-        elif tool_id == 101: # Run button 
+        elif tool_id == 101:  # Run button
             command = f"r {self.spin_value}"
             self.input_cmd(command)
             text = "Run button pressed"
             self.push_status(text)
-        elif tool_id == 102: # Continue button
+        elif tool_id == 102:  # Continue button
             command = f"c {self.spin_value}"
             self.input_cmd(command)
             text = "Continue button pressed."
             self.push_status(text)
-        elif tool_id == 103: # Save button
+        elif tool_id == 103:  # Save button
             with wx.FileDialog(self, "Save monitor plot", wildcard="PNG files (*.png)|*.png",
-                       style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+                               style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
                 if fileDialog.ShowModal() == wx.ID_CANCEL:
                     return     # the user changed their mind
 
                 # save the current contents in the file
-                pathname = fileDialog.GetPath()
+                path = fileDialog.GetPath()
                 try:
-                    with open(pathname, 'w') as file:
-                        self.canvas.save_to_png(pathname)
+                    with open(path, 'w') as file:
+                        self.canvas.save_to_png(path)
                         # self.doSaveData(bitmap)
                 except IOError:
-                    wx.LogError("Cannot save current data in file '%s'." % pathname)
-            text = "".join(["Saved file as: ", pathname])
+                    wx.LogError(
+                        "Cannot save current data in file '%s'." % path)
+            text = "".join(["Saved file as: ", path])
             self.push_status(text)
 
-        elif tool_id == 104: # Reset button
+        elif tool_id == 104:  # Reset button
             text = "Resetting"
             self.push_status(text)
-        elif tool_id == 105: # Exit button
+        elif tool_id == 105:  # Exit button
             self.on_close(None)
-
 
     def on_menu(self, event):
         """Handle the event when the user selects a menu item."""
@@ -188,7 +214,7 @@ class Gui(wx.Frame):
         if Id == wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
-            wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",
+            wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\nAdapted by P3 Group 15\nHyun Seung Cho, Joe Water and John Browb\n2022",
                           "About Logsim", wx.ICON_INFORMATION | wx.OK)
 
     def push_status(self, text):
