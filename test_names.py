@@ -98,14 +98,13 @@ def test_lookup1(used_names_lookup1, input_names1, expected_ids1):
 
 @pytest.mark.parametrize("input_names2, expected_ids2", [
     ("Alice", 0),
-    ("Zulu", 3),
-    ("Bob", 1),
-    ("Peter", 4),
-    ("Eve", 2)
+    ("Zulu", 1),
+    ("Bob", 2),
+    ("Peter", 3),
+    ("Eve", 4)
 ])
 def test_lookup2(used_names_lookup2, input_names2, expected_ids2):
     """Test if lookup returns the expected string"""
-    assert type(input_names2) == list
     # name is not present but appends to the table and returns new id
     assert used_names_lookup2.lookup(input_names2) == expected_ids2
     assert used_names_lookup2.lookup("Elisa") == 5
