@@ -195,7 +195,7 @@ class Gui(wx.Frame):
                 path = fileDialog.GetPath()
                 try:
                     with open(path, 'w') as file:
-                        self.canvas.save_to_png(path)
+                        self.canvas_panel.canvas.save_to_png(path)
                         # self.doSaveData(bitmap)
                 except IOError:
                     wx.LogError(
