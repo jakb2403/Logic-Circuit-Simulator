@@ -73,7 +73,7 @@ class Names:
                 if item in self.names_list:
                     output_list.append(self.names_list.index(item))
                 else:
-                    if not(name_input[0].isalpha()):
+                    if not(name_input[0].isdigit()):
                         raise TypeError("Name string must start with a letter, not a number.")
                     else:
                         self.names_list.append(item)
@@ -93,7 +93,7 @@ class Names:
                 return len(self.names_list) - 1
 
 
-    def get_name_string(self, name_id):
+    def get_string(self, name_id):
         """Return the corresponding name string for the given name_id.
 
         If the name ID is not a valid index into the names list, return None.
