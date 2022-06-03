@@ -89,12 +89,12 @@ class Scanner:
                     self.NAME,
                     self.EOF] = range(17)
 
-                self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "I"]
+                self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "END", "I"]
                 self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
                 self.device_list = ["DTYPE", "XOR"]
                 self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
                 self.dtype_op_list = ["Q", "QBAR"]
-                [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID,
+                [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID, self.END_ID,
                     self.I_ID] = self.names.lookup(self.keywords_list)
                 [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID, self.NOR_ID,
                     self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
@@ -150,7 +150,7 @@ class Scanner:
         error_location = self.file.tell()
         self.file.seek(0, 0)
         line_text = self.file.read().split("\n")[self.line_counter-1]
-        output = line_text + "\n" + " "*(self.char_counter-1) + "^"
+        output = "Error on line " + str(self.line_counter) + "\n" + line_text + "\n" + " "*(self.char_counter-1) + "^"
 
         self.file.seek(0, 0)
         self.line_counter = 1
