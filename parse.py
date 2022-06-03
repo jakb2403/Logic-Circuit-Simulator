@@ -122,18 +122,18 @@ class Parser:
         else:
             self.error(self.SYNTAX, self.invalid_arg_type) # invalid argument type
             return None
-    
+
     def signal_name(self):
         """Parse an input or output name in the formats
-            input - [name].I[port_id] 
+            input - [name].I[port_id]
                 or  [name].[dtype_ip]
             output -[name]
                 or  [name].[dtype_op]
-            Retunrs device_id and port_id
+            Returns device_id and port_id
         """
         device_id = self.name()
-        if device_id is not None: # if the device name is valid
-            if self.symbol.type == self.scanner.DOT: # seen a "."
+        if device_id is not None:  # if the device name is valid
+            if self.symbol.type == self.scanner.DOT:  # seen a "."
                 self.symbol = self.scanner.get_symbol()
                 if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.I_ID: # see "I"
                     self.isoutput = False
@@ -169,45 +169,50 @@ class Parser:
 
         Returns:
             device_kind - type of device
-            device_property - number of inputs to the device (None if device without arguments)
+            device_property - number of inputs to the device (None if device
+            without arguments)
         """
-        if self.symbol.type == self.scanner.DEVICE: # if the symbol is a device without arguments
-            if self.symbol.id == self.scanner.DTYPE_ID: # it's a DTYPE
+        if self.symbol.type == self.scanner.DEVICE:  # if the symbol is a
+            # device without arguments
+            if self.symbol.id == self.scanner.DTYPE_ID:  # it's a DTYPE
                 device_kind = self.devices.D_TYPE
-            elif self.symbol.id == self.scanner.XOR_ID: # it's a XOR
+            elif self.symbol.id == self.scanner.XOR_ID:  # it's a XOR
                 device_kind = self.devices.XOR
             self.symbol = self.scanner.get_symbol()
             return device_kind, None
-        elif self.symbol.type == self.scanner.DEVICE_ARG: # if the symbol is a device with arguments
-            if self.symbol.id == self.scanner.CLOCK_ID: # it's a CLOCK 
+        elif self.symbol.type == self.scanner.DEVICE_ARG:  # if the symbol is
+            # a device with arguments
+            if self.symbol.id == self.scanner.CLOCK_ID:  # it's a CLOCK
                 device_kind = self.devices.CLOCK
-            if self.symbol.id == self.scanner.AND_ID: # it's a AND 
+            if self.symbol.id == self.scanner.AND_ID:  # it's a AND
                 device_kind = self.devices.AND
-            if self.symbol.id == self.scanner.OR_ID: # it's a OR
+            if self.symbol.id == self.scanner.OR_ID:  # it's a OR
                 device_kind = self.devices.OR
-            if self.symbol.id == self.scanner.NAND_ID: # it's a NAND
+            if self.symbol.id == self.scanner.NAND_ID:  # it's a NAND
                 device_kind = self.devices.NAND
-            if self.symbol.id == self.scanner.NOR_ID: # it's a NOR
+            if self.symbol.id == self.scanner.NOR_ID:  # it's a NOR
                 device_kind = self.devices.NOR
-            if self.symbol.id == self.scanner.SWITCH_ID: # it's a SWITCH
+            if self.symbol.id == self.scanner.SWITCH_ID:  # it's a SWITCH
                 device_kind = self.devices.SWITCH
             self.symbol = self.scanner.get_symbol()
-            if self.symbol.type == self.scanner.OPENBRACKET: # intended for a device with an argument
+            if self.symbol.type == self.scanner.OPENBRACKET:  # intended for a
+                # device with an argument
                 self.symbol = self.scanner.get_symbol()
                 device_property = self.argument()
-                if device_property is not None: # the argument was valid
-                    if self.symbol.type == self.scanner.CLOSEDBRACKET: # we remembered to close the bracket
+                if device_property is not None:  # the argument was valid
+                    if self.symbol.type == self.scanner.CLOSEDBRACKET:  # we
+                        # remembered to close the bracket
                         self.symbol = self.scanner.get_symbol()
                         return device_kind, device_property
                     else: # we forgot to close the bracket
                         self.error(self.SYNTAX, self.missing_symbol, sym=")") #  missing ")"
                         return None, None
-                else: # the argument was not valid
+                else:  # the argument was not valid
                     return None, None
             else: # we forgot an "("
                 self.error(self.SYNTAX, self.missing_symbol, sym="(") #  missing symbol, expected "("
                 return None, None
-        else: # device is not recoginised
+        else:  # device is not recoginised
             device_type = None
             self.error(self.SYNTAX, self.unrecognised_device_type) #  unrecognised device type
             return None, None  
@@ -216,28 +221,29 @@ class Parser:
         """Parse an assigment line.
         This could be a list of names or a single name.
         Make all the devices, as required."""
-        name_list = [] # to store any names, single or multiple
+        name_list = []  # to store any names, single or multiple
         device_id = self.name()
         if device_id is not None:
-            name_list.append(device_id) # store valid name in list
-            while self.symbol.type == self.scanner.COMMA: # see a ","
+            name_list.append(device_id)  # store valid name in list
+            while self.symbol.type == self.scanner.COMMA:  # see a ","
                 self.symbol = self.scanner.get_symbol()
                 device_id = self.name()
-                if device_id is not None: # it's a valid name
-                    name_list.append(device_id) # store valid name in list
-                else: # it's not a valid name
+                if device_id is not None:  # it's a valid name
+                    name_list.append(device_id)  # store valid name in list
+                else:  # it's not a valid name
                     break
-                if self.symbol.type == self.scanner.EOF: # stop infinite loop
+                if self.symbol.type == self.scanner.EOF:  # stop infinite loop
                     break
             if self.symbol.type == self.scanner.NAME: # we encountered another name without a ","
                 self.error(self.SYNTAX, self.missing_symbol, sym=",") #  missing symbol ","
             elif self.symbol.type == self.scanner.EQUALS: # finished reading in names
                 self.symbol = self.scanner.get_symbol()
                 device_kind, device_property = self.device()
-                if device_kind is not None: # it's a valid device
-                    error_list = [] # create list of errors to catch duplicate names and arguments outside range
+                if device_kind is not None:  # it's a valid device
+                    error_list = []  # create list of errors to catch duplicate names and arguments outside range
                     for i in range(len(name_list)):
-                        error_type = self.devices.make_device(name_list[i], device_kind, device_property)
+                        error_type = self.devices.make_device(
+                            name_list[i], device_kind, device_property)
                         error_list.append(error_type)
                     if self.devices.INVALID_QUALIFIER in error_list: # argument for device outside of range
                         self.error(self.SEMANTIC, self.invalid_arg) #  invalid argument

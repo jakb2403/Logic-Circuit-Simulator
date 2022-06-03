@@ -9,6 +9,7 @@ Scanner - reads definition file and translates characters into symbols.
 Symbol - encapsulates a symbol and stores its properties.
 """
 from inspect import FrameInfo, currentframe, getframeinfo
+from pathlib import Path
 import sys
 import os
 
@@ -58,54 +59,56 @@ class Scanner:
         self.char_counter = 0
         self.line_counter = 1
 
-        file_name = os.path.basename(path)
+        if Path(str(path)).is_file():
+            if Path(str(path)).suffix == ".txt":
+                self.file = open(Path(str(path)), 'r')
 
-        try:
-            self.file = open(file_name, "r")
-        except IOError:
-            print("Error: can\'t find file or read data")
-            sys.exit()
+                self.file.seek(0, 0)
 
-        self.file.seek(0, 0)
+                self.current_character = self.file.read(1)
 
-        self.current_character = self.file.read(1)
+                self.names = names
+                self.afterdot = False
 
-        self.names = names
-        self.afterdot = False
+                self.symbol_type_list = [
+                    self.DOT,
+                    self.COMMA,
+                    self.SEMICOLON,
+                    self.EQUALS,
+                    self.ARROW,
+                    self.OPENBRACKET,
+                    self.CLOSEDBRACKET,
+                    self.OPENCURLYBRACKET,
+                    self.CLOSEDCURLYBRACKET,
+                    self.KEYWORD,
+                    self.DEVICE_ARG,
+                    self.DEVICE,
+                    self.DTYPE_IP,
+                    self.DTYPE_OP,
+                    self.NUMBER,
+                    self.NAME,
+                    self.EOF] = range(17)
 
-        self.symbol_type_list = [
-            self.DOT,
-            self.COMMA,
-            self.SEMICOLON,
-            self.EQUALS,
-            self.ARROW,
-            self.OPENBRACKET,
-            self.CLOSEDBRACKET,
-            self.OPENCURLYBRACKET,
-            self.CLOSEDCURLYBRACKET,
-            self.KEYWORD,
-            self.DEVICE_ARG,
-            self.DEVICE,
-            self.DTYPE_IP,
-            self.DTYPE_OP,
-            self.NUMBER,
-            self.NAME,
-            self.EOF] = range(17)
+                self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "I"]
+                self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
+                self.device_list = ["DTYPE", "XOR"]
+                self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
+                self.dtype_op_list = ["Q", "QBAR"]
+                [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID,
+                    self.I_ID] = self.names.lookup(self.keywords_list)
+                [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID, self.NOR_ID,
+                    self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
+                [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(self.device_list)
+                [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
+                    self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
+                [self.Q_ID, self.QBAR_ID] = self.names.lookup(self.dtype_op_list)
+            
+            else:
+                print("\nError: incorrect file type\n")
+        else:
+            print("\nError invalid path\n")
 
-        self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "I"]
-        self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
-        self.device_list = ["DTYPE", "XOR"]
-        self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
-        self.dtype_op_list = ["Q", "QBAR"]
-        [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID,
-            self.I_ID] = self.names.lookup(self.keywords_list)
-        [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID, self.NOR_ID,
-            self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
-        [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(self.device_list)
-        [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
-            self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
-        [self.Q_ID, self.QBAR_ID] = self.names.lookup(self.dtype_op_list)
-
+            
     def advance(self):
         """Read the next character."""
         # add 1 to the character counter to track location in line
