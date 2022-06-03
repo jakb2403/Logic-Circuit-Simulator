@@ -164,10 +164,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # _______________________________________________________
         # Draw test signal from devices class
         # Signal should be --\__/---\___
-        test_signal = [self.devices.BLANK,
-                       self.devices.BLANK,
-                       self.devices.BLANK,
-                       self.devices.HIGH,
+        test_signal = [self.devices.HIGH,
                        self.devices.HIGH,
                        self.devices.FALLING,
                        self.devices.LOW,
@@ -181,8 +178,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                        self.devices.LOW,
                        self.devices.LOW]
         test_signal_bin = self.convert_signal(test_signal)
-        self.draw_signal("Test", test_signal_bin, 0)
-        self.draw_signal("Test", test_signal_bin, 1)
+        self.draw_signal("AND1", test_signal_bin, 0)
+        self.draw_signal("NAND1", test_signal_bin, 1)
 
         # _______________________________________________________
 
