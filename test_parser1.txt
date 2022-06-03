@@ -1,7 +1,7 @@
 DEVICES
     g1 = SWITCH(0),
-    g2 = NAND(2),
+    g2 = NAND(16),
     g3 = DTYPE, 
-    g4 = NOR(16);
-
-g1 -> g2.I1
+    g4 = NOR(16)
+    
+g2

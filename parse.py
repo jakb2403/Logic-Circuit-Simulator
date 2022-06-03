@@ -47,7 +47,8 @@ class Parser:
         self.error_count = 0
         self.isoutput = True
         self.error_categories = [self.SYNTAX, self.SEMANTIC] = range(2)
-        self.stopping_symbols = [self.scanner.SEMICOLON, self.scanner.COMMA, self.scanner.KEYWORD]
+        self.stopping_symbols = [self.scanner.SEMICOLON, self.scanner.COMMA, self.scanner.EOF]
+        self.missed_symbol = False
         
         [self.invalid_device_name,
         self.invalid_arg_type,
@@ -98,7 +99,7 @@ class Parser:
         if type == self.input_connected:
             print("input is already connected")
         if skip == True: # if you want skipping until stopping symbol
-            while (self.symbol.type not in self.stopping_symbols and self.symbol.type is not self.scanner.EOF):
+            while self.symbol.type not in self.stopping_symbols:
                 self.symbol = self.scanner.get_symbol()
 
     def name(self):
@@ -255,27 +256,10 @@ class Parser:
                     pass # device outputs error for us here
             else: # not another name or "=", therefore an error
                 self.error(self.SYNTAX, self.missing_symbol, sym="=") #  missing "="
-
-    def section_devices(self):
-        """
-        Parse a section of assignments.
-        """
-        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.DEVICES_ID): # cheking for keyword "DEVICES" to start the devices section
-            self.symbol = self.scanner.get_symbol()
-            self.assignment() 
-            while self.symbol.type == self.scanner.COMMA: # see a ","
-                self.symbol = self.scanner.get_symbol()
-                self.assignment()
-            if self.symbol.type == self.scanner.SEMICOLON: # see a ";" to end the section
-                self.symbol = self.scanner.get_symbol()
-            elif self.symbol.type == self.scanner.NAME:
-                self.error(self.SYNTAX, self.missing_symbol, sym=",") #  missing symbol, expected ","
-            else: # we don't see a ";"
-                self.error(self.SYNTAX, self.missing_symbol, skip=False, sym=";") #  missing symbol, expected ";"
-        else: # missing the keyword "DEVICES"
-            self.error(self.SYNTAX, self.missing_keyword) #  missing keyword "DEVICES"
         
     def connection(self):
+        """Parse a connection statement.
+        Make all the connections, as required."""
         first_device_id, first_port_id = self.signal_name() # call signal_name and save device_id and port_id
         second_device_ids = [] # list to store device ids of inputs
         second_port_ids = [] # list to store port ids of inputs
@@ -312,9 +296,10 @@ class Parser:
                         pass
             else: # you don't see an arrow
                 self.error(self.SYNTAX, self.missing_symbol, sym="->")
-    def section_connect(self):
         
     def monitor(self):
+        """Parse a monitor statement.
+        Make all monitor points, as required."""
         device_id, output_id = self.signal_name()
         if self.isoutput == False:
             input_id, input_port = device_id, output_id
@@ -324,6 +309,78 @@ class Parser:
             self.error(self.SEMANTIC, self.duplicate_monitor)
         elif error == self.monitors.NO_ERROR:
             pass
+    
+    def section_devices(self):
+        """
+        Parse a section of assignments.
+        """
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.DEVICES_ID): # cheking for keyword "DEVICES" to start the devices section
+            self.symbol = self.scanner.get_symbol()
+        else: # missing the keyword "DEVICES"
+            self.error(self.SYNTAX, self.missing_keyword) #  missing keyword "DEVICES
+        self.assignment() 
+        while self.symbol.type == self.scanner.COMMA: # see a ","
+            self.symbol = self.scanner.get_symbol()
+            self.assignment()
+        if self.symbol.type == self.scanner.SEMICOLON: # see a ";" to end the section
+            self.symbol = self.scanner.get_symbol()
+        elif self.symbol.type == self.scanner.NAME:
+            self.error(self.SYNTAX, self.missing_symbol, sym=",") #  missing symbol, expected ","
+        elif (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.CONNECT_ID):
+            self.error(self.SYNTAX, self.missing_symbol, skip=False, sym=";") #  missing symbol, expected ";"
+            self.missed_symbol = True
+        else:
+            self.error(self.SYNTAX, self.missing_symbol, sym=";")
+
+    def section_connect(self):
+        """
+        Parse a section of connections.
+        """
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.CONNECT_ID or self.missed_symbol == True): #checking for keyword "CONNECT" to start the connect section
+            self.missed_symbol = False
+            self.symbol = self.scanner.get_symbol()
+        else:  # missing the keyword "CONNECT"
+            self.error(self.SYNTAX, self.missing_keyword) # missing keyword "CONNECT"
+        self.connection()
+        while self.symbol.type == self.scanner.COMMA: # see a ","
+            self.symbol = self.scanner.get_symbol()
+            self.connection()
+        if self.symbol.type == self.scanner.SEMICOLON: # see a ";" to end the section
+            self.symbol = self.scanner.get_symbol()
+        elif self.symbol.type == self.scanner.NAME:
+            self.error(self.SYNTAX, self.missing_symbol, sym=",") #  missing symbol, expected ","
+        elif (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID):
+            self.error(self.SYNTAX, self.missing_symbol, skip=False, sym=";") #  missing symbol, expected ";"
+            self.missed_symbol = True
+        else:
+            self.error(self.SYNTAX, self.missing_symbol, sym=";")
+
+    def section_monitor(self):
+        """
+        Parse a section of connections.
+        """
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID or self.missed_symbol == True): #checking for keyword "MONITOR" to start the connect section
+            self.missed_symbol = False
+            self.symbol = self.scanner.get_symbol()
+        else:  # missing the keyword "MONITOR"
+            self.error(self.SYNTAX, self.missing_keyword) # missing keyword "CONNECT"
+        self.monitor()
+        while self.symbol.type == self.scanner.COMMA: # see a ","
+            self.symbol = self.scanner.get_symbol()
+            self.monitor()
+        if self.symbol.type == self.scanner.SEMICOLON: # see a ";" to end the section
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.error(self.SYNTAX, self.missing_symbol, sym=";")
+
+    def program(self):
+        """
+        Parse the entire program.
+        """
+        self.symbol = self.scanner.get_symbol()
+        self.section_devices()
+        self.section_connect()
+        self.section_monitor()
 
 
     def parse_network(self):
@@ -331,4 +388,8 @@ class Parser:
         # For now just return True, so that userint and gui can run in the
         # skeleton code. When complete, should return False when there are
         # errors in the circuit definition file.
-        return True
+        self.program()
+        if self.error_count == 0:
+            return True
+        else:
+            print(f"Error Count: {self.error_count}")

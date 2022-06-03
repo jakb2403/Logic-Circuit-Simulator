@@ -20,7 +20,7 @@ new_parser.symbol = new_parser.scanner.get_symbol()
 # new_parser.names()
 # new_parser.assignment()
 new_parser.section_devices()
-print([(device.device_id, device.device_kind, device.inputs, device.outputs) for device in new_devices.devices_list])
-new_parser.connection()
+#print([(device.device_id, device.device_kind, device.inputs, device.outputs) for device in new_devices.devices_list])
+#new_parser.connection()
 
 
