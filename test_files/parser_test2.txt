@@ -3,7 +3,7 @@ DEVICES
     CLK1 = CLOCK(20), 
     AND1, AND2 = AND(2),
     OR1, OR2 = OR(2),
-    NAND1 = NAND(2),
+    2g = NAND(2),
     NOR1 = NOR(2),
     XOR1 = XOR,
     DTYPE1 = DTYPE;
