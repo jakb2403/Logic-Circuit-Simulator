@@ -16,7 +16,8 @@ new_monitors = Monitors(new_names, new_devices, new_network)
 new_parser = Parser(new_names, new_devices, new_network, new_monitors, new_scanner)
 
 new_parser.symbol = new_parser.scanner.get_symbol()
-# new_parser.assignment()
 # new_parser.signal_name()
-new_parser.device()
+# new_parser.names()
+new_parser.assignment()
+
 
