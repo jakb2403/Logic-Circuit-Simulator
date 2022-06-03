@@ -1,9 +1,8 @@
-program             = section_dev, section_con, section_mon , end_statement;
+program             = section_dev, section_con, section_mon;
 
-section_dev         = "DEVICES", "{", assignment, { assignment }, "}" ;
-section_con         = "CONNECT", "{", connection, { connection }, "}" ;
-section_mon         = "MONITOR", "{", monitor, { monitor }, "}" ;
-end_statement       = "END" ;
+section_dev         = "DEVICES", assignment, { assignment }, "END" ;
+section_con         = "CONNECT", connection, { connection }, "END" ;
+section_mon         = "MONITOR", monitor, { monitor }, "END" ;
 
 assignment          = name, { "," , name }, "=", ( device_arg_dec | device ), ";" ; 
 connection          = output, "->", input, { ",", input }, ";" ;
