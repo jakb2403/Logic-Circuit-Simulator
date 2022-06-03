@@ -1,1 +1,7 @@
- g2 -> g3.CLK
+DEVICES
+    SW1, SW2, SW3 = SWITCH(1);
+    NAND1 = DTYPE;
+
+END
+
+SW1 ->   NAND1.SET;
