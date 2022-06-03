@@ -140,7 +140,7 @@ class Parser:
                 if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.I_ID:  # see "I"
                     self.isoutput = False
                     self.symbol = self.scanner.get_symbol()
-                    port_id = self.argument()  # TODO do we need to check for bad port_id
+                    port_id = self.names.lookup(f"I{self.argument()}")  # TODO do we need to check for bad port_id
                 elif self.symbol.type == self.scanner.DTYPE_IP:  # see dtype input
                     self.isoutput = False
                     if self.symbol.id == self.devices.SET_ID:
@@ -160,13 +160,13 @@ class Parser:
                 else:  # unrecognised port
                     # unrecognised port
                     self.error(self.SYNTAX, self.port_error)
-                    device_id = None
-                    port_id = None
+                    return None, None
             else:  # there was no "."
                 self.isoutput = True
                 port_id = None
-            print(device_id, port_id)
             return device_id, port_id
+        else:
+            return None, None
 
     def device(self):
         """Parse a device name
@@ -265,12 +265,16 @@ class Parser:
             else:  # not another name or "=", therefore an error
                 self.error(self.SYNTAX, self.missing_symbol,
                            sym="=")  # missing "="
+        if self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.error(self.SYNTAX, self.missing_symbol, sym=";")
+        
 
     def connection(self):
         """Parse a connection statement.
         Make all the connections, as required."""
         first_device_id, first_port_id = self.signal_name()  # call signal_name and save device_id and port_id
-       
         second_device_ids = []  # list to store device ids of inputs
         second_port_ids = []  # list to store port ids of inputs
         error_list = []  # list to store errors returned from network
@@ -302,11 +306,16 @@ class Parser:
                     if self.network.OUTPUT_TO_OUTPUT in error_list:  # both ports are outputs
                         self.error(self.SYNTAX, self.output_to_output)  # TODO
                     if self.network.PORT_ABSENT in error_list:  # invalid port
-                        self.error(self.SEMANTIC, self.port_absent)  # TODO
-                    if all(item == self.network.NO_ERROR for item in error_list):  # there is no error
-                        pass
+                        self.error(self.SEMANTIC, self.port_absent)  
+                    # if all(item == self.network.NO_ERROR for item in error_list):  # there is no error
+                    #     self.symbol = self.scanner.get_symbol()
+                    #     # pass
             else:  # you don't see an arrow
                 self.error(self.SYNTAX, self.missing_symbol, sym="->")
+        if self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def monitor(self):
         """Parse a monitor statement.
@@ -321,6 +330,10 @@ class Parser:
             self.error(self.SEMANTIC, self.duplicate_monitor)
         elif error == self.monitors.NO_ERROR:
             pass
+        if self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+        else:
+            self.error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def section_devices(self):
         """
@@ -332,42 +345,33 @@ class Parser:
             # missing keyword "DEVICES
             self.error(self.SYNTAX, self.missing_keyword, keyword="DEVICES")
         self.assignment()
-        while self.symbol.type == self.scanner.SEMICOLON:  # see a ";"
-            self.symbol = self.scanner.get_symbol()
-            if ((self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.END_ID) or
-                self.symbol.type == self.scanner.EOF):
+        while self.symbol.id != self.scanner.END_ID: 
+            if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.CONNECT_ID:
+                self.error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            else:
-                self.assignment()
-        if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.END_ID:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.error(self.SYNTAX, self.missing_keyword, keyword="END")
+            if self.symbol.type == self.scanner.EOF:
+                break
+            self.assignment()
+        self.symbol = self.scanner.get_symbol()
 
     def section_connect(self):
         """
         Parse a section of connections.
         """
-        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.CONNECT_ID):  # checking for keyword "CONNECT" to start the connect section
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.CONNECT_ID):  # cheking for keyword "CONNECT" to start the devices section
             self.symbol = self.scanner.get_symbol()
         else:  # missing the keyword "CONNECT"
-            # missing keyword "CONNECT"
+            # missing keyword "CONNECT
             self.error(self.SYNTAX, self.missing_keyword, keyword="CONNECT")
         self.connection()
-        while self.symbol.type == self.scanner.SEMICOLON:  # see a ";"
-            self.symbol = self.scanner.get_symbol()
-            if ((self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.END_ID) or
-                self.symbol.type == self.scanner.EOF):
+        while self.symbol.id != self.scanner.END_ID: 
+            if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID:
+                self.error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            else:
-                self.connection()
-            # missing symbol, expected ";"
-        if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.END_ID:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.error(self.SYNTAX, self.missing_keyword, keyword="END")
+            if self.symbol.type == self.scanner.EOF:
+                break
+            self.connection()
+        #self.symbol = self.scanner.get_symbol()
 
     def section_monitor(self):
         """
@@ -379,19 +383,13 @@ class Parser:
             # missing keyword "CONNECT"
             self.error(self.SYNTAX, self.missing_keyword, keyword="MONITOR")
         self.monitor()
-        while self.symbol.type == self.scanner.SEMICOLON:  # see a ";"
-            self.symbol = self.scanner.get_symbol()
-            if ((self.symbol.type == self.scanner.KEYWORD and
-                self.symbol.id == self.scanner.END_ID) or
-                self.symbol.type == self.scanner.EOF):
+        while self.symbol.id != self.scanner.END_ID: 
+            if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID:
+                self.error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            else:
-                self.monitor()
-            # missing symbol, expected ";"
-        if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.END_ID:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self.error(self.SYNTAX, self.missing_keyword, keyword="END")
+            if self.symbol.type == self.scanner.EOF:
+                break
+            self.monitor()
         
 
     def program(self):

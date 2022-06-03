@@ -70,6 +70,8 @@ class Scanner:
                 self.names = names
                 self.afterdot = False
 
+                self.char_in_line = []
+
                 self.symbol_type_list = [
                     self.DOT,
                     self.COMMA,
@@ -98,7 +100,7 @@ class Scanner:
                 self.dtype_op_list = ["Q", "QBAR"]
                 [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID, self.END_ID,
                     self.I_ID] = self.names.lookup(self.keywords_list)
-                [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID, 
+                [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID,
                 self.NOR_ID, self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
                 [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(
                     self.device_list)
@@ -118,6 +120,7 @@ class Scanner:
         self.current_character = self.file.read(1)
         self.char_counter += 1
         if self.current_character == "\n":
+            self.char_in_line.append(self.char_counter-1)
             self.line_counter += 1
             self.char_counter = 0
 
@@ -152,10 +155,13 @@ class Scanner:
         highlight the location of the error"""
         error_location = self.file.tell()
         self.file.seek(0, 0)
-        line_text = self.file.read().split("\n")[self.line_counter-1]
-        output = "Error on line " + \
-            str(self.line_counter) + "\n" + line_text + \
-            "\n" + " "*(self.char_counter-1) + "^"
+        if self.char_counter == 0:
+            self.line_counter -=1
+            line_text = self.file.read().split("\n")[self.line_counter-1]
+            self.char_counter = self.char_in_line[-1]
+        else:
+            line_text = self.file.read().split("\n")[self.line_counter-1]
+        output = "Error on line " + str(self.line_counter) + "\n" + line_text + "\n" + " "*(self.char_counter-1) + "^"
 
         self.file.seek(0, 0)
         self.line_counter = 1
