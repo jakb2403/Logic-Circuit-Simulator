@@ -9,8 +9,8 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 import wx
-import wx.glcanvas as wxcanvas
-from OpenGL import GL, GLUT
+from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL, Command, Shutdown
+import wx.lib.agw.aui as aui
 
 from names import Names
 from devices import Devices
@@ -19,189 +19,11 @@ from monitors import Monitors
 from scanner import Scanner
 from parse2 import Parser
 
-
-class MyGLCanvas(wxcanvas.GLCanvas):
-    """Handle all drawing operations.
-
-    This class contains functions for drawing onto the canvas. It
-    also contains handlers for events relating to the canvas.
-
-    Parameters
-    ----------
-    parent: parent window.
-    devices: instance of the devices.Devices() class.
-    monitors: instance of the monitors.Monitors() class.
-
-    Public methods
-    --------------
-    init_gl(self): Configures the OpenGL context.
-
-    render(self, text): Handles all drawing operations.
-
-    on_paint(self, event): Handles the paint event.
-
-    on_size(self, event): Handles the canvas resize event.
-
-    on_mouse(self, event): Handles mouse events.
-
-    render_text(self, text, x_pos, y_pos): Handles text drawing
-                                           operations.
-    """
-
-    def __init__(self, parent, devices, monitors):
-        """Initialise canvas properties and useful variables."""
-        super().__init__(parent, -1,
-                         attribList=[wxcanvas.WX_GL_RGBA,
-                                     wxcanvas.WX_GL_DOUBLEBUFFER,
-                                     wxcanvas.WX_GL_DEPTH_SIZE, 16, 0])
-        GLUT.glutInit()
-        self.init = False
-        self.context = wxcanvas.GLContext(self)
-
-        # Initialise variables for panning
-        self.pan_x = 0
-        self.pan_y = 0
-        self.last_mouse_x = 0  # previous mouse x position
-        self.last_mouse_y = 0  # previous mouse y position
-
-        # Initialise variables for zooming
-        self.zoom = 1
-
-        # Bind events to the canvas
-        self.Bind(wx.EVT_PAINT, self.on_paint)
-        self.Bind(wx.EVT_SIZE, self.on_size)
-        self.Bind(wx.EVT_MOUSE_EVENTS, self.on_mouse)
-
-    def init_gl(self):
-        """Configure and initialise the OpenGL context."""
-        size = self.GetClientSize()
-        self.SetCurrent(self.context)
-        GL.glDrawBuffer(GL.GL_BACK)
-        GL.glClearColor(1.0, 1.0, 1.0, 0.0)
-        GL.glViewport(0, 0, size.width, size.height)
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GL.glLoadIdentity()
-        GL.glOrtho(0, size.width, 0, size.height, -1, 1)
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-        GL.glLoadIdentity()
-        GL.glTranslated(self.pan_x, self.pan_y, 0.0)
-        GL.glScaled(self.zoom, self.zoom, self.zoom)
-
-    def render(self, text):
-        """Handle all drawing operations."""
-        self.SetCurrent(self.context)
-        if not self.init:
-            # Configure the viewport, modelview and projection matrices
-            self.init_gl()
-            self.init = True
-
-        # Clear everything
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-
-        # Draw specified text at position (10, 10)
-        self.render_text(text, 10, 10)
-
-        # Draw a sample signal trace
-        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-        GL.glBegin(GL.GL_LINE_STRIP)
-        for i in range(10):
-            x = (i * 20) + 10
-            x_next = (i * 20) + 30
-            if i % 2 == 0:
-                y = 75
-            else:
-                y = 100
-            GL.glVertex2f(x, y)
-            GL.glVertex2f(x_next, y)
-        GL.glEnd()
-
-        # We have been drawing to the back buffer, flush the graphics pipeline
-        # and swap the back buffer to the front
-        GL.glFlush()
-        self.SwapBuffers()
-
-    def on_paint(self, event):
-        """Handle the paint event."""
-        self.SetCurrent(self.context)
-        if not self.init:
-            # Configure the viewport, modelview and projection matrices
-            self.init_gl()
-            self.init = True
-
-        size = self.GetClientSize()
-        text = "".join(["Canvas redrawn on paint event, size is ",
-                        str(size.width), ", ", str(size.height)])
-        self.render(text)
-
-    def on_size(self, event):
-        """Handle the canvas resize event."""
-        # Forces reconfiguration of the viewport, modelview and projection
-        # matrices on the next paint event
-        self.init = False
-
-    def on_mouse(self, event):
-        """Handle mouse events."""
-        text = ""
-        # Calculate object coordinates of the mouse position
-        size = self.GetClientSize()
-        ox = (event.GetX() - self.pan_x) / self.zoom
-        oy = (size.height - event.GetY() - self.pan_y) / self.zoom
-        old_zoom = self.zoom
-        if event.ButtonDown():
-            self.last_mouse_x = event.GetX()
-            self.last_mouse_y = event.GetY()
-            text = "".join(["Mouse button pressed at: ", str(event.GetX()),
-                            ", ", str(event.GetY())])
-        if event.ButtonUp():
-            text = "".join(["Mouse button released at: ", str(event.GetX()),
-                            ", ", str(event.GetY())])
-        if event.Leaving():
-            text = "".join(["Mouse left canvas at: ", str(event.GetX()),
-                            ", ", str(event.GetY())])
-        if event.Dragging():
-            self.pan_x += event.GetX() - self.last_mouse_x
-            self.pan_y -= event.GetY() - self.last_mouse_y
-            self.last_mouse_x = event.GetX()
-            self.last_mouse_y = event.GetY()
-            self.init = False
-            text = "".join(["Mouse dragged to: ", str(event.GetX()),
-                            ", ", str(event.GetY()), ". Pan is now: ",
-                            str(self.pan_x), ", ", str(self.pan_y)])
-        if event.GetWheelRotation() < 0:
-            self.zoom *= (1.0 + (
-                event.GetWheelRotation() / (20 * event.GetWheelDelta())))
-            # Adjust pan so as to zoom around the mouse position
-            self.pan_x -= (self.zoom - old_zoom) * ox
-            self.pan_y -= (self.zoom - old_zoom) * oy
-            self.init = False
-            text = "".join(["Negative mouse wheel rotation. Zoom is now: ",
-                            str(self.zoom)])
-        if event.GetWheelRotation() > 0:
-            self.zoom /= (1.0 - (
-                event.GetWheelRotation() / (20 * event.GetWheelDelta())))
-            # Adjust pan so as to zoom around the mouse position
-            self.pan_x -= (self.zoom - old_zoom) * ox
-            self.pan_y -= (self.zoom - old_zoom) * oy
-            self.init = False
-            text = "".join(["Positive mouse wheel rotation. Zoom is now: ",
-                            str(self.zoom)])
-        if text:
-            self.render(text)
-        else:
-            self.Refresh()  # triggers the paint event
-
-    def render_text(self, text, x_pos, y_pos):
-        """Handle text drawing operations."""
-        GL.glColor3f(0.0, 0.0, 0.0)  # text is black
-        GL.glRasterPos2f(x_pos, y_pos)
-        font = GLUT.GLUT_BITMAP_HELVETICA_12
-
-        for character in text:
-            if character == '\n':
-                y_pos = y_pos - 20
-                GL.glRasterPos2f(x_pos, y_pos)
-            else:
-                GLUT.glutBitmapCharacter(font, ord(character))
+from gui_cmd import CmdPanel
+from gui_monitor_sidebar import MonitorSidebarPanel
+from gui_switches_sidebar import SwitchesSidebarPanel
+from gui_canvas import CanvasPanel
+from gui_userint import GuiUserInterface
 
 
 class Gui(wx.Frame):
@@ -227,9 +49,27 @@ class Gui(wx.Frame):
     on_text_box(self, event): Event handler for when the user enters text.
     """
 
-    def __init__(self, title, path, names, devices, network, monitors):
+    def __init__(self, title, names, devices, network, monitors):
         """Initialise widgets and layout."""
-        super().__init__(parent=None, title=title, size=(800, 600))
+        super().__init__(parent=None, title=title, size=(1200, 600))
+
+        self.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT,
+                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+
+        self.names = names
+        self.devices = devices
+        self.network = network
+        self.monitors = monitors
+        self.userint = GuiUserInterface(
+            self.names, self.devices, self.network, self.monitors)
+
+        self.cycles_completed = 0
+        self.spin_value = 10
+
+        # Create AUI manager
+        self.mgr = aui.AuiManager()
+        # Set the window that the AUI manages
+        self.mgr.SetManagedWindow(self)
 
         # Configure the file menu
         fileMenu = wx.Menu()
@@ -239,36 +79,135 @@ class Gui(wx.Frame):
         menuBar.Append(fileMenu, "&File")
         self.SetMenuBar(menuBar)
 
-        # Canvas for drawing signals
-        self.canvas = MyGLCanvas(self, devices, monitors)
+        # Configure the toolbar
+        self.toolbar = self.CreateToolBar()
+        self.load_button = self.toolbar.AddTool(
+            100, "Load", wx.Bitmap("icons/folder.png"))
+        self.run_button = self.toolbar.AddTool(
+            101, "Run", wx.Bitmap("icons/run.png"))
+        self.cont_button = self.toolbar.AddTool(
+            102, "Continue", wx.Bitmap("icons/continue.png"))
+        self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
+        self.toolbar.AddControl(self.cycle_spin)
+        self.save_button = self.toolbar.AddTool(
+            103, "Save", wx.Bitmap("icons/save.png"))
+        # self.reset_button = self.toolbar.AddTool(104, "Reset", wx.Bitmap("icons/reset.png"))
+        self.exit_button = self.toolbar.AddTool(
+            105, "Exit", wx.Bitmap("icons/exit.png"))
 
-        # Configure the widgets
-        self.text = wx.StaticText(self, wx.ID_ANY, "Cycles")
-        self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
-        self.run_button = wx.Button(self, wx.ID_ANY, "Run")
-        self.text_box = wx.TextCtrl(self, wx.ID_ANY, "",
-                                    style=wx.TE_PROCESS_ENTER)
+        # Configure the status bar
+        self.statusbar = self.CreateStatusBar()
+        self.statusbar.SetStatusText("Status")
 
-        # Bind events to widgets
-        self.Bind(wx.EVT_MENU, self.on_menu)
-        self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
-        self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
-        self.text_box.Bind(wx.EVT_TEXT_ENTER, self.on_text_box)
+        # Create instance of panel classes
+        self.cmd = CmdPanel(self, self.names, self.devices, self.network,
+                            self.monitors, self.userint, self.push_status)
+        self.input_cmd = self.cmd.input_cmd
 
-        # Configure sizers for layout
-        main_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        side_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.monitor_sidebar = MonitorSidebarPanel(
+            self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+        self.switches_sidebar = SwitchesSidebarPanel(
+            self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+        self.canvas_panel = CanvasPanel(
+            self, self.names, self.devices, self.network, self.monitors, self.push_status)
 
-        main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
-        main_sizer.Add(side_sizer, 1, wx.ALL, 5)
+        # Add panels to AUI manager
+        self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
+        self.mgr.AddPane(
+            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
+        self.mgr.AddPane(
+            self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
+        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Right().Floatable(
+            False).CloseButton(False).Caption("Command Line"))
 
-        side_sizer.Add(self.text, 1, wx.TOP, 10)
-        side_sizer.Add(self.spin, 1, wx.ALL, 5)
-        side_sizer.Add(self.run_button, 1, wx.ALL, 5)
-        side_sizer.Add(self.text_box, 1, wx.ALL, 5)
+        # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
+        agwFlags = self.mgr.GetAGWFlags()
+        self.mgr.SetAGWFlags(agwFlags | aui.AUI_MGR_AERO_DOCKING_GUIDES)
 
-        self.SetSizeHints(600, 600)
-        self.SetSizer(main_sizer)
+        self.mgr.Update()
+
+        self.Bind(wx.EVT_CLOSE, self.on_close)
+        self.toolbar.Bind(wx.EVT_TOOL, self.on_click_tool)
+        self.cycle_spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
+
+        self.toolbar.Realize()
+        self.Centre()
+        self.Show(True)
+
+        if not self.startup():
+            print("\nYou closed the file dialog box.\nYou must choose a file to load in order to run a simulation.\n")
+            self.on_close(None)
+
+    def startup(self):
+        with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return False    # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            self.path = fileDialog.GetPath()
+            self.scanner = Scanner(self.path, self.names)
+            self.parser = Parser(self.names, self.devices,
+                                 self.network, self.monitors, self.scanner)
+            text = "".join(["Opening file: ", self.path])
+            self.push_status(text)
+            return True
+
+    def on_spin(self, event):
+        """Handle the event when the user changes the spin control value."""
+        self.spin_value = self.cycle_spin.GetValue()
+        text = "".join(["New spin control value: ", str(self.spin_value)])
+
+    def on_click_tool(self, event):
+        """Handle the event when the user clicks a button in the toolbar"""
+        tool_id = event.GetId()
+        if tool_id == 100:  # Load button
+            with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+                if fileDialog.ShowModal() == wx.ID_CANCEL:
+                    return     # the user changed their mind
+
+                # Proceed loading the file chosen by the user
+                self.path = fileDialog.GetPath()
+                self.scanner = Scanner(self.path, self.names)
+                self.parser = Parser(
+                    self.names, self.devices, self.network, self.monitors, self.scanner)
+                text = "".join(["Opening file: ", self.path])
+                self.push_status(text)
+
+        elif tool_id == 101:  # Run button
+            command = f"r {self.spin_value}"
+            self.input_cmd(command)
+            text = "Run button pressed"
+            self.push_status(text)
+        elif tool_id == 102:  # Continue button
+            command = f"c {self.spin_value}"
+            self.input_cmd(command)
+            text = "Continue button pressed."
+            self.push_status(text)
+        elif tool_id == 103:  # Save button
+            with wx.FileDialog(self, "Save monitor plot", wildcard="PNG files (*.png)|*.png",
+                               style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+                if fileDialog.ShowModal() == wx.ID_CANCEL:
+                    return     # the user changed their mind
+
+                # save the current contents in the file
+                path = fileDialog.GetPath()
+                try:
+                    with open(path, 'w') as file:
+                        self.canvas_panel.canvas.save_to_png(path)
+                        # self.doSaveData(bitmap)
+                except IOError:
+                    wx.LogError(
+                        "Cannot save current data in file '%s'." % path)
+            text = "".join(["Saved file as: ", path])
+            self.push_status(text)
+
+        elif tool_id == 104:  # Reset button
+            text = "Resetting"
+            self.push_status(text)
+        elif tool_id == 105:  # Exit button
+            self.on_close(None)
 
     def on_menu(self, event):
         """Handle the event when the user selects a menu item."""
@@ -276,22 +215,13 @@ class Gui(wx.Frame):
         if Id == wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
-            wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",
+            wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\nAdapted by P3 Group 15\nHyun Seung Cho, Joe Water and John Browb\n2022",
                           "About Logsim", wx.ICON_INFORMATION | wx.OK)
 
-    def on_spin(self, event):
-        """Handle the event when the user changes the spin control value."""
-        spin_value = self.spin.GetValue()
-        text = "".join(["New spin control value: ", str(spin_value)])
-        self.canvas.render(text)
+    def push_status(self, text):
+        self.statusbar.PushStatusText(text)
 
-    def on_run_button(self, event):
-        """Handle the event when the user clicks the run button."""
-        text = "Run button pressed."
-        self.canvas.render(text)
-
-    def on_text_box(self, event):
-        """Handle the event when the user enters text."""
-        text_box_value = self.text_box.GetValue()
-        text = "".join(["New text box value: ", text_box_value])
-        self.canvas.render(text)
+    def on_close(self, event):
+        # deinitialise the frame manager
+        self.mgr.UnInit()
+        self.Destroy()
