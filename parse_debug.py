@@ -18,6 +18,9 @@ new_parser = Parser(new_names, new_devices, new_network, new_monitors, new_scann
 new_parser.symbol = new_parser.scanner.get_symbol()
 # new_parser.signal_name()
 # new_parser.names()
-new_parser.assignment()
+# new_parser.assignment()
+new_parser.section_devices()
+print([(device.device_id, device.device_kind, device.inputs, device.outputs) for device in new_devices.devices_list])
+new_parser.connection()
 
 
