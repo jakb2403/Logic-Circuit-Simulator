@@ -47,7 +47,8 @@ class Parser:
         self.error_count = 0
         self.isoutput = True
         self.error_categories = [self.SYNTAX, self.SEMANTIC] = range(2)
-        self.stopping_symbols = [self.scanner.SEMICOLON, self.scanner.EOF] = range(2)
+        self.stopping_symbols = [self.scanner.SEMICOLON,
+                                 self.scanner.EOF] = range(2)
         self.missed_symbol = False
 
         [self.invalid_device_name,
@@ -133,6 +134,7 @@ class Parser:
                 or  [name].[dtype_op]
             Returns device_id and port_id
         """
+        port_id_list =[]
         device_id = self.name()
         if device_id is not None:  # if the device name is valid
             if self.symbol.type == self.scanner.DOT:  # seen a "."
@@ -140,7 +142,12 @@ class Parser:
                 if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.I_ID:  # see "I"
                     self.isoutput = False
                     self.symbol = self.scanner.get_symbol()
-                    port_id = self.argument()  # TODO do we need to check for bad port_id
+                    arg = self.argument()  # TODO do we need to check for bad port_id
+                    for i in range(1,arg+1):
+                        input_name = "".join(["I", str(i)])
+                        input_id = self.names.lookup(input_name)
+                        port_id_list.append(input_id)
+                    return device_id, port_id_list
                 elif self.symbol.type == self.scanner.DTYPE_IP:  # see dtype input
                     self.isoutput = False
                     if self.symbol.id == self.devices.SET_ID:
@@ -164,7 +171,7 @@ class Parser:
             else:  # there was no "."
                 self.isoutput = True
                 port_id = None
-            return device_id, port_id
+                return device_id, port_id
         else:
             return None, None
 
@@ -308,16 +315,13 @@ class Parser:
                         self.error(self.SYNTAX, self.output_to_output)  # TODO
                     if self.network.PORT_ABSENT in error_list:  # invalid port
                         self.error(self.SEMANTIC, self.port_absent)  
-                    if all(item == self.network.NO_ERROR for item in error_list):  # there is no error
-                        print("here")
-                        pass
+                    # if all(item == self.network.NO_ERROR for item in error_list):  # there is no error
+                    #     pass
             else:  # you don't see an arrow
                 self.error(self.SYNTAX, self.missing_symbol, sym="->")
         if self.symbol.type == self.scanner.SEMICOLON:
-            
             self.symbol = self.scanner.get_symbol()
         else:
-            print("here")
             self.error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def monitor(self):
