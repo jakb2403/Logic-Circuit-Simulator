@@ -1,7 +1,6 @@
 DEVICES
-    SW1, SW2, SW3 = SWITCH(1);
-    NAND1 = DTYPE;
-
+    SW1, SW2 = SWITCH(1);
+    NAND1 = AND(4);
 END
 
-SW1 ->   NAND1.SET;
+SW1 ->  NAND1.I2;

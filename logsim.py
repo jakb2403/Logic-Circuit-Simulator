@@ -31,10 +31,11 @@ def main(arg_list):
     Run either the command line user interface, the graphical user interface,
     or display the usage message.
     """
-    usage_message = ("Usage:\n"
+    usage_message = ("\nUsage:\n"
                      "Show help: logsim.py -h\n"
                      "Command line user interface: logsim.py -c <file path>\n"
-                     "Graphical user interface: logsim.py <file path>")
+                     "Graphical user interface: logsim.py\n"
+                     "This will bring up a file dialog where you can choose the file you wish to run.")
     try:
         options, arguments = getopt.getopt(arg_list, "hc:")
     except getopt.GetoptError:
@@ -43,14 +44,15 @@ def main(arg_list):
         sys.exit()
 
     # Initialise instances of the four inner simulator classes
-    # names = Names()
-    # devices = Devices(names)
-    # network = Network(names, devices)
-    # monitors = Monitors(names, devices, network)
-    names = None
-    devices = None
-    network = None
-    monitors = None
+    names = Names()
+    devices = Devices(names)
+    network = Network(names, devices)
+    monitors = Monitors(names, devices, network)
+
+    # names = None
+    # devices = None
+    # network = None
+    # monitors = None
 
     for option, path in options:
         if option == "-h":  # print the usage message
@@ -65,22 +67,11 @@ def main(arg_list):
                 userint.command_interface()
 
     if not options:  # no option given, use the graphical user interface
-
-        if len(arguments) != 1:  # wrong number of arguments
-            print("Error: one file path required\n")
-            print(usage_message)
-            sys.exit()
-
-        [path] = arguments
-        scanner = Scanner(path, names)
-        parser = Parser(names, devices, network, monitors, scanner)
-        if parser.parse_network():
-            # Initialise an instance of the gui.Gui() class
-            app = wx.App()
-            gui = Gui("Logic Simulator", path, names, devices, network,
-                      monitors)
-            gui.Show(True)
-            app.MainLoop()
+        app = wx.App()
+        gui = Gui("Logic Simulator", names, devices, network,
+                  monitors)
+        gui.Show(True)
+        app.MainLoop()
 
 
 if __name__ == "__main__":
