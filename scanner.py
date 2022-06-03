@@ -91,26 +91,29 @@ class Scanner:
                     self.NAME,
                     self.EOF] = range(17)
 
-                self.keywords_list = ["DEVICES", "CONNECT", "MONITOR", "END", "I"]
-                self.device_arg_list = ["CLOCK", "AND", "NAND", "OR", "NOR", "SWITCH"]
+                self.keywords_list = ["DEVICES",
+                                      "CONNECT", "MONITOR", "END", "I"]
+                self.device_arg_list = ["CLOCK", "AND",
+                                        "NAND", "OR", "NOR", "SWITCH"]
                 self.device_list = ["DTYPE", "XOR"]
                 self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
                 self.dtype_op_list = ["Q", "QBAR"]
                 [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID, self.END_ID,
                     self.I_ID] = self.names.lookup(self.keywords_list)
-                [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID, self.NOR_ID,
-                    self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
-                [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(self.device_list)
+                [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID,
+                self.NOR_ID, self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
+                [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(
+                    self.device_list)
                 [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
                     self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
-                [self.Q_ID, self.QBAR_ID] = self.names.lookup(self.dtype_op_list)
-            
+                [self.Q_ID, self.QBAR_ID] = self.names.lookup(
+                    self.dtype_op_list)
+
             else:
                 print("\nError: incorrect file type\n")
         else:
             print("\nError invalid path\n")
 
-            
     def advance(self):
         """Read the next character."""
         # add 1 to the character counter to track location in line

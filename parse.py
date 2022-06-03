@@ -47,8 +47,7 @@ class Parser:
         self.error_count = 0
         self.isoutput = True
         self.error_categories = [self.SYNTAX, self.SEMANTIC] = range(2)
-        self.stopping_symbols = [self.scanner.SEMICOLON,
-                                 self.scanner.EOF]
+        self.stopping_symbols = [self.scanner.SEMICOLON, self.scanner.EOF] = range(2)
         self.missed_symbol = False
 
         [self.invalid_device_name,
