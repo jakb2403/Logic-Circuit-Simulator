@@ -74,31 +74,31 @@ class Parser:
             print("SemanticError: ", end="")
 
         if type == self.invalid_device_name:
-            print("invalid device name")
+            print("invalid device name\n")
         if type == self.invalid_arg_type:
-            print("argument type error")
+            print("argument type error\n")
         if type == self.port_error:
-            print("invalid port identifier")
+            print("invalid port identifier\n")
         if type == self.missing_symbol:
-            print("missing symbol: ", sym)
+            print("missing symbol: ", sym, "\n")
         if type == self.unrecognised_device_type:
-            print("unrecognised device type")
+            print("unrecognised device type\n")
         if type == self.missing_keyword:
-            print("missing keyword", keyword)
+            print("missing keyword", keyword, "\n")
         if type == self.invalid_arg:
-            print("argument outside of accepted range")
+            print("argument outside of accepted range\n")
         if type == self.duplicate_name:
-            print("name already used in previous device assignment")
+            print("name already used in previous device assignment\n")
         if type == self.duplicate_monitor:
-            print("monitor point already declared")
+            print("monitor point already declared\n")
         if type == self.input_to_input:
-            print("input connected to input")
+            print("input connected to input\n")
         if type == self.output_to_output:
-            print("output connected to output")
+            print("output connected to output\n")
         if type == self.port_absent:
-            print("port is absent")
+            print("port is absent\n")
         if type == self.input_connected:
-            print("input is already connected")
+            print("input is already connected\n")
         while self.symbol.type not in self.stopping_symbols:
             self.symbol = self.scanner.get_symbol()
 
@@ -143,32 +143,39 @@ class Parser:
                     self.isoutput = False
                     self.symbol = self.scanner.get_symbol()
                     port_id = self.names.lookup(f"I{self.argument()}")  # TODO do we need to check for bad port_id
+                    return (device_id, port_id)
                 elif self.symbol.type == self.scanner.DTYPE_IP:  # see dtype input
                     self.isoutput = False
                     if self.symbol.id == self.devices.SET_ID:
                         port_id = self.devices.SET_ID
+                        return (device_id, port_id)
                     elif self.symbol.id == self.devices.CLEAR_ID:
                         port_id = self.devices.CLEAR_ID
+                        return (device_id, port_id)
                     elif self.symbol.id == self.devices.DATA_ID:
                         port_id = self.devices.DATA_ID
+                        return (device_id, port_id)
                     elif self.symbol.id == self.devices.CLK_ID:
                         port_id = self.devices.CLK_ID
+                        return (device_id, port_id)
                 elif self.symbol.type == self.scanner.DTYPE_OP:  # see dtype output
                     self.isoutput = True
                     if self.symbol.id == self.devices.Q_ID:
                         port_id = self.devices.Q_ID
+                        return (device_id, port_id)
                     elif self.symbol.id == self.devices.QBAR_ID:
                         port_id = self.devices.QBAR_ID
+                        return (device_id, port_id)
                 else:  # unrecognised port
                     # unrecognised port
                     self.error(self.SYNTAX, self.port_error)
-                    return None, None
+                    return (None, None)
             else:  # there was no "."
                 self.isoutput = True
                 port_id = None
-                return device_id, port_id
+                return (device_id, port_id)
         else:
-            return None, None
+            return (None, None)
 
     def device(self):
         """Parse a device name
@@ -323,10 +330,7 @@ class Parser:
         """Parse a monitor statement.
         Make all monitor points, as required."""
         device_id, output_id = self.signal_name()
-        if not self.isoutput:
-            input_id, input_port = device_id, output_id
-            device_id, output_id = self.network.get_connected_output(
-                input_id, input_port)
+   
         error = self.monitors.make_monitor(device_id, output_id)
         if error == self.monitors.MONITOR_PRESENT:
             self.error(self.SEMANTIC, self.duplicate_monitor)
@@ -373,6 +377,7 @@ class Parser:
             if self.symbol.type == self.scanner.EOF:
                 break
             self.connection()
+        self.symbol = self.scanner.get_symbol()   
         #self.symbol = self.scanner.get_symbol()
 
     def section_monitor(self):
@@ -392,6 +397,7 @@ class Parser:
             if self.symbol.type == self.scanner.EOF:
                 break
             self.monitor()
+        self.symbol = self.scanner.get_symbol()
 
 
     def program(self):
