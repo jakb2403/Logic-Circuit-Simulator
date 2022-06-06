@@ -137,7 +137,6 @@ class Parser:
 
         while self.symbol.type not in self.stopping_symbols:
             self.symbol = self.scanner.get_symbol()
-            print("here")
 
     def _name(self):
         """Parse a name and return the name ID if it is a valid name.
@@ -303,6 +302,8 @@ class Parser:
             device_id = self._name()
             if device_id is not None:  # valid name
                 name_list.append(device_id)  # store valid name in list
+            else: # it's not a valid name
+                break
         # we encountered another name without a ","
         if self.symbol.type == self.scanner.NAME:
             self._error(self.SYNTAX, self.missing_symbol,
