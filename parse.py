@@ -84,10 +84,11 @@ class Parser:
          self.invalid_arg,
          self.duplicate_name,
          self.duplicate_monitor,
+         self.monitor_is_input,
          self.input_to_input,
          self.output_to_output,
          self.port_absent,
-         self.input_connected] = self.names.unique_error_codes(17)
+         self.input_connected] = self.names.unique_error_codes(18)
 
     def _error(self, category, type=None, sym=None, keyword=None):
         """Print error category (syntax or semantic), error type,
@@ -129,6 +130,8 @@ class Parser:
             print("name already used in previous device assignment\n")
         if type == self.duplicate_monitor:
             print("monitor point already declared\n")
+        if type == self.monitor_is_input:
+            print("monitor point is an input, only outputs are allowed\n")
         if type == self.input_to_input:
             print("input connected to input\n")
         if type == self.output_to_output:
@@ -352,60 +355,60 @@ class Parser:
         if first_device_id is not None:  # it's a valid signal name
             if self.symbol.type == self.scanner.ARROW:  # see a "->"
                 self.symbol = self.scanner.get_symbol()
-            else:  # you don't see an arrow
-                self._error(self.SYNTAX, self.missing_symbol, sym="->")
-            second_device_id, second_port_id = self._signal_name()
-            if second_device_id is not None:  # it's a valid signal name
-                # add device_id to list of device ids
-                second_device_ids.append(second_device_id)
-                # add port_id to list of port ids
-                second_port_ids.append(second_port_id)
-            while self.symbol.type == self.scanner.COMMA:  # see a ","
-                self.symbol = self.scanner.get_symbol()
                 second_device_id, second_port_id = self._signal_name()
                 if second_device_id is not None:  # it's a valid signal name
                     # add device_id to list of device ids
                     second_device_ids.append(second_device_id)
                     # add port_id to list of port ids
                     second_port_ids.append(second_port_id)
-                else:  # signal_name raises an error
-                    break
-            for i in range(
-                    len(second_device_ids)):  # iterate over devices in connection output
-                error = self.network.make_connection(
-                    first_device_id, first_port_id,
-                    second_device_ids[i],
-                    second_port_ids[i])  # see if an error is returned by network.make_connection
-                # add the error to a list of errors
-                error_list.append(error)
-            if self.network.INPUT_CONNECTED in error_list:  # input is already in a connection
-                self._error(self.SEMANTIC,
-                            self.input_connected)
-            if self.network.INPUT_TO_INPUT in error_list:  # both ports are inputs
-                self._error(self.SYNTAX, self.input_to_input)
-            if self.network.OUTPUT_TO_OUTPUT in error_list:  # both ports are outputs
-                self._error(self.SYNTAX, self.output_to_output)
-            if self.network.PORT_ABSENT in error_list:  # invalid port
-                self._error(self.SEMANTIC, self.port_absent)
-        if self.symbol.type == self.scanner.SEMICOLON:
-            self.symbol = self.scanner.get_symbol()
-        else:  # you don't see a ";"
-            self._error(self.SYNTAX, self.missing_symbol, sym=";")
+                while self.symbol.type == self.scanner.COMMA:  # see a ","
+                    self.symbol = self.scanner.get_symbol()
+                    second_device_id, second_port_id = self._signal_name()
+                    if second_device_id is not None:  # it's a valid signal name
+                        # add device_id to list of device ids
+                        second_device_ids.append(second_device_id)
+                        # add port_id to list of port ids
+                        second_port_ids.append(second_port_id)
+                    else:  # signal_name raises an error
+                        break
+                for i in range(
+                        len(second_device_ids)):  # iterate over devices in connection output
+                    error = self.network.make_connection(
+                        first_device_id, first_port_id,
+                        second_device_ids[i],
+                        second_port_ids[i])  # see if an error is returned by network.make_connection
+                    # add the error to a list of errors
+                    error_list.append(error)
+                if self.network.INPUT_CONNECTED in error_list:  # input is already in a connection
+                    self._error(self.SEMANTIC,
+                                self.input_connected)
+                if self.network.INPUT_TO_INPUT in error_list:  # both ports are inputs
+                    self._error(self.SYNTAX, self.input_to_input)
+                if self.network.OUTPUT_TO_OUTPUT in error_list:  # both ports are outputs
+                    self._error(self.SYNTAX, self.output_to_output)
+                if self.network.PORT_ABSENT in error_list:  # invalid port
+                    self._error(self.SEMANTIC, self.port_absent)
+                if self.symbol.type == self.scanner.SEMICOLON:
+                    self.symbol = self.scanner.get_symbol()
+                else:  # you don't see a ";"
+                    self._error(self.SYNTAX, self.missing_symbol, sym=";")
+            else:  # you don't see an arrow
+                self._error(self.SYNTAX, self.missing_symbol, sym=">")
 
-    def monitor(self):
+    def _monitor(self):
         """Parse a monitor statement.
         Make all monitor points, as required."""
         device_id, output_id = self._signal_name()
-
-        error = self.monitors.make_monitor(device_id, output_id)
-        if error == self.monitors.MONITOR_PRESENT:
-            self._error(self.SEMANTIC, self.duplicate_monitor)
-        elif error == self.monitors.NO_ERROR:
-            pass
-        if self.symbol.type == self.scanner.SEMICOLON:
-            self.symbol = self.scanner.get_symbol()
-        else:
-            self._error(self.SYNTAX, self.missing_symbol, sym=";")
+        if self.isoutput is False: # monitor point is an input, invalid
+            self._error(self.SYNTAX, self.monitor_is_input)
+        else: # monitor point is an output, valid
+            error = self.monitors.make_monitor(device_id, output_id) # see if an error is returned by monitors.make_monitor
+            if error == self.monitors.MONITOR_PRESENT:
+                self._error(self.SEMANTIC, self.duplicate_monitor)
+            if self.symbol.type == self.scanner.SEMICOLON:
+                self.symbol = self.scanner.get_symbol()
+            else:
+                self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def section_devices(self):
         """
@@ -458,14 +461,14 @@ class Parser:
         else:  # missing the keyword "MONITOR"
             # missing keyword "CONNECT"
             self._error(self.SYNTAX, self.missing_keyword, keyword="MONITOR")
-        self.monitor()
+        self._monitor()
         while self.symbol.id != self.scanner.END_ID:
             if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID:
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
             if self.symbol.type == self.scanner.EOF:
                 break
-            self.monitor()
+            self._monitor()
         self.symbol = self.scanner.get_symbol()
 
     def program(self):

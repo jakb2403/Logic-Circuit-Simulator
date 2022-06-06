@@ -234,14 +234,10 @@ class Scanner:
             self.advance()
 
         # if symbol is an arrow
-        elif self.current_character == "-":
+        elif self.current_character == ">":
             self.afterdot = False
+            symbol.type = self.ARROW
             self.advance()
-            if self.current_character == ">":
-                symbol.type = self.ARROW
-                self.advance()
-            else:
-                self.advance()
 
         # if symbol is an openbracket
         elif self.current_character == "(":

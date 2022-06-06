@@ -1,4 +1,4 @@
 G1, G2 = NAND(2);
 G3 = SWITCH(0);
 
-G1 -> G2;
+G1  G2.I1;
