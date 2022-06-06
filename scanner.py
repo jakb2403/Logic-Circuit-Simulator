@@ -51,11 +51,13 @@ class Scanner:
     -------------
     get_symbol(self): Translates the next sequence of characters into a symbol
                       and returns the symbol.
+
+    error_found(self):Outputs the current line and a ^ symbol on the next line
+                      to highlight the location of the error
     """
 
     def __init__(self, path, names):
         """Open specified file and initialise reserved words and IDs."""
-
         self.char_counter = 0
         self.line_counter = 1
 
@@ -64,7 +66,6 @@ class Scanner:
                 self.file = open(Path(str(path)), 'r')
 
                 self.file.seek(0, 0)
-
                 self.current_character = self.file.read(1)
 
                 self.names = names
@@ -80,8 +81,6 @@ class Scanner:
                     self.ARROW,
                     self.OPENBRACKET,
                     self.CLOSEDBRACKET,
-                    self.OPENCURLYBRACKET,
-                    self.CLOSEDCURLYBRACKET,
                     self.KEYWORD,
                     self.DEVICE_ARG,
                     self.DEVICE,
@@ -89,7 +88,8 @@ class Scanner:
                     self.DTYPE_OP,
                     self.NUMBER,
                     self.NAME,
-                    self.EOF] = range(17)
+                    self.LINEBREAK,
+                    self.EOF] = range(16)
 
                 self.keywords_list = ["DEVICES",
                                       "CONNECT", "MONITOR", "END", "I"]
@@ -98,14 +98,16 @@ class Scanner:
                 self.device_list = ["DTYPE", "XOR"]
                 self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
                 self.dtype_op_list = ["Q", "QBAR"]
-                [self.DEVICES_ID, self.CONNECT_ID, self.MONITOR_ID, self.END_ID,
-                    self.I_ID] = self.names.lookup(self.keywords_list)
-                [self.CLOCK_ID, self.AND_ID, self.NAND_ID, self.OR_ID,
-                self.NOR_ID, self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
+                [self.DEVICES_ID, self.CONNECT_ID,
+                 self.MONITOR_ID, self.END_ID,
+                 self.I_ID] = self.names.lookup(self.keywords_list)
+                [self.CLOCK_ID, self.AND_ID, self.NAND_ID,
+                 self.OR_ID, self.NOR_ID,
+                 self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
                 [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(
-                    self.device_list)
+                 self.device_list)
                 [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
-                    self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
+                 self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
                 [self.Q_ID, self.QBAR_ID] = self.names.lookup(
                     self.dtype_op_list)
 
@@ -156,12 +158,13 @@ class Scanner:
         error_location = self.file.tell()
         self.file.seek(0, 0)
         if self.char_counter == 0:
-            self.line_counter -=1
-            line_text = self.file.read().split("\n")[self.line_counter-1]
+            self.line_counter -= 1
+            line_text = self.file. read().split("\n")[self.line_counter-1]
             self.char_counter = self.char_in_line[-1]
         else:
             line_text = self.file.read().split("\n")[self.line_counter-1]
-        output = "Error on line " + str(self.line_counter) + "\n" + line_text + "\n" + " "*(self.char_counter-1) + "^"
+        output = ("Error on line " + str(self.line_counter) + "\n" +
+                  line_text + "\n" + " "*(self.char_counter-1) + "^")
 
         self.file.seek(0, 0)
         self.line_counter = 1
@@ -252,16 +255,10 @@ class Scanner:
             symbol.type = self.CLOSEDBRACKET
             self.advance()
 
-        # if symbol is an opencurlybracket
-        elif self.current_character == "{":
+        # if symbol is a linebreak
+        elif self.current_character == "\n":
             self.afterdot = False
-            symbol.type = self.OPENCURLYBRACKET
-            self.advance()
-
-        # if symbol is an closedcurlybracket
-        elif self.current_character == "}":
-            self.afterdot = False
-            symbol.type = self.CLOSEDCURLYBRACKET
+            symbol.type = self.LINEBREAK
             self.advance()
 
         # if symbol is the end of file
