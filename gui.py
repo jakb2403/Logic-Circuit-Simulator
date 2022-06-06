@@ -17,7 +17,7 @@ from devices import Devices
 from network import Network
 from monitors import Monitors
 from scanner import Scanner
-from parse2 import Parser
+from scripts.parse2 import Parser
 
 from gui_cmd import CmdPanel
 from gui_monitor_sidebar import MonitorSidebarPanel
