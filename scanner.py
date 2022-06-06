@@ -119,7 +119,6 @@ class Scanner:
         """Read the next character."""
         # add 1 to the character counter to track location in line
         self.current_character = self.file.read(1)
-        print(self.current_character)
         self.char_counter += 1
         if self.current_character == "\n":
             self.char_in_line.append(self.char_counter-1)
@@ -256,7 +255,7 @@ class Scanner:
             self.advance()
 
         # if symbol is the end of file
-        elif self.current_character is None:
+        elif self.current_character == "":
             symbol.type = self.EOF
 
         # if symbol is a hashtag - comment

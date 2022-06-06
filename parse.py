@@ -201,7 +201,7 @@ class Parser:
                     arg = self._argument()
                     if arg is not None:     # if the argument is valid
                         port_id = self.names.lookup(
-                            f"I{self._argument()}")  # port_ID is I#argument
+                            f"I{arg}")  # port_ID is I#argument
                     else:   # if the argument is invalid
                         device_id = None    # <- error
                         port_id = None
