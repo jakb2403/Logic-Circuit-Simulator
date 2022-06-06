@@ -1,18 +1,36 @@
-list = ["DOT"
-,"COMMA"
-,"SEMICOLON"
-,"EQUALS"
-,"ARROW"
-,"OPENBRACKET"
-,"CLOSEDBRACKET"
-,"KEYWORD"
-,"DEVICE_ARG"
-,"DEVICE"
-,"DTYPE_IP"
-,"DTYPE_OP"
-,"NUMBER"
-,"NAME"
-,"EOF"]
+list = ["NONETYPE",
+"DOT",
+"COMMA",
+"SEMICOLON",
+"EQUALS",
+"ARROW",
+"OPENBRACKET",
+"CLOSEDBRACKET",
+"KEYWORD",
+"DEVICE_ARG",
+"DEVICE",
+"DTYPE_IP",
+"DTYPE_OP",
+"NUMBER",
+"NAME",
+"EOF"]
 
 for i in range(len(list)):
     print(f"{i}: {list[i]}")
+
+# 0: NONETYPE
+# 1: DOT
+# 2: COMMA
+# 3: SEMICOLON
+# 4: EQUALS
+# 5: ARROW
+# 6: OPENBRACKET
+# 7: CLOSEDBRACKET
+# 8: KEYWORD
+# 9: DEVICE_ARG
+# 10: DEVICE
+# 11: DTYPE_IP
+# 12: DTYPE_OP
+# 13: NUMBER
+# 14: NAME
+# 15: EOF

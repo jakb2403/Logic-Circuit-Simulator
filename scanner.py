@@ -74,6 +74,7 @@ class Scanner:
                 self.char_in_line = []
 
                 self.symbol_type_list = [
+                    self.NONETYPE,  # fixes a spurious error with scanner seeing a semicolon as the 0th element
                     self.DOT,
                     self.COMMA,
                     self.SEMICOLON,
@@ -88,7 +89,7 @@ class Scanner:
                     self.DTYPE_OP,
                     self.NUMBER,
                     self.NAME,
-                    self.EOF] = range(15)
+                    self.EOF] = range(16)
 
                 self.keywords_list = ["DEVICES",
                                       "CONNECT", "MONITOR", "END", "I"]
@@ -104,7 +105,7 @@ class Scanner:
                  self.OR_ID, self.NOR_ID,
                  self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
                 [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(
-                 self.device_list)
+                    self.device_list)
                 [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
                  self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
                 [self.Q_ID, self.QBAR_ID] = self.names.lookup(
