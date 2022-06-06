@@ -52,8 +52,12 @@ class Parser:
                        connect the devices.
     """
 
-    def __init__(self, names, devices, network, monitors, scanner):
+    def __init__(self, names, devices, network, monitors,
+                 scanner, mode="terminal", output_cmd=None):
         """Initialise constants."""
+
+        self.mode = mode
+        self.output_cmd = output_cmd
 
         # get instances of other modules from arguments
         self.names = names
@@ -90,13 +94,19 @@ class Parser:
          self.port_absent,
          self.input_connected] = self.names.unique_error_codes(18)
 
+    def parser_output(self, text, end="\n"):
+        if self.mode == "terminal":
+            print(text, end=end)
+        elif self.mode == "gui":
+            self.output_cmd(text)
+
     def _error(self, category, type=None, sym=None, keyword=None):
         """Print error category (syntax or semantic), error type,
         and error location. Error location is specified using error_found
         function from scanner.py.
         If an error is found, skip parsing until stopping symbol.
         """
-        print(self.scanner.error_found())
+        self.parser_output(self.scanner.error_found())
         self.error_count += 1
         if category == self.SYNTAX:
             print("SyntaxError: ", end="")
@@ -104,42 +114,47 @@ class Parser:
             print("SemanticError: ", end="")
 
         if type == self.invalid_device_name:
-            print("invalid device name\n")
+            self.parser_output("invalid device name\n")
         if type == self.device_as_name:
-            print("device type '{}' cannot be device name\n".format(keyword))
+            self.parser_output(
+                "device type '{}' cannot be device name\n".format(keyword))
         if type == self.dtype_as_name:
-            print("dtype input/output '{}' cannot\
+            self.parser_output("dtype input/output '{}' cannot\
                 be device name\n".format(keyword))
         if type == self.keyword_as_name:
-            print("keyword '{}' cannot be device name\n".format(keyword))
+            self.parser_output(
+                "keyword '{}' cannot be device name\n".format(keyword))
         if type == self.invalid_arg_type:
-            print("invalid argument type\n")
+            self.parser_output("invalid argument type\n")
         if type == self.port_error:
-            print("invalid port identifier\n")
+            self.parser_output("invalid port identifier\n")
         if type == self.missing_symbol:
-            print("missing symbol: ", sym, "\n")
+            self.parser_output("missing symbol: {}\n".format(sym))
         if type == self.missing_argument:
-            print("missing argument for decive type '{}'".format(keyword))
+            self.parser_output(
+                "missing argument for decive type '{}'".format(keyword))
         if type == self.unrecognised_device_type:
-            print("unrecognised device type\n")
+            self.parser_output("unrecognised device type\n")
         if type == self.missing_keyword:
-            print("missing keyword", keyword, "\n")
+            self.parser_output("missing keyword {}\n".format(keyword))
         if type == self.invalid_arg:
-            print("argument outside of accepted range\n")
+            self.parser_output("argument outside of accepted range\n")
         if type == self.duplicate_name:
-            print("name already used in previous device assignment\n")
+            self.parser_output(
+                "name already used in previous device assignment\n")
         if type == self.duplicate_monitor:
-            print("monitor point already declared\n")
+            self.parser_output("monitor point already declared\n")
         if type == self.monitor_is_input:
-            print("monitor point is an input, only outputs are allowed\n")
+            self.parser_output(
+                "monitor point is an input, only outputs are allowed\n")
         if type == self.input_to_input:
-            print("input connected to input\n")
+            self.parser_output("input connected to input\n")
         if type == self.output_to_output:
-            print("output connected to output\n")
+            self.parser_output("output connected to output\n")
         if type == self.port_absent:
-            print("port is absent\n")
+            self.parser_output("port is absent\n")
         if type == self.input_connected:
-            print("input is already connected\n")
+            self.parser_output("input is already connected\n")
 
         while self.symbol.type not in self.stopping_symbols:
             self.symbol = self.scanner.get_symbol()
@@ -371,11 +386,10 @@ class Parser:
                         second_port_ids.append(second_port_id)
                     else:  # signal_name raises an error
                         break
-                for i in range(
-                        len(second_device_ids)):  # iterate over devices in connection output
+                for i in range(len(second_device_ids)
+                               ):  # iterate over devices in connection output
                     error = self.network.make_connection(
-                        first_device_id, first_port_id,
-                        second_device_ids[i],
+                        first_device_id, first_port_id, second_device_ids[i],
                         second_port_ids[i])  # see if an error is returned by network.make_connection
                     # add the error to a list of errors
                     error_list.append(error)
@@ -399,10 +413,11 @@ class Parser:
         """Parse a monitor statement.
         Make all monitor points, as required."""
         device_id, output_id = self._signal_name()
-        if self.isoutput is False: # monitor point is an input, invalid
+        if self.isoutput is False:  # monitor point is an input, invalid
             self._error(self.SYNTAX, self.monitor_is_input)
-        else: # monitor point is an output, valid
-            error = self.monitors.make_monitor(device_id, output_id) # see if an error is returned by monitors.make_monitor
+        else:  # monitor point is an output, valid
+            # see if an error is returned by monitors.make_monitor
+            error = self.monitors.make_monitor(device_id, output_id)
             if error == self.monitors.MONITOR_PRESENT:
                 self._error(self.SEMANTIC, self.duplicate_monitor)
             if self.symbol.type == self.scanner.SEMICOLON:
@@ -489,4 +504,4 @@ class Parser:
         if self.error_count == 0:
             return True
         else:
-            print(f"Error Count: {self.error_count}")
+            self.parser_output(f"Error Count: {self.error_count}")

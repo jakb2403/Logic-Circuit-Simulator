@@ -17,7 +17,7 @@ from devices import Devices
 from network import Network
 from monitors import Monitors
 from scanner import Scanner
-from scripts.parse2 import Parser
+from parse import Parser
 
 from gui_cmd import CmdPanel
 from gui_monitor_sidebar import MonitorSidebarPanel
@@ -109,6 +109,7 @@ class Gui(wx.Frame):
         self.cmd = CmdPanel(self, self.names, self.devices, self.network,
                             self.monitors, self.userint, self.push_status)
         self.input_cmd = self.cmd.input_cmd
+        self.output_cmd = self.cmd.output_cmd
 
         self.monitor_sidebar = MonitorSidebarPanel(
             self,
@@ -170,10 +171,19 @@ class Gui(wx.Frame):
             # Proceed loading the file chosen by the user
             self.path = fileDialog.GetPath()
             self.scanner = Scanner(self.path, self.names)
-            self.parser = Parser(self.names, self.devices,
-                                 self.network, self.monitors, self.scanner)
+            self.parser = Parser(
+                self.names,
+                self.devices,
+                self.network,
+                self.monitors,
+                self.scanner,
+                mode="gui",
+                output_cmd=self.output_cmd)
             text = "".join(["Opening file: ", self.path])
             self.push_status(text)
+            text = "".join(["Parsing file: ", self.path])
+            self.push_status(text)
+            self.parser.parse_network()
             return True
 
     def on_spin(self, event):
