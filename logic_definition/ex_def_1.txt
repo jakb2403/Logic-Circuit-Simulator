@@ -1,17 +1,29 @@
-G1, G2, G3, G4, G5 = NAND(2);
-CLK1 = CLOCK(20);
-CLK1 -> G1.I2, G2.I1;
-D1, D2, D3 = SWITCH(0);
-D1 -> G5.I1, G5.I2, G1.I1;
-G1 -> G3.I1;
-D1 = SWITCH(0);
-CK1 = CLOCK(20);
-D1 -> G1.I1, G1.I2, G2.I1;
-CK1 -> G2.I2, G3.I1;
-G1 -> G3.I2;
-G2 -> G4.I1;
-G3 -> G5.I2;
-G4 -> G5.I1;
-G5 -> G4.I2;
-MON1 = G4;
-MON2 = G5;
+DEVICES
+    SW1, SW2, SW3 = SWITCH(1);
+    CLK1 = CLOCK(20);
+    AND1, AND2 = AND(2);
+    OR1, OR2 = OR(2);
+    NAND1 = NAND(2);
+    NOR1 = NOR(2);
+    XOR1 = XOR;
+    DTYPE1 = DTYPE;
+END
+
+CONNECT
+    SW1 > AND1.I1;
+    SW2 > AND1.I2, NAND1.I1;
+    SW3 > NAND1.I2, DTYPE1.DATA;
+    CLK1 > DTYPE1.CLK, NOR1.I1, OR1.I1, XOR1.I1;
+    AND1 > NOR1.I2;
+    NAND1 > OR1.I2;
+    DTYPE1.Q > XOR1.I2;
+    NOR1 > AND2.I1;
+    OR1 > AND2.I2;
+    XOR1 > OR2.I1;
+    DYPE1.QBAR > OR2.I2;
+END
+
+MONITOR
+    AND2;
+    OR2;
+END

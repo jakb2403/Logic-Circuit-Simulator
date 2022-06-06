@@ -1,19 +1,27 @@
-G1 = XOR(2);
-G2 = NOR(2);
-G3 = NAND(3);
+DEVICES
+    SW1, SW2, SW3, SW4 = SWITCH(1);
+    CLK1 = CLOCK(20);
+    OR1 = OR(2);
+    NAND1 = NAND(2);
+    NOR1 = NOR(2);
+    XOR1 = XOR(2);
+    DTYPE1 = DTYPE;
+END 
 
-D1, D2, D3 = SWITCH(0);
+CONNECT
+    SW1 -> NAND1.I1;
+    SW2 -> OR1.I2;
+    SW3 -> NOR1.I2;
+    SW4 -> DTYPE1.DATA;
+    CLK1 -> OR1.I1, NAND1.I2;
+    NAND1 -> DTYPE1.CLK;
+    OR1 -> NOR1.I1;
+    DTYPE.QBAR -> XOR1.I1;
+    NOR1 -> XOR1.I2;
+END 
 
-DTYPE1 = DTYPE;
-
-D1 -> G1.I1;
-D2 -> DTYPE.DATA;
-D3 -> G3.I3;
-
-G2 -> G3.I1;
-
-CLK1 = CLOCK(20);
-CLK1 -> G1.I2, DTYPE.CLK;
-
-DTYPE.Q -> G2.I2;
-DTYPE.QBAR -> G3.I2
+MONITOR
+    DTYPE1.Q;
+    XOR1;
+    NAND1;
+END
