@@ -162,11 +162,18 @@ class Gui(wx.Frame):
             print("\nYou closed the file dialog box.\nYou must choose a file to load in order to run a simulation.\n")
             self.on_close(None)
 
-    def startup(self):
+    def startup(self, restart=False):
         with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return False    # the user changed their mind
+
+            if restart:
+                self.cmd.cmd_output_init()
+                self.names = Names()
+                self.devices = Devices(self.names)
+                self.network = Network(self.names, self.devices)
+                self.monitors = Monitors(self.names, self.devices, self.network)
 
             # Proceed loading the file chosen by the user
             self.path = fileDialog.GetPath()
@@ -195,19 +202,20 @@ class Gui(wx.Frame):
         """Handle the event when the user clicks a button in the toolbar"""
         tool_id = event.GetId()
         if tool_id == 100:  # Load button
-            with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+            self.startup(restart=True)
+            # with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
-                if fileDialog.ShowModal() == wx.ID_CANCEL:
-                    return     # the user changed their mind
+            #     if fileDialog.ShowModal() == wx.ID_CANCEL:
+            #         return     # the user changed their mind
 
-                # Proceed loading the file chosen by the user
-                self.path = fileDialog.GetPath()
-                self.scanner = Scanner(self.path, self.names)
-                self.parser = Parser(
-                    self.names, self.devices, self.network, self.monitors,
-                    self.scanner)
-                text = "".join(["Opening file: ", self.path])
-                self.push_status(text)
+            #     # Proceed loading the file chosen by the user
+            #     self.path = fileDialog.GetPath()
+            #     self.scanner = Scanner(self.path, self.names)
+            #     self.parser = Parser(
+            #         self.names, self.devices, self.network, self.monitors,
+            #         self.scanner)
+            #     text = "".join(["Opening file: ", self.path])
+            #     self.push_status(text)
 
         elif tool_id == 101:  # Run button
             command = f"r {self.spin_value}"
@@ -250,12 +258,12 @@ class Gui(wx.Frame):
             self.Close(True)
         if Id == wx.ID_ABOUT:
             wx.MessageBox(
-                "Logic Simulator\n"
+                ("Logic Simulator\n"
                 "Created by Mojisola Agboola\n"
                 "Adapted by P3 Group 15\n"
                 "Hyun Seung Cho, Joe Water and John Browb\n"
                 "2022"
-                "About Logsim",
+                "About Logsim"),
                 wx.ICON_INFORMATION | wx.OK)
 
     def push_status(self, text):
