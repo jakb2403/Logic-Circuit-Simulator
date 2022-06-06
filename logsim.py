@@ -31,11 +31,12 @@ def main(arg_list):
     Run either the command line user interface, the graphical user interface,
     or display the usage message.
     """
-    usage_message = ("\nUsage:\n"
-                     "Show help: logsim.py -h\n"
-                     "Command line user interface: logsim.py -c <file path>\n"
-                     "Graphical user interface: logsim.py\n"
-                     "This will bring up a file dialog where you can choose the file you wish to run.")
+    usage_message = (
+        "\nUsage:\n"
+        "Show help: logsim.py -h\n"
+        "Command line user interface: logsim.py -c <file path>\n"
+        "Graphical user interface: logsim.py\n"
+        "This will bring up a file dialog where you can choose the file you wish to run.")
     try:
         options, arguments = getopt.getopt(arg_list, "hc:")
     except getopt.GetoptError:

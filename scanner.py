@@ -74,7 +74,9 @@ class Scanner:
                 self.char_in_line = []
 
                 self.symbol_type_list = [
-                    self.NONETYPE,  # fixes a spurious error with scanner seeing a semicolon as the 0th element
+                    self.NONETYPE,
+                    # fixes a spurious error with scanner seeing a semicolon as
+                    # the 0th element
                     self.DOT,
                     self.COMMA,
                     self.SEMICOLON,
@@ -122,7 +124,7 @@ class Scanner:
         self.current_character = self.file.read(1)
         self.char_counter += 1
         if self.current_character == "\n":
-            self.char_in_line.append(self.char_counter-1)
+            self.char_in_line.append(self.char_counter - 1)
             self.line_counter += 1
             self.char_counter = 0
 
@@ -159,12 +161,12 @@ class Scanner:
         self.file.seek(0, 0)
         if self.char_counter == 0:
             self.line_counter -= 1
-            line_text = self.file. read().split("\n")[self.line_counter-1]
+            line_text = self.file. read().split("\n")[self.line_counter - 1]
             self.char_counter = self.char_in_line[-1]
         else:
-            line_text = self.file.read().split("\n")[self.line_counter-1]
+            line_text = self.file.read().split("\n")[self.line_counter - 1]
         output = ("Error on line " + str(self.line_counter) + "\n" +
-                  line_text + "\n" + " "*(self.char_counter-1) + "^")
+                  line_text + "\n" + " " * (self.char_counter - 1) + "^")
 
         self.file.seek(0, 0)
         self.line_counter = 1

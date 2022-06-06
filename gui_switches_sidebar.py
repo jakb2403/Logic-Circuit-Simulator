@@ -2,7 +2,8 @@ import wx
 
 
 class SwitchesSidebarPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network, monitors, push_status, input_cmd):
+    def __init__(self, parent, names, devices, network,
+                 monitors, push_status, input_cmd):
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.YELLOW)
 

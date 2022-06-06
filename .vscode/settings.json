@@ -1,5 +1,5 @@
 {
     "python.linting.enabled": true,
     "python.linting.pycodestyleEnabled": true,
-    "python.formatting.autopep8Args": ["--max-line-length", "79", "--experimental"]
+    "python.formatting.autopep8Args": ["--max-line-length", "79", "--experimental", "--aggressive"]
 }

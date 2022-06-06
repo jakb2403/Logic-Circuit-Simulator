@@ -53,8 +53,14 @@ class Gui(wx.Frame):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(1200, 600))
 
-        self.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT,
-                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+        self.SetFont(
+            wx.Font(
+                12,
+                wx.FONTFAMILY_DEFAULT,
+                wx.FONTSTYLE_NORMAL,
+                wx.FONTWEIGHT_NORMAL,
+                False,
+                'Arial'))
 
         self.names = names
         self.devices = devices
@@ -105,18 +111,35 @@ class Gui(wx.Frame):
         self.input_cmd = self.cmd.input_cmd
 
         self.monitor_sidebar = MonitorSidebarPanel(
-            self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.push_status,
+            self.input_cmd)
         self.switches_sidebar = SwitchesSidebarPanel(
-            self, self.names, self.devices, self.network, self.monitors, self.push_status, self.input_cmd)
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.push_status,
+            self.input_cmd)
         self.canvas_panel = CanvasPanel(
-            self, self.names, self.devices, self.network, self.monitors, self.push_status)
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.push_status)
 
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
-        self.mgr.AddPane(
-            self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Monitor Points"))
-        self.mgr.AddPane(
-            self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(False).CloseButton(False).Caption("Control Switches"))
+        self.mgr.AddPane(self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(
+            False).CloseButton(False).Caption("Monitor Points"))
+        self.mgr.AddPane(self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(
+            False).CloseButton(False).Caption("Control Switches"))
         self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Right().Floatable(
             False).CloseButton(False).Caption("Command Line"))
 
@@ -171,7 +194,8 @@ class Gui(wx.Frame):
                 self.path = fileDialog.GetPath()
                 self.scanner = Scanner(self.path, self.names)
                 self.parser = Parser(
-                    self.names, self.devices, self.network, self.monitors, self.scanner)
+                    self.names, self.devices, self.network, self.monitors,
+                    self.scanner)
                 text = "".join(["Opening file: ", self.path])
                 self.push_status(text)
 
@@ -215,8 +239,14 @@ class Gui(wx.Frame):
         if Id == wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
-            wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\nAdapted by P3 Group 15\nHyun Seung Cho, Joe Water and John Browb\n2022",
-                          "About Logsim", wx.ICON_INFORMATION | wx.OK)
+            wx.MessageBox(
+                "Logic Simulator\n"
+                "Created by Mojisola Agboola\n"
+                "Adapted by P3 Group 15\n"
+                "Hyun Seung Cho, Joe Water and John Browb\n"
+                "2022"
+                "About Logsim",
+                wx.ICON_INFORMATION | wx.OK)
 
     def push_status(self, text):
         self.statusbar.PushStatusText(text)

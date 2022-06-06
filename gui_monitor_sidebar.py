@@ -4,7 +4,8 @@ from wx.core import Command, SingleChoiceDialog
 
 
 class MonitorSidebarPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network, monitors, push_status, input_cmd):
+    def __init__(self, parent, names, devices, network,
+                 monitors, push_status, input_cmd):
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.RED)
 
@@ -24,11 +25,11 @@ class MonitorSidebarPanel(wx.Panel):
             2: ["NAND1", 2, 1],
             3: ["NOR1", 3, 1],
             4: ["XOR1", 4, 1],
-            5: ["SW1",5, 1],
-            6: ["SW2",6, 1],
-            7: ["SW3",7, 1],
-            8: ["SW4",8, 1],
-            9: ["SW5",9, 1],
+            5: ["SW1", 5, 1],
+            6: ["SW2", 6, 1],
+            7: ["SW3", 7, 1],
+            8: ["SW4", 8, 1],
+            9: ["SW5", 9, 1],
         }
         self.monitor_names = [item[0]
                               for item in [*self.monitor_dict.values()]]

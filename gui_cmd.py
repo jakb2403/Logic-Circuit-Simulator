@@ -2,7 +2,8 @@ import wx
 
 
 class CmdPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network, monitors, userint, push_status):
+    def __init__(self, parent, names, devices, network,
+                 monitors, userint, push_status):
         wx.Panel.__init__(self, parent)
         self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
                      wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
