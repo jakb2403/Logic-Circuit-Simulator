@@ -17,6 +17,8 @@ new_parser = Parser(new_names, new_devices, new_network, new_monitors, new_scann
 
 new_parser.symbol = new_parser.scanner.get_symbol()
 new_parser._assignment()
-# new_parser.connection()
+new_parser._assignment()
+# new_parser._assignment()
+new_parser._connection()
 
 #new_parser.parse_network()

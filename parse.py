@@ -47,6 +47,9 @@ class Parser:
                    device_property.
 
     _assignment(self): Parse an assignment statement and make device.
+
+    _connection(self): Parse a connection statement in _section_connect and
+                       connect the devices.
     """
 
     def __init__(self, names, devices, network, monitors, scanner):
@@ -89,7 +92,7 @@ class Parser:
     def _error(self, category, type=None, sym=None, keyword=None):
         """Print error category (syntax or semantic), error type,
         and error location. Error location is specified using error_found
-        function from scanner.py. 
+        function from scanner.py.
         If an error is found, skip parsing until stopping symbol.
         """
         print(self.scanner.error_found())
@@ -281,7 +284,7 @@ class Parser:
                     return None, None
             else:  # we forgot an "("
                 # missing argument for device
-                self._error(self.SYNTAX, self.missing_argument, 
+                self._error(self.SYNTAX, self.missing_argument,
                             keyword=device_id)
                 return None, None
         else:  # device is not recoginised
@@ -302,7 +305,7 @@ class Parser:
             device_id = self._name()
             if device_id is not None:  # valid name
                 name_list.append(device_id)  # store valid name in list
-            else: # it's not a valid name
+            else:  # it's not a valid name
                 break
         # we encountered another name without a ","
         if self.symbol.type == self.scanner.NAME:
@@ -338,7 +341,7 @@ class Parser:
         else:
             self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
-    def connection(self):
+    def _connection(self):
         """Parse a connection statement.
         Make all the connections, as required."""
         # call signal_name and save device_id and port_id
@@ -349,40 +352,44 @@ class Parser:
         if first_device_id is not None:  # it's a valid signal name
             if self.symbol.type == self.scanner.ARROW:  # see a "->"
                 self.symbol = self.scanner.get_symbol()
-                second_device_id, second_port_id = self._signal_name()
-                if second_device_id is not None:  # it's a valid signal name
-                    second_device_ids.append(second_device_id)
-                    second_port_ids.append(second_port_id)
-                    while self.symbol.type == self.scanner.COMMA:  # see a ","
-                        self.symbol = self.scanner.get_symbol()
-                        second_device_id, second_port_id = self._signal_name()
-                        if second_device_id is not None:  # it's a valid signal name
-                            second_device_ids.append(second_device_id)
-                            second_port_ids.append(second_port_id)
-                        else:  # signal_name does raise error
-                            break
-                        if self.symbol.type == self.scanner.EOF:  # prevent infinite loop
-                            break
-                    for i in range(len(second_device_ids)):
-                        error = self.network.make_connection(
-                            first_device_id, first_port_id, second_device_ids[i], second_port_ids[i])
-                        error_list.append(error)
-                    if self.network.INPUT_CONNECTED in error_list:  # input is already in a connection
-                        self._error(self.SEMANTIC, self.input_connected)  # TODO
-                    if self.network.INPUT_TO_INPUT in error_list:  # both ports are inputs
-                        self._error(self.SYNTAX, self.input_to_input)  # TODO
-                    if self.network.OUTPUT_TO_OUTPUT in error_list:  # both ports are outputs
-                        self._error(self.SYNTAX, self.output_to_output)  # TODO
-                    if self.network.PORT_ABSENT in error_list:  # invalid port
-                        self._error(self.SEMANTIC, self.port_absent)
-                    # if all(item == self.network.NO_ERROR for item in error_list):  # there is no error
-                    #     self.symbol = self.scanner.get_symbol()
-                    #     # pass
             else:  # you don't see an arrow
                 self._error(self.SYNTAX, self.missing_symbol, sym="->")
+            second_device_id, second_port_id = self._signal_name()
+            if second_device_id is not None:  # it's a valid signal name
+                # add device_id to list of device ids
+                second_device_ids.append(second_device_id)
+                # add port_id to list of port ids
+                second_port_ids.append(second_port_id)
+            while self.symbol.type == self.scanner.COMMA:  # see a ","
+                self.symbol = self.scanner.get_symbol()
+                second_device_id, second_port_id = self._signal_name()
+                if second_device_id is not None:  # it's a valid signal name
+                    # add device_id to list of device ids
+                    second_device_ids.append(second_device_id)
+                    # add port_id to list of port ids
+                    second_port_ids.append(second_port_id)
+                else:  # signal_name raises an error
+                    break
+            for i in range(
+                    len(second_device_ids)):  # iterate over devices in connection output
+                error = self.network.make_connection(
+                    first_device_id, first_port_id,
+                    second_device_ids[i],
+                    second_port_ids[i])  # see if an error is returned by network.make_connection
+                # add the error to a list of errors
+                error_list.append(error)
+            if self.network.INPUT_CONNECTED in error_list:  # input is already in a connection
+                self._error(self.SEMANTIC,
+                            self.input_connected)
+            if self.network.INPUT_TO_INPUT in error_list:  # both ports are inputs
+                self._error(self.SYNTAX, self.input_to_input)
+            if self.network.OUTPUT_TO_OUTPUT in error_list:  # both ports are outputs
+                self._error(self.SYNTAX, self.output_to_output)
+            if self.network.PORT_ABSENT in error_list:  # invalid port
+                self._error(self.SEMANTIC, self.port_absent)
         if self.symbol.type == self.scanner.SEMICOLON:
             self.symbol = self.scanner.get_symbol()
-        else:
+        else:  # you don't see a ";"
             self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def monitor(self):
@@ -404,7 +411,8 @@ class Parser:
         """
         Parse a section of assignments.
         """
-        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.DEVICES_ID):  # cheking for keyword "DEVICES" to start the devices section
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
+                self.scanner.DEVICES_ID):  # cheking for keyword "DEVICES" to start the devices section
             self.symbol = self.scanner.get_symbol()
         else:  # missing the keyword "DEVICES"
             # missing keyword "DEVICES
@@ -423,19 +431,20 @@ class Parser:
         """
         Parse a section of connections.
         """
-        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.CONNECT_ID):  # cheking for keyword "CONNECT" to start the devices section
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
+                self.scanner.CONNECT_ID):  # cheking for keyword "CONNECT" to start the devices section
             self.symbol = self.scanner.get_symbol()
         else:  # missing the keyword "CONNECT"
             # missing keyword "CONNECT
             self._error(self.SYNTAX, self.missing_keyword, keyword="CONNECT")
-        self.connection()
+        self._connection()
         while self.symbol.id != self.scanner.END_ID:
             if self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID:
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
             if self.symbol.type == self.scanner.EOF:
                 break
-            self.connection()
+            self._connection()
         self.symbol = self.scanner.get_symbol()
         #self.symbol = self.scanner.get_symbol()
 
@@ -443,7 +452,8 @@ class Parser:
         """
         Parse a section of connections.
         """
-        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id == self.scanner.MONITOR_ID):  # checking for keyword "MONITOR" to start the connect section
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
+                self.scanner.MONITOR_ID):  # checking for keyword "MONITOR" to start the connect section
             self.symbol = self.scanner.get_symbol()
         else:  # missing the keyword "MONITOR"
             # missing keyword "CONNECT"
