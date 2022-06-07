@@ -4,8 +4,9 @@ from wx.core import Command, SingleChoiceDialog
 
 
 class MonitorSidebarPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network,
-                 monitors, push_status, input_cmd):
+    def __init__(
+        self, parent, names, devices, network, monitors, push_status, input_cmd
+    ):
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.RED)
 
@@ -23,13 +24,16 @@ class MonitorSidebarPanel(wx.Panel):
 
         # Create widgets
         info_text = wx.StaticText(
-            self, wx.ID_ANY, "Choose devices to monitor:")
+            self, wx.ID_ANY, "Choose devices to monitor:"
+        )
         self.monitor_checklist = wx.CheckListBox(
-            self, choices=self.all_devices, name="Monitor Signals")
-        
+            self, choices=self.all_devices, name="Monitor Signals"
+        )
+
         self.sizer.Add(info_text, 0, wx.ALL, 3)
-        self.sizer.Add(self.monitor_checklist, 1,
-                       wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
+        self.sizer.Add(
+            self.monitor_checklist, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 0
+        )
 
         # Bind events to event handlers
         self.monitor_checklist.Bind(wx.EVT_CHECKLISTBOX, self.on_check)
@@ -37,17 +41,16 @@ class MonitorSidebarPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def update_checklist(self):
-        
+
         [self.monitored, self.not_monitored] = self.monitors.get_signal_names()
         self.all_devices = [*self.monitored, *self.not_monitored]
-        
+
         self.monitor_checklist.Clear()
         for item in self.all_devices:
             self.monitor_checklist.Append(item)
-        
+
         monitors_index = range(len(self.monitored))
         self.monitor_checklist.SetCheckedItems(monitors_index)
-
 
     def on_check(self, event):
         """Handle the event when the user clicks one of the checkbox items"""

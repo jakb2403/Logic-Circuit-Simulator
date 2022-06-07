@@ -172,7 +172,8 @@ class Gui(wx.Frame):
             .CloseButton(False)
             .Caption("Monitor Points")
             .Name("monitors")
-            .DestroyOnClose(True),
+            .DestroyOnClose(True)
+            .MinSize(200, 50),
         )
         self.mgr.AddPane(
             self.switches_sidebar,
