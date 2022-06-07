@@ -78,7 +78,7 @@ class Parser:
         # boolean variable indicating whether signal_name is input or output
         self.isoutput = True
 
-        self.section_type = [self.dev, self.con, self.mon] = range(2)
+        self.section_type = [self.dev, self.con, self.mon] = range(3)
 
         [self.invalid_device_name,
          self.device_as_name,
@@ -362,7 +362,8 @@ class Parser:
             self._error(self.SYNTAX, self.missing_symbol,
                         sym="=")  # missing "="
         if self.symbol.type == self.scanner.SEMICOLON:  # see ";"
-            self.symbol = self.scanner.get_symbol()
+            pass
+            # self.symbol = self.scanner.get_symbol()
         else:
             self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
@@ -447,14 +448,18 @@ class Parser:
             # missing keyword "DEVICES
             self._error(self.SYNTAX, self.missing_keyword, keyword="DEVICES")
         self._assignment()
-        while self.symbol.id != self.scanner.END_ID:
+        while self.symbol.id == self.scanner.SEMICOLON:
+            self.symbol = self.get_next_symbol()
             if (self.symbol.type == self.scanner.KEYWORD and
-                    self.symbol.id == self.scanner.CONNECT_ID):
+                    self.symbol.id == self.scanner.END_ID):
+                break
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                    (self.symbol.id == self.scanner.CONNECT_ID or
+                     self.symbol.id == self.scanner.MONITOR_ID)):
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            if self.symbol.type == self.scanner.EOF:
-                break
-            self._assignment()
+            else:
+                self._assignment()
         self.symbol = self.scanner.get_symbol()
 
     def _section_connect(self):
@@ -522,10 +527,15 @@ class Parser:
     def program(self):
         """Parse the entire program."""
         self.symbol = self.scanner.get_symbol()
-        for type in self.section_type:
-            section_type = self._section(type)
-            if section_type != type:
-                self.error(self.SYNTAX, self.section_order_error)
+        section_dev = self._section(self.dev)
+        if section_dev != self.dev:
+            self.error(self.SYNTAX, self.section_order_error)
+        section_con = self._section(self.con)
+        if section_con != self.con:
+            self.error(self.SYNTAX, self.section_order_error)
+        section_mon = self._section(self.mon)
+        if section_mon != self.mon:
+            self.error(self.SYNTAX, self.section_order_error)
 
     def parse_network(self):
         """Parse the circuit definition file."""
