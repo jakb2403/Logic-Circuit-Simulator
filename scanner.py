@@ -106,12 +106,12 @@ class Scanner:
                 [self.CLOCK_ID, self.AND_ID, self.NAND_ID,
                  self.OR_ID, self.NOR_ID,
                  self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
-                [self.DTYPE_ID, self.XOR_ID, self.NOT] = self.names.lookup(
-                    self.device_list)
+                [self.DTYPE_ID, self.XOR_ID, self.NOT_ID] = self.names.lookup(
+                 self.device_list)
                 [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
                  self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
                 [self.Q_ID, self.QBAR_ID] = self.names.lookup(
-                    self.dtype_op_list)
+                 self.dtype_op_list)
 
             else:
                 print("\nError: incorrect file type\n")

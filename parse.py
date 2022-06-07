@@ -78,6 +78,8 @@ class Parser:
         # boolean variable indicating whether signal_name is input or output
         self.isoutput = True
 
+        self.section_type = [self.dev, self.con, self.mon] = range(2)
+
         [self.invalid_device_name,
          self.device_as_name,
          self.keyword_as_name,
@@ -95,7 +97,8 @@ class Parser:
          self.input_to_input,
          self.output_to_output,
          self.port_absent,
-         self.input_connected] = self.names.unique_error_codes(18)
+         self.input_connected,
+         self.section_order_error] = self.names.unique_error_codes(19)
 
     def parser_output(self, text, end="\n"):
         if self.mode == "terminal":
@@ -158,6 +161,8 @@ class Parser:
             self.parser_output("port is absent\n")
         if type == self.input_connected:
             self.parser_output("input is already connected\n")
+        if type == self.section_order_error:
+            self.parser_output("incorrect ordering of sections\n")
 
         while self.symbol.type not in self.stopping_symbols:
             self.symbol = self.scanner.get_symbol()
@@ -221,8 +226,7 @@ class Parser:
                     self.symbol = self.scanner.get_symbol()
                     arg = self._argument()
                     if arg is not None:     # if the argument is valid
-                        port_id = self.names.lookup(
-                            f"I{arg}")  # port_ID is I#argument
+                        port_id = self.names.lookup(f"I{arg}")
                     else:   # if the argument is invalid
                         device_id = None    # <- error
                         port_id = None
@@ -493,12 +497,35 @@ class Parser:
             self._monitor()
         self.symbol = self.scanner.get_symbol()
 
+    def _section(self, type):
+        if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
+                self.scanner.DEVICES_ID):
+            self._section_devices()
+            return self.dev
+        elif (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
+                self.scanner.CONNECT_ID):
+            self._section_connect()
+            return self.con
+        elif (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
+                self.scanner.MONITOR_ID):
+            self._section_monitor()
+            return self.mon
+        else:
+            if type == self.dev:
+                self._section_devices()
+            elif type == self.con:
+                self._section_connect()
+            elif type == self.mon:
+                self._section_monitor()
+            return type
+
     def program(self):
         """Parse the entire program."""
         self.symbol = self.scanner.get_symbol()
-        self._section_devices()
-        self._section_connect()
-        self._section_monitor()
+        for type in self.section_type:
+            section_type = self._section(type)
+            if section_type != type:
+                self.error(self.SYNTAX, self.section_order_error)
 
     def parse_network(self):
         """Parse the circuit definition file."""
