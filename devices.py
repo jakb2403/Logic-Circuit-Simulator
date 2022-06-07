@@ -104,7 +104,7 @@ class Devices:
 
         self.devices_list = []
 
-        gate_strings = ["AND", "OR", "NAND", "NOR", "XOR"]
+        gate_strings = ["AND", "OR", "NAND", "NOR", "XOR", "NOT"]
         device_strings = ["CLOCK", "SWITCH", "DTYPE"]
         dtype_inputs = ["CLK", "SET", "CLEAR", "DATA"]
         dtype_outputs = ["Q", "QBAR"]
