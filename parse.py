@@ -457,6 +457,7 @@ class Parser:
                     (self.symbol.id == self.scanner.CONNECT_ID or
                      self.symbol.id == self.scanner.MONITOR_ID)):
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
+                break
             else:
                 self._assignment()
         self.symbol = self.scanner.get_symbol()
