@@ -164,7 +164,7 @@ class Scanner:
                 self.line_counter -= 1
                 line_text = self.file.read().split("\n")[self.line_counter - 1]
                 self.char_counter = self.char_in_line[-1]
-            else:
+            else:    # if the file is an empty file
                 line_text = ""
         else:
             line_text = self.file.read().split("\n")[self.line_counter - 1]
