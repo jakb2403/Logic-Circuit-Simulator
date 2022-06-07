@@ -96,7 +96,7 @@ class Scanner:
                 self.keywords_list = ["DEVICES",
                                       "CONNECT", "MONITOR", "END", "I"]
                 self.device_arg_list = ["CLOCK", "AND",
-                                        "NAND", "OR", "NOR", "SWITCH"]
+                                        "NAND", "OR", "NOR", "NOT", "SWITCH"]
                 self.device_list = ["DTYPE", "XOR"]
                 self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
                 self.dtype_op_list = ["Q", "QBAR"]
