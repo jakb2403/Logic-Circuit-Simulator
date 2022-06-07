@@ -66,7 +66,7 @@ class Names:
         """Return the corresponding name ID for the given name_string.
         If the name string is not present in the names list, add it.
         """
-        if type(name_input) == list:
+        if isinstance(name_input, list):
             output_list = []
             # iterate through name_strings in list and perform lookup
             for item in name_input:
@@ -75,13 +75,13 @@ class Names:
                 else:
                     if not(item[0].isalpha()):
                         raise TypeError(
-                            "Name string must start with a letter, not a number.")
+                            "Name string must start with a letter")
                     else:
                         self.names_list.append(item)
                         output_list.append(len(self.names_list) - 1)
 
             return output_list
-        elif type(name_input) == str:
+        elif isinstance(name_input, str):
             # perform lookup for 1 name_string item
             if name_input in self.names_list:
                 return self.names_list.index(name_input)
@@ -99,7 +99,7 @@ class Names:
 
         If the name ID is not a valid index into the names list, return None.
         """
-        if type(name_id) == int:
+        if isinstance(name_id, int):
             if name_id < 0:
                 raise ValueError(
                     "Invalid name_id. Only positive integers allowed.")
