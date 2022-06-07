@@ -190,7 +190,9 @@ class Gui(wx.Frame):
             self.push_status(text)
             text = "".join(["Parsing file: ", self.path])
             self.push_status(text)
-            self.parser.parse_network()
+            parse = self.parser.parse_network()
+            if parse == True:
+                self.monitor_sidebar.update_checklist()
             return True
 
     def on_spin(self, event):

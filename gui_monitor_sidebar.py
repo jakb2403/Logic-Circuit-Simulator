@@ -19,27 +19,14 @@ class MonitorSidebarPanel(wx.Panel):
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.monitor_dict = {
-            0: ["AND1", 0, 1],
-            1: ["AND2", 1, 1],
-            2: ["NAND1", 2, 1],
-            3: ["NOR1", 3, 1],
-            4: ["XOR1", 4, 1],
-            5: ["SW1", 5, 1],
-            6: ["SW2", 6, 1],
-            7: ["SW3", 7, 1],
-            8: ["SW4", 8, 1],
-            9: ["SW5", 9, 1],
-        }
-        self.monitor_names = [item[0]
-                              for item in [*self.monitor_dict.values()]]
+        self.all_devices = []
 
         # Create widgets
         info_text = wx.StaticText(
             self, wx.ID_ANY, "Choose devices to monitor:")
         self.monitor_checklist = wx.CheckListBox(
-            self, choices=self.monitor_names, name="Monitor Signals")
-
+            self, choices=self.all_devices, name="Monitor Signals")
+        
         self.sizer.Add(info_text, 0, wx.ALL, 3)
         self.sizer.Add(self.monitor_checklist, 1,
                        wx.EXPAND | wx.LEFT | wx.RIGHT, 0)
@@ -49,22 +36,35 @@ class MonitorSidebarPanel(wx.Panel):
 
         self.SetSizer(self.sizer)
 
+    def update_checklist(self):
+        
+        [self.monitored, self.not_monitored] = self.monitors.get_signal_names()
+        self.all_devices = [*self.monitored, *self.not_monitored]
+        print(self.all_devices)
+        
+        self.monitor_checklist.Clear()
+        for item in self.all_devices:
+            self.monitor_checklist.Append(item)
+        
+        monitors_index = range(len(self.monitored))
+        self.monitor_checklist.SetCheckedItems(monitors_index)
+
+
     def on_check(self, event):
         """Handle the event when the user clicks one of the checkbox items"""
         changed = wx.CommandEvent.GetInt(event)
         new_state = self.monitor_checklist.IsChecked(changed)
 
-        monitor_name = self.monitor_dict[changed][0]
-        output_id = self.monitor_dict[changed][2]
+        device_name = self.all_devices[changed]
 
         if new_state == True:  # adding a monitor point
-            command = f"m {monitor_name}.{output_id}"
+            command = f"m {device_name}"
             self.input_cmd(command)
-            text = f"Device {monitor_name}.{output_id} added to monitor points"
+            text = f"Device {device_name} added to monitor points"
 
         else:  # zapping a monitor point
-            command = f"z {monitor_name}.{output_id}"
+            command = f"z {device_name}"
             self.input_cmd(command)
-            text = f"Device {monitor_name}.{output_id} zapped from monitor points"
+            text = f"Device {device_name} zapped from monitor points"
 
         self.push_status(text)

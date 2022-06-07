@@ -191,8 +191,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             monitor_name = self.devices.get_signal_name(device_id, output_id)
             signal_list = self.monitors.monitors_dictionary[(
                 device_id, output_id)]
-            signal_list_bin = self.convert_signal(signal_list)
-            if len(signal_list_bin) > 0:
+            if len(signal_list) > 0:
+                signal_list_bin = self.convert_signal(signal_list)
                 self.draw_signal(monitor_name, signal_list_bin, index)
             index += 1
         # _______________________________________________________
