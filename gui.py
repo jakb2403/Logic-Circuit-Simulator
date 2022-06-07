@@ -207,19 +207,6 @@ class Gui(wx.Frame):
         tool_id = event.GetId()
         if tool_id == 100:  # Load button
             self.startup(restart=True)
-            # with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
-
-            #     if fileDialog.ShowModal() == wx.ID_CANCEL:
-            #         return     # the user changed their mind
-
-            #     # Proceed loading the file chosen by the user
-            #     self.path = fileDialog.GetPath()
-            #     self.scanner = Scanner(self.path, self.names)
-            #     self.parser = Parser(
-            #         self.names, self.devices, self.network, self.monitors,
-            #         self.scanner)
-            #     text = "".join(["Opening file: ", self.path])
-            #     self.push_status(text)
 
         elif tool_id == 101:  # Run button
             command = f"r {self.spin_value}"

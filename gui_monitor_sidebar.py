@@ -40,7 +40,6 @@ class MonitorSidebarPanel(wx.Panel):
         
         [self.monitored, self.not_monitored] = self.monitors.get_signal_names()
         self.all_devices = [*self.monitored, *self.not_monitored]
-        print(self.all_devices)
         
         self.monitor_checklist.Clear()
         for item in self.all_devices:

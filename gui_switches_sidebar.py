@@ -23,8 +23,8 @@ class SwitchesSidebarPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def update_list(self):
+        self.sizer.Clear(True)
         self.switches_list = self.devices.find_devices(self.devices.SWITCH)
-        print(self.switches_list)
         for i in range(len(self.switches_list)):
             device_id = self.switches_list[i]
             name = self.devices.get_signal_name(device_id, None)
