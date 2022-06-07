@@ -453,9 +453,12 @@ class Parser:
             if (self.symbol.type == self.scanner.KEYWORD and
                     self.symbol.id == self.scanner.END_ID):
                 break
-            if self.symbol.type == self.EOF:
-                break
-            self._assignment()
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                    (self.symbol.id == self.scanner.CONNECT_ID or
+                     self.symbol.id == self.scanner.MONITOR_ID)):
+                self._error(self.SYNTAX, self.missing_keyword, keyword="END")
+            else:
+                self._assignment()
         self.symbol = self.scanner.get_symbol()
 
     def _section_connect(self):
