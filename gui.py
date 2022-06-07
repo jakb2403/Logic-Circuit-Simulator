@@ -9,7 +9,13 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 import wx
-from wx.core import HORIZONTAL, ROLE_SYSTEM_TOOLBAR, VERTICAL, Command, Shutdown
+from wx.core import (
+    HORIZONTAL,
+    ROLE_SYSTEM_TOOLBAR,
+    VERTICAL,
+    Command,
+    Shutdown,
+)
 import wx.lib.agw.aui as aui
 
 from names import Names
@@ -60,14 +66,14 @@ class Gui(wx.Frame):
                 wx.FONTSTYLE_NORMAL,
                 wx.FONTWEIGHT_NORMAL,
                 False,
-                'Arial'))
+                "Arial",
+            )
+        )
 
         self.names = names
         self.devices = devices
         self.network = network
         self.monitors = monitors
-        self.userint = GuiUserInterface(
-            self.names, self.devices, self.network, self.monitors)
 
         self.cycles_completed = 0
         self.spin_value = 10
@@ -88,29 +94,52 @@ class Gui(wx.Frame):
         # Configure the toolbar
         self.toolbar = self.CreateToolBar()
         self.load_button = self.toolbar.AddTool(
-            100, "Load", wx.Bitmap("icons/folder.png"))
+            100, "Load", wx.Bitmap("icons/folder.png")
+        )
         self.run_button = self.toolbar.AddTool(
-            101, "Run", wx.Bitmap("icons/run.png"))
+            101, "Run", wx.Bitmap("icons/run.png")
+        )
         self.cont_button = self.toolbar.AddTool(
-            102, "Continue", wx.Bitmap("icons/continue.png"))
+            102, "Continue", wx.Bitmap("icons/continue.png")
+        )
         self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
         self.toolbar.AddControl(self.cycle_spin)
         self.save_button = self.toolbar.AddTool(
-            103, "Save", wx.Bitmap("icons/save.png"))
-        # self.reset_button = self.toolbar.AddTool(104, "Reset", wx.Bitmap("icons/reset.png"))
-        self.exit_button = self.toolbar.AddTool(
-            105, "Exit", wx.Bitmap("icons/exit.png"))
+            103, "Save", wx.Bitmap("icons/save.png")
+        )
 
         # Configure the status bar
         self.statusbar = self.CreateStatusBar()
         self.statusbar.SetStatusText("Status")
 
         # Create instance of panel classes
-        self.cmd = CmdPanel(self, self.names, self.devices, self.network,
-                            self.monitors, self.userint, self.push_status)
+        self.canvas_panel = CanvasPanel(
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.push_status,
+        )
+        self.refresh_canvas = self.canvas_panel.refresh
+        self.userint = GuiUserInterface(
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.refresh_canvas,
+        )
+        self.cmd = CmdPanel(
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.userint,
+            self.push_status,
+        )
         self.input_cmd = self.cmd.input_cmd
         self.output_cmd = self.cmd.output_cmd
-
         self.monitor_sidebar = MonitorSidebarPanel(
             self,
             self.names,
@@ -118,7 +147,8 @@ class Gui(wx.Frame):
             self.network,
             self.monitors,
             self.push_status,
-            self.input_cmd)
+            self.input_cmd,
+        )
         self.switches_sidebar = SwitchesSidebarPanel(
             self,
             self.names,
@@ -126,23 +156,45 @@ class Gui(wx.Frame):
             self.network,
             self.monitors,
             self.push_status,
-            self.input_cmd)
-        self.canvas_panel = CanvasPanel(
-            self,
-            self.names,
-            self.devices,
-            self.network,
-            self.monitors,
-            self.push_status)
+            self.input_cmd,
+        )
 
         # Add panels to AUI manager
-        self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
-        self.mgr.AddPane(self.monitor_sidebar, aui.AuiPaneInfo().Left().Floatable(
-            False).CloseButton(False).Caption("Monitor Points"))
-        self.mgr.AddPane(self.switches_sidebar, aui.AuiPaneInfo().Left().Floatable(
-            False).CloseButton(False).Caption("Control Switches"))
-        self.mgr.AddPane(self.cmd, aui.AuiPaneInfo().Right().Floatable(
-            False).CloseButton(False).Caption("Command Line"))
+        self.mgr.AddPane(
+            self.canvas_panel,
+            aui.AuiPaneInfo().CenterPane().Name("canvas").DestroyOnClose(True),
+        )
+        self.mgr.AddPane(
+            self.monitor_sidebar,
+            aui.AuiPaneInfo()
+            .Left()
+            .Floatable(False)
+            .CloseButton(False)
+            .Caption("Monitor Points")
+            .Name("monitors")
+            .DestroyOnClose(True)
+            .MinSize(200, 50),
+        )
+        self.mgr.AddPane(
+            self.switches_sidebar,
+            aui.AuiPaneInfo()
+            .Left()
+            .Floatable(False)
+            .CloseButton(False)
+            .Caption("Control Switches")
+            .Name("switches")
+            .DestroyOnClose(True),
+        )
+        self.mgr.AddPane(
+            self.cmd,
+            aui.AuiPaneInfo()
+            .Right()
+            .Floatable(False)
+            .CloseButton(False)
+            .Caption("Command Line")
+            .Name("cmd")
+            .DestroyOnClose(True),
+        )
 
         # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
         agwFlags = self.mgr.GetAGWFlags()
@@ -159,21 +211,134 @@ class Gui(wx.Frame):
         self.Show(True)
 
         if not self.startup():
-            print("\nYou closed the file dialog box.\nYou must choose a file to load in order to run a simulation.\n")
+            print(
+                "\nYou closed the file dialog box.\n"
+                "You must choose a file to load in order to run a simulation\n"
+            )
             self.on_close(None)
 
     def startup(self, restart=False):
-        with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+        with wx.FileDialog(
+            self,
+            "Load a .txt file to run",
+            wildcard=".txt files (*.txt)|*.txt",
+            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST,
+        ) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
-                return False    # the user changed their mind
+                return False  # the user changed their mind
 
             if restart:
                 self.cmd.cmd_output_init()
                 self.names = Names()
                 self.devices = Devices(self.names)
                 self.network = Network(self.names, self.devices)
-                self.monitors = Monitors(self.names, self.devices, self.network)
+                self.monitors = Monitors(
+                    self.names, self.devices, self.network
+                )
+
+                self.cycles_completed = 0
+                self.spin_value = 10
+
+                self.canvas_panel = CanvasPanel(
+                    self,
+                    self.names,
+                    self.devices,
+                    self.network,
+                    self.monitors,
+                    self.push_status,
+                )
+                self.refresh_canvas = self.canvas_panel.refresh
+                self.userint = GuiUserInterface(
+                    self.names,
+                    self.devices,
+                    self.network,
+                    self.monitors,
+                    self.refresh_canvas,
+                )
+                self.cmd = CmdPanel(
+                    self,
+                    self.names,
+                    self.devices,
+                    self.network,
+                    self.monitors,
+                    self.userint,
+                    self.push_status,
+                )
+                self.input_cmd = self.cmd.input_cmd
+                self.output_cmd = self.cmd.output_cmd
+                self.monitor_sidebar = MonitorSidebarPanel(
+                    self,
+                    self.names,
+                    self.devices,
+                    self.network,
+                    self.monitors,
+                    self.push_status,
+                    self.input_cmd,
+                )
+                self.switches_sidebar = SwitchesSidebarPanel(
+                    self,
+                    self.names,
+                    self.devices,
+                    self.network,
+                    self.monitors,
+                    self.push_status,
+                    self.input_cmd,
+                )
+
+                self.mgr.ClosePane(self.mgr.GetPane("canvas"))
+                self.mgr.ClosePane(self.mgr.GetPane("monitors"))
+                self.mgr.ClosePane(self.mgr.GetPane("switches"))
+                self.mgr.ClosePane(self.mgr.GetPane("cmd"))
+
+                # Add panels to AUI manager
+                self.mgr.AddPane(
+                    self.canvas_panel,
+                    aui.AuiPaneInfo()
+                    .CenterPane()
+                    .Name("canvas")
+                    .DestroyOnClose(True),
+                )
+                self.mgr.AddPane(
+                    self.monitor_sidebar,
+                    aui.AuiPaneInfo()
+                    .Left()
+                    .Floatable(False)
+                    .CloseButton(False)
+                    .Caption("Monitor Points")
+                    .Name("monitors")
+                    .DestroyOnClose(True),
+                )
+                self.mgr.AddPane(
+                    self.switches_sidebar,
+                    aui.AuiPaneInfo()
+                    .Left()
+                    .Floatable(False)
+                    .CloseButton(False)
+                    .Caption("Control Switches")
+                    .Name("switches")
+                    .DestroyOnClose(True),
+                )
+                self.mgr.AddPane(
+                    self.cmd,
+                    aui.AuiPaneInfo()
+                    .Right()
+                    .Floatable(False)
+                    .CloseButton(False)
+                    .Caption("Command Line")
+                    .Name("cmd")
+                    .DestroyOnClose(True),
+                )
+
+                # Set docking guides (THIS FIXES THE FLOATING POINT PROBLEM)
+                agwFlags = self.mgr.GetAGWFlags()
+                self.mgr.SetAGWFlags(
+                    agwFlags | aui.AUI_MGR_AERO_DOCKING_GUIDES
+                )
+
+                self.mgr.Update()
+
+                self.Bind(wx.EVT_CLOSE, self.on_close)
 
             # Proceed loading the file chosen by the user
             self.path = fileDialog.GetPath()
@@ -185,12 +350,16 @@ class Gui(wx.Frame):
                 self.monitors,
                 self.scanner,
                 mode="gui",
-                output_cmd=self.output_cmd)
+                output_cmd=self.output_cmd,
+            )
             text = "".join(["Opening file: ", self.path])
             self.push_status(text)
             text = "".join(["Parsing file: ", self.path])
             self.push_status(text)
-            self.parser.parse_network()
+            parse = self.parser.parse_network()
+            if parse:
+                self.monitor_sidebar.update_checklist()
+                self.switches_sidebar.update_list()
             return True
 
     def on_spin(self, event):
@@ -199,23 +368,10 @@ class Gui(wx.Frame):
         text = "".join(["New spin control value: ", str(self.spin_value)])
 
     def on_click_tool(self, event):
-        """Handle the event when the user clicks a button in the toolbar"""
+        """Handle the event when the user clicks a button in the toolbar."""
         tool_id = event.GetId()
         if tool_id == 100:  # Load button
             self.startup(restart=True)
-            # with wx.FileDialog(self, "Load a .txt file to run", wildcard=".txt files (*.txt)|*.txt", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
-
-            #     if fileDialog.ShowModal() == wx.ID_CANCEL:
-            #         return     # the user changed their mind
-
-            #     # Proceed loading the file chosen by the user
-            #     self.path = fileDialog.GetPath()
-            #     self.scanner = Scanner(self.path, self.names)
-            #     self.parser = Parser(
-            #         self.names, self.devices, self.network, self.monitors,
-            #         self.scanner)
-            #     text = "".join(["Opening file: ", self.path])
-            #     self.push_status(text)
 
         elif tool_id == 101:  # Run button
             command = f"r {self.spin_value}"
@@ -228,28 +384,27 @@ class Gui(wx.Frame):
             text = "Continue button pressed."
             self.push_status(text)
         elif tool_id == 103:  # Save button
-            with wx.FileDialog(self, "Save monitor plot", wildcard="PNG files (*.png)|*.png",
-                               style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+            with wx.FileDialog(
+                self,
+                "Save monitor plot",
+                wildcard="PNG files (*.png)|*.png",
+                style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT,
+            ) as fileDialog:
                 if fileDialog.ShowModal() == wx.ID_CANCEL:
-                    return     # the user changed their mind
+                    return  # the user changed their mind
 
                 # save the current contents in the file
                 path = fileDialog.GetPath()
                 try:
-                    with open(path, 'w') as file:
+                    with open(path, "w") as file:
                         self.canvas_panel.canvas.save_to_png(path)
                         # self.doSaveData(bitmap)
                 except IOError:
                     wx.LogError(
-                        "Cannot save current data in file '%s'." % path)
+                        "Cannot save current data in file '%s'." % path
+                    )
             text = "".join(["Saved file as: ", path])
             self.push_status(text)
-
-        elif tool_id == 104:  # Reset button
-            text = "Resetting"
-            self.push_status(text)
-        elif tool_id == 105:  # Exit button
-            self.on_close(None)
 
     def on_menu(self, event):
         """Handle the event when the user selects a menu item."""
@@ -258,18 +413,20 @@ class Gui(wx.Frame):
             self.Close(True)
         if Id == wx.ID_ABOUT:
             wx.MessageBox(
-                ("Logic Simulator\n"
-                "Created by Mojisola Agboola\n"
-                "Adapted by P3 Group 15\n"
-                "Hyun Seung Cho, Joe Water and John Browb\n"
-                "2022"
-                "About Logsim"),
-                wx.ICON_INFORMATION | wx.OK)
+                (
+                    "Logic Simulator\n"
+                    "Created by Mojisola Agboola\n"
+                    "Adapted by P3 Group 15\n"
+                    "Hyun Seung Cho, Joe Water and John Browb\n"
+                    "2022"
+                    "About Logsim"
+                ),
+                wx.ICON_INFORMATION | wx.OK,
+            )
 
     def push_status(self, text):
         self.statusbar.PushStatusText(text)
 
     def on_close(self, event):
-        # deinitialise the frame manager
         self.mgr.UnInit()
         self.Destroy()

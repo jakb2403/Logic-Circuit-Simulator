@@ -36,7 +36,9 @@ def main(arg_list):
         "Show help: logsim.py -h\n"
         "Command line user interface: logsim.py -c <file path>\n"
         "Graphical user interface: logsim.py\n"
-        "This will bring up a file dialog where you can choose the file you wish to run.")
+        "This will bring up a file dialog where you can choose the "
+        "file you wish to run."
+    )
     try:
         options, arguments = getopt.getopt(arg_list, "hc:")
     except getopt.GetoptError:
@@ -69,8 +71,7 @@ def main(arg_list):
 
     if not options:  # no option given, use the graphical user interface
         app = wx.App()
-        gui = Gui("Logic Simulator", names, devices, network,
-                  monitors)
+        gui = Gui("Logic Simulator", names, devices, network, monitors)
         gui.Show(True)
         app.MainLoop()
 
