@@ -96,8 +96,8 @@ class Scanner:
                 self.keywords_list = ["DEVICES",
                                       "CONNECT", "MONITOR", "END", "I"]
                 self.device_arg_list = ["CLOCK", "AND",
-                                        "NAND", "OR", "NOR", "NOT", "SWITCH"]
-                self.device_list = ["DTYPE", "XOR"]
+                                        "NAND", "OR", "NOR", "SWITCH"]
+                self.device_list = ["DTYPE", "XOR", "NOT"]
                 self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
                 self.dtype_op_list = ["Q", "QBAR"]
                 [self.DEVICES_ID, self.CONNECT_ID,
@@ -106,7 +106,7 @@ class Scanner:
                 [self.CLOCK_ID, self.AND_ID, self.NAND_ID,
                  self.OR_ID, self.NOR_ID,
                  self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
-                [self.DTYPE_ID, self.XOR_ID] = self.names.lookup(
+                [self.DTYPE_ID, self.XOR_ID, self.NOT] = self.names.lookup(
                     self.device_list)
                 [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
                  self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
