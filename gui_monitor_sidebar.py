@@ -1,4 +1,3 @@
-from typing import Counter
 import wx
 from wx.core import Command, SingleChoiceDialog
 
@@ -8,7 +7,7 @@ class MonitorSidebarPanel(wx.Panel):
         self, parent, names, devices, network, monitors, push_status, input_cmd
     ):
         wx.Panel.__init__(self, parent)
-        # self.SetBackgroundColour(wx.RED)
+        self.SetBackgroundColour(wx.WHITE)
 
         self.parent = parent
         self.names = names

@@ -7,7 +7,7 @@ class SwitchesSidebarPanel(wx.Panel):
         self, parent, names, devices, network, monitors, push_status, input_cmd
     ):
         wx.Panel.__init__(self, parent)
-        # self.SetBackgroundColour(wx.YELLOW)
+        self.SetBackgroundColour(wx.WHITE)
 
         self.parent = parent
         self.names = names
@@ -20,7 +20,7 @@ class SwitchesSidebarPanel(wx.Panel):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.scroll_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        info_text = wx.StaticText(self, wx.ID_ANY, "Change state of switches")
+        info_text = wx.StaticText(self, wx.ID_ANY, "Change state of switches:")
 
         self.scroll_panel = wx.lib.scrolledpanel.ScrolledPanel(
             self, -1#, style=wx.SIMPLE_BORDER

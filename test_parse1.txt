@@ -1,7 +1,7 @@
 DEVICES
     G1, G2, SW1, SW2 = SWITCH(0);
     G3 = CLOCK(10);
-    G4 = NAND(2);
+    G4 = XOR;
     G5 = DTYPE;
 END
 CONNEC
