@@ -15,5 +15,4 @@ new_network = Network(new_names, new_devices)
 new_monitors = Monitors(new_names, new_devices, new_network)
 new_parser = Parser(new_names, new_devices, new_network, new_monitors,
                     new_scanner)
-new_parser.symbol = new_parser.scanner.get_symbol()
-new_parser._section_devices()
+new_parser.parse_network()

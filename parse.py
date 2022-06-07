@@ -34,7 +34,13 @@ class Parser:
 
     Non-public methods
     ------------------
-    _error(self): Print error and skip parsing until stopping symbol.
+    _parser_output(self, text, end="\n"): Print text to the correct output
+                                          terminal.
+
+    _error(self, category, type=None, sym=None, keyword=None): Print error and
+                                                               skip parsing
+                                                               until stopping
+                                                               symbol.
 
     _name(self): Parse a name and return the name ID if it is a valid name.
 
@@ -53,6 +59,18 @@ class Parser:
 
     _monitor(self): Parse a monitor statement in _section_monitor and make
                     monitor point.
+
+    _section_devices(self): Parse a devices section.
+
+    _section_connect(self): Parse a connect section.
+
+    _section_monitor(self): Parse a monitor section.
+
+    _section(self,type): Call _section_### function if a keyword is present.
+                         If keyword is not present call the intended function.
+                         Return section type.
+
+    _program(self): Parse the entire program.
     """
 
     def __init__(self, names, devices, network, monitors,
@@ -100,7 +118,8 @@ class Parser:
          self.input_connected,
          self.section_order_error] = self.names.unique_error_codes(19)
 
-    def parser_output(self, text, end="\n"):
+    def _parser_output(self, text, end="\n"):
+        """Print text to the correct output terminal."""
         if self.mode == "terminal":
             print(text, end=end)
         elif self.mode == "gui":
@@ -112,7 +131,7 @@ class Parser:
         function from scanner.py.
         If an error is found, skip parsing until stopping symbol.
         """
-        self.parser_output(self.scanner.error_found())
+        self._parser_output(self.scanner.error_found())
         self.error_count += 1
         if category == self.SYNTAX:
             print("SyntaxError: ", end="")
@@ -120,49 +139,52 @@ class Parser:
             print("SemanticError: ", end="")
 
         if type == self.invalid_device_name:
-            self.parser_output("invalid device name\n")
+            self._parser_output("invalid device name\n")
         if type == self.device_as_name:
-            self.parser_output(
+            self._parser_output(
                 "device type '{}' cannot be device name\n".format(keyword))
         if type == self.dtype_as_name:
-            self.parser_output("dtype input/output '{}' cannot\
+            self._parser_output("dtype input/output '{}' cannot\
                 be device name\n".format(keyword))
         if type == self.keyword_as_name:
-            self.parser_output(
+            self._parser_output(
                 "keyword '{}' cannot be device name\n".format(keyword))
         if type == self.invalid_arg_type:
-            self.parser_output("invalid argument type\n")
+            self._parser_output("invalid argument type\n")
         if type == self.port_error:
-            self.parser_output("invalid port identifier\n")
+            self._parser_output("invalid port identifier\n")
         if type == self.missing_symbol:
-            self.parser_output("missing symbol: {}\n".format(sym))
+            self._parser_output("missing symbol: {}\n".format(sym))
         if type == self.missing_argument:
-            self.parser_output(
-                "missing argument for decive type '{}'".format(keyword))
+            self._parser_output(
+                "missing argument for decive type '{}'\n".format(keyword))
         if type == self.unrecognised_device_type:
-            self.parser_output("unrecognised device type\n")
+            self._parser_output("unrecognised device type\n")
         if type == self.missing_keyword:
-            self.parser_output("missing keyword {}\n".format(keyword))
+            self._parser_output("missing keyword '{}'\n".format(keyword))
         if type == self.invalid_arg:
-            self.parser_output("argument outside of accepted range\n")
+            self._parser_output(
+                "argument '{}' outside of accepted range\n".format(keyword))
         if type == self.duplicate_name:
-            self.parser_output(
-                "name already used in previous device assignment\n")
+            self._parser_output(
+                "name '{}' already used in previous device"
+                " assignment\n".format(keyword))
         if type == self.duplicate_monitor:
-            self.parser_output("monitor point already declared\n")
+            self._parser_output(
+                "monitor point '{}' already declared\n".format(keyword))
         if type == self.monitor_is_input:
-            self.parser_output(
+            self._parser_output(
                 "monitor point is an input, only outputs are allowed\n")
         if type == self.input_to_input:
-            self.parser_output("input connected to input\n")
+            self._parser_output("input connected to input\n")
         if type == self.output_to_output:
-            self.parser_output("output connected to output\n")
+            self._parser_output("output connected to output\n")
         if type == self.port_absent:
-            self.parser_output("port is absent\n")
+            self._parser_output("port is absent\n")
         if type == self.input_connected:
-            self.parser_output("input is already connected\n")
+            self._parser_output("input is already connected\n")
         if type == self.section_order_error:
-            self.parser_output("incorrect ordering of sections\n")
+            self._parser_output("incorrect ordering of sections\n")
 
         while self.symbol.type not in self.stopping_symbols:
             self.symbol = self.scanner.get_symbol()
@@ -241,6 +263,7 @@ class Parser:
                         port_id = self.devices.DATA_ID
                     elif self.symbol.id == self.devices.CLK_ID:
                         port_id = self.devices.CLK_ID
+                    self.symbol = self.scanner.get_symbol()
                 # see dtype output
                 elif self.symbol.type == self.scanner.DTYPE_OP:
                     self.isoutput = True
@@ -248,6 +271,7 @@ class Parser:
                         port_id = self.devices.Q_ID
                     elif self.symbol.id == self.devices.QBAR_ID:
                         port_id = self.devices.QBAR_ID
+                    self.symbol = self.scanner.get_symbol()
                 else:  # unrecognised port
                     # unrecognised port
                     self._error(self.SYNTAX, self.port_error)
@@ -350,12 +374,15 @@ class Parser:
                 # argument for device outside of range
                 if self.devices.INVALID_QUALIFIER in error_list:
                     # invalid argument
-                    self._error(self.SEMANTIC, self.invalid_arg)
+                    self._error(self.SEMANTIC, self.invalid_arg,
+                                keyword=device_property)
                 # used name in device declaration (duplicate name used)
                 if (self.devices.DEVICE_PRESENT in error_list or
                         len(name_list) != len(set(name_list))):
+                    device_name = self.names.get_name_string(device_id)
                     # used name in device declaration
-                    self._error(self.SEMANTIC, self.duplicate_name)
+                    self._error(self.SEMANTIC, self.duplicate_name,
+                                keyword=device_name)
             else:  # it's not a valid device
                 pass  # device outputs error for us here
         else:  # not another name or "=", therefore missing equals symbol
@@ -363,7 +390,6 @@ class Parser:
                         sym="=")  # missing "="
         if self.symbol.type == self.scanner.SEMICOLON:  # see ";"
             pass
-            # self.symbol = self.scanner.get_symbol()
         else:
             self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
@@ -376,7 +402,7 @@ class Parser:
         second_port_ids = []  # list to store port ids of inputs
         error_list = []  # list to store errors returned from network
         if first_device_id is not None:  # it's a valid signal name
-            if self.symbol.type == self.scanner.ARROW:  # see a "->"
+            if self.symbol.type == self.scanner.ARROW:  # see a ">"
                 self.symbol = self.scanner.get_symbol()
                 second_device_id, second_port_id = self._signal_name()
                 if second_device_id is not None:  # it's a valid signal name
@@ -415,12 +441,12 @@ class Parser:
                     self._error(self.SYNTAX, self.output_to_output)
                 if self.network.PORT_ABSENT in error_list:  # invalid port
                     self._error(self.SEMANTIC, self.port_absent)
-                if self.symbol.type == self.scanner.SEMICOLON:
-                    self.symbol = self.scanner.get_symbol()
-                else:  # you don't see a ";"
-                    self._error(self.SYNTAX, self.missing_symbol, sym=";")
             else:  # you don't see an arrow
                 self._error(self.SYNTAX, self.missing_symbol, sym=">")
+        if self.symbol.type == self.scanner.SEMICOLON:
+            pass
+        else:  # you don't see a ";"
+            self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def _monitor(self):
         """Parse a monitor statement.
@@ -432,9 +458,14 @@ class Parser:
             # see if an error is returned by monitors.make_monitor
             error = self.monitors.make_monitor(device_id, output_id)
             if error == self.monitors.MONITOR_PRESENT:
-                self._error(self.SEMANTIC, self.duplicate_monitor)
+                monitor_name = self.names.get_name_string(device_id)
+                if output_id is not None:
+                    monitor_name += "."
+                    monitor_name += self.names.get_name_string(output_id)
+                self._error(self.SEMANTIC, self.duplicate_monitor,
+                            keyword=monitor_name)
             if self.symbol.type == self.scanner.SEMICOLON:
-                self.symbol = self.scanner.get_symbol()
+                pass
             else:
                 self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
@@ -448,19 +479,27 @@ class Parser:
             # missing keyword "DEVICES
             self._error(self.SYNTAX, self.missing_keyword, keyword="DEVICES")
         self._assignment()
-        while self.symbol.id == self.scanner.SEMICOLON:
-            self.symbol = self.get_next_symbol()
+        # _assignment function ends with a semicolon
+        while self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+            # stop loop when you see an "END"
             if (self.symbol.type == self.scanner.KEYWORD and
                     self.symbol.id == self.scanner.END_ID):
                 break
+            # stop loop when you see "CONNECT" or "MONITOR" and raise error
             elif (self.symbol.type == self.scanner.KEYWORD and
                     (self.symbol.id == self.scanner.CONNECT_ID or
                      self.symbol.id == self.scanner.MONITOR_ID)):
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
+            # prevent infinite loop
+            elif (self.symbol.type == self.scanner.EOF):
+                self._error(self.SYNTAX, self.missing_keyword, keyword="END")
+                break
             else:
                 self._assignment()
-        self.symbol = self.scanner.get_symbol()
+        if self.symbol.type != self.scanner.EOF:
+            self.symbol = self.scanner.get_symbol()
 
     def _section_connect(self):
         """Parse a section of connections."""
@@ -472,15 +511,27 @@ class Parser:
             # missing keyword "CONNECT
             self._error(self.SYNTAX, self.missing_keyword, keyword="CONNECT")
         self._connection()
-        while self.symbol.id != self.scanner.END_ID:
+        # _connection function ends with a semicolon
+        while self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+            # stop loop when you see an "END"
             if (self.symbol.type == self.scanner.KEYWORD and
-                    self.symbol.id == self.scanner.MONITOR_ID):
+                    self.symbol.id == self.scanner.END_ID):
+                break
+            # stop loop when you see "DEVICES" or "MONITOR" and raise error
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                    (self.symbol.id == self.scanner.DEVICES_ID or
+                     self.symbol.id == self.scanner.MONITOR_id)):
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            if self.symbol.type == self.scanner.EOF:
+            # prevent infinite loop
+            elif (self.symbol.type == self.scanner.EOF):
+                self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            self._connection()
-        self.symbol = self.scanner.get_symbol()
+            else:
+                self._connection()
+        if self.symbol.type != self.scanner.EOF:
+            self.symbol = self.scanner.get_symbol()
 
     def _section_monitor(self):
         """Parse a section of monitors."""
@@ -492,17 +543,34 @@ class Parser:
             # missing keyword "CONNECT"
             self._error(self.SYNTAX, self.missing_keyword, keyword="MONITOR")
         self._monitor()
-        while self.symbol.id != self.scanner.END_ID:
+        # _monitor function ends with a semicolon
+        while self.symbol.type == self.scanner.SEMICOLON:
+            self.symbol = self.scanner.get_symbol()
+            # stop loop when you see an "END"
             if (self.symbol.type == self.scanner.KEYWORD and
-                    self.symbol.id == self.scanner.MONITOR_ID):
+                    self.symbol.id == self.scanner.END_ID):
+                break
+            # stop loop when you see "DEVICES" or "CONNECT" and raise error
+            elif (self.symbol.type == self.scanner.KEYWORD and
+                    (self.symbol.id == self.scanner.DEVICES_ID or
+                     self.symbol.id == self.scanner.CONNECT_ID)):
                 self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            if self.symbol.type == self.scanner.EOF:
+            # prevent infinite loop
+            elif (self.symbol.type == self.scanner.EOF):
+                self._error(self.SYNTAX, self.missing_keyword, keyword="END")
                 break
-            self._monitor()
-        self.symbol = self.scanner.get_symbol()
+            else:
+                self._monitor()
+        if self.symbol.type != self.scanner.EOF:
+            self.symbol = self.scanner.get_symbol()
 
     def _section(self, type):
+        """Call _section_### function if a keyword is present.
+        If keyword is not present call the intended function.
+
+        Return section type.
+        """
         if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
                 self.scanner.DEVICES_ID):
             self._section_devices()
@@ -515,7 +583,7 @@ class Parser:
                 self.scanner.MONITOR_ID):
             self._section_monitor()
             return self.mon
-        else:
+        else:   # if keyword is not present
             if type == self.dev:
                 self._section_devices()
             elif type == self.con:
@@ -524,27 +592,27 @@ class Parser:
                 self._section_monitor()
             return type
 
-    def program(self):
+    def _program(self):
         """Parse the entire program."""
         self.symbol = self.scanner.get_symbol()
         section_dev = self._section(self.dev)
+        # if the first section is not a devices section
         if section_dev != self.dev:
             self.error(self.SYNTAX, self.section_order_error)
         section_con = self._section(self.con)
+        # if the second section is not a connect section
         if section_con != self.con:
             self.error(self.SYNTAX, self.section_order_error)
         section_mon = self._section(self.mon)
+        # if the third section is not a monitor section
         if section_mon != self.mon:
             self.error(self.SYNTAX, self.section_order_error)
 
     def parse_network(self):
         """Parse the circuit definition file."""
-        # For now just return True, so that userint and gui can run in the
-        # skeleton code. When complete, should return False when there are
-        # errors in the circuit definition file.
-        self.program()
+        self._program()
         if self.error_count == 0:
             return True
         else:
-            self.parser_output(f"Error Count: {self.error_count}")
+            self._parser_output(f"Error Count: {self.error_count}")
             return False
