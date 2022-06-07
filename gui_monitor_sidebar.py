@@ -34,14 +34,6 @@ class MonitorSidebarPanel(wx.Panel):
         self.monitor_names = [item[0]
                               for item in [*self.monitor_dict.values()]]
 
-        # self.monitor_dict = {}
-        # checkbox_index = 0
-        # for device_id, output_id in self.monitors.monitors_dictionary:
-        #     monitor_name = self.devices.get_signal_name(device_id, output_id)
-        #     signal_list = self.monitors.monitors_dictionary[(device_id, output_id)]
-        #     self.monitor_dict[checkbox_index] = [monitor_name, device_id, output_id]
-        #     checkbox_index += 1
-
         # Create widgets
         info_text = wx.StaticText(
             self, wx.ID_ANY, "Choose devices to monitor:")
