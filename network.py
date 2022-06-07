@@ -159,7 +159,7 @@ class Network:
                               second_device_id, second_port_id,
                               third_device_id, third_port_id):
         """Replace connection between first device and second device with a 
-        connection between first device and third device."""
+        connection between third device and second device."""
 
         first_device = self.devices.get_device(first_device_id)
         second_device = self.devices.get_device(second_device_id)

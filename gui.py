@@ -306,6 +306,15 @@ class Gui(wx.Frame):
                     self.push_status,
                     self.input_cmd,
                 )
+                self.connections_sidebar = ConnectionsSidebarPanel(
+                    self,
+                    self.names,
+                    self.devices,
+                    self.network,
+                    self.monitors,
+                    self.push_status,
+                    self.input_cmd,
+                )
 
                 self.mgr.ClosePane(self.mgr.GetPane("canvas"))
                 self.mgr.ClosePane(self.mgr.GetPane("monitors"))

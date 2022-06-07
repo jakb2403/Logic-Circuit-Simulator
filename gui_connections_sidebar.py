@@ -26,11 +26,27 @@ class ConnectionsSidebarPanel(wx.Panel):
             self, wx.ID_ANY, "Choose a connection to replace:"
         )
         info_text2 = wx.StaticText(self, wx.ID_ANY, "Replace ...")
+        self.dropdown_find = wx.Choice(
+            self,
+            wx.CB_DROPDOWN | wx.CB_READONLY,
+            choices=["1", "2"],
+            name="find",
+        )
         info_text3 = wx.StaticText(self, wx.ID_ANY, "with ...")
+        self.dropdown_replace = wx.Choice(
+            self,
+            wx.CB_DROPDOWN | wx.CB_READONLY,
+            choices=["1", "2"],
+            name="replace",
+        )
+        self.replace_button = wx.Button(self, wx.ID_ANY, "Replace")
 
         self.sizer.Add(info_text1, 0, wx.ALL, 3)
         self.sizer.Add(info_text2, 0, wx.ALL, 3)
+        self.sizer.Add(self.dropdown_find, 0, wx.ALL | wx.EXPAND, 3)
         self.sizer.Add(info_text3, 0, wx.ALL, 3)
+        self.sizer.Add(self.dropdown_replace, 0, wx.ALL | wx.EXPAND, 3)
+        self.sizer.Add(self.replace_button, 0, wx.ALL | wx.EXPAND, 3)
 
         # Bind events to event handlers
         # self.monitor_checklist.Bind(wx.EVT_CHECKLISTBOX, self.on_check)
