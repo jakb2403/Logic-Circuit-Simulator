@@ -28,6 +28,7 @@ from parse import Parser
 from gui_cmd import CmdPanel
 from gui_monitor_sidebar import MonitorSidebarPanel
 from gui_switches_sidebar import SwitchesSidebarPanel
+from gui_connections_sidebar import ConnectionsSidebarPanel
 from gui_canvas import CanvasPanel
 from gui_userint import GuiUserInterface
 
@@ -158,6 +159,15 @@ class Gui(wx.Frame):
             self.push_status,
             self.input_cmd,
         )
+        self.connections_sidebar = ConnectionsSidebarPanel(
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.push_status,
+            self.input_cmd,
+        )
 
         # Add panels to AUI manager
         self.mgr.AddPane(
@@ -184,6 +194,17 @@ class Gui(wx.Frame):
             .Caption("Control Switches")
             .Name("switches")
             .DestroyOnClose(True),
+        )
+        self.mgr.AddPane(
+            self.connections_sidebar,
+            aui.AuiPaneInfo()
+            .Left()
+            .Floatable(False)
+            .CloseButton(False)
+            .Caption("Replace Connections")
+            .Name("connections")
+            .DestroyOnClose(True)
+            .MinSize(200, 50),
         )
         self.mgr.AddPane(
             self.cmd,
@@ -289,6 +310,7 @@ class Gui(wx.Frame):
                 self.mgr.ClosePane(self.mgr.GetPane("canvas"))
                 self.mgr.ClosePane(self.mgr.GetPane("monitors"))
                 self.mgr.ClosePane(self.mgr.GetPane("switches"))
+                self.mgr.ClosePane(self.mgr.GetPane("connections"))
                 self.mgr.ClosePane(self.mgr.GetPane("cmd"))
 
                 # Add panels to AUI manager
@@ -318,6 +340,17 @@ class Gui(wx.Frame):
                     .Caption("Control Switches")
                     .Name("switches")
                     .DestroyOnClose(True),
+                )
+                self.mgr.AddPane(
+                    self.connections_sidebar,
+                    aui.AuiPaneInfo()
+                    .Left()
+                    .Floatable(False)
+                    .CloseButton(False)
+                    .Caption("Replace Connections")
+                    .Name("connections")
+                    .DestroyOnClose(True)
+                    .MinSize(200, 50),
                 )
                 self.mgr.AddPane(
                     self.cmd,

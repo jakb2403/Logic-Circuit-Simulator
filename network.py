@@ -154,6 +154,18 @@ class Network:
             error_type = self.PORT_ABSENT
 
         return error_type
+    
+    def replace_connection(self, first_device_id, first_port_id,
+                              second_device_id, second_port_id,
+                              third_device_id, third_port_id):
+        """Replace connection between first device and second device with a 
+        connection between first device and third device."""
+
+        first_device = self.devices.get_device(first_device_id)
+        second_device = self.devices.get_device(second_device_id)
+        third_device = self.devices.get_device(third_device_id)
+
+        second_device.inputs[second_port_id] = (third_device_id, third_port_id)
 
     def check_network(self):
         """Return True if all inputs in the network are connected."""

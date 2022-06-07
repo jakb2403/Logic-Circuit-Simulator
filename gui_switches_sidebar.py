@@ -20,7 +20,7 @@ class SwitchesSidebarPanel(wx.Panel):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.scroll_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        info_text = wx.StaticText(self, wx.ID_ANY, "Change state of switches")
+        info_text = wx.StaticText(self, wx.ID_ANY, "Change state of switches:")
 
         self.scroll_panel = wx.lib.scrolledpanel.ScrolledPanel(
             self, -1#, style=wx.SIMPLE_BORDER
