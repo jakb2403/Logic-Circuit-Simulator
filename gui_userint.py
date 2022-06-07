@@ -66,12 +66,13 @@ class GuiUserInterface:
     continue_command(self): Continues a previously run simulation.
     """
 
-    def __init__(self, names, devices, network, monitors):
+    def __init__(self, names, devices, network, monitors, refresh_canvas):
         """Initialise variables."""
         self.names = names
         self.devices = devices
         self.monitors = monitors
         self.network = network
+        self.refresh_canvas = refresh_canvas
 
         self.cycles_completed = 0  # number of simulation cycles completed
 
@@ -247,6 +248,7 @@ class GuiUserInterface:
                 self.output_cmd("Error! Network oscillating.")
                 return False
         self.monitors.display_signals()
+        self.refresh_canvas()
         return True
 
     def run_command(self):

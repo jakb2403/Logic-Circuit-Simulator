@@ -164,36 +164,37 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # _______________________________________________________
         # Draw test signal from devices class
         # Signal should be --\__/---\___
-        test_signal = [self.devices.HIGH,
-                       self.devices.HIGH,
-                       self.devices.FALLING,
-                       self.devices.LOW,
-                       self.devices.LOW,
-                       self.devices.RISING,
-                       self.devices.HIGH,
-                       self.devices.HIGH,
-                       self.devices.HIGH,
-                       self.devices.FALLING,
-                       self.devices.LOW,
-                       self.devices.LOW,
-                       self.devices.LOW]
-        test_signal_bin = self.convert_signal(test_signal)
-        self.draw_signal("AND1", test_signal_bin, 0)
-        self.draw_signal("NAND1", test_signal_bin, 1)
+        # test_signal = [self.devices.HIGH,
+        #                self.devices.HIGH,
+        #                self.devices.FALLING,
+        #                self.devices.LOW,
+        #                self.devices.LOW,
+        #                self.devices.RISING,
+        #                self.devices.HIGH,
+        #                self.devices.HIGH,
+        #                self.devices.HIGH,
+        #                self.devices.FALLING,
+        #                self.devices.LOW,
+        #                self.devices.LOW,
+        #                self.devices.LOW]
+        # test_signal_bin = self.convert_signal(test_signal)
+        # self.draw_signal("AND1", test_signal_bin, 0)
+        # self.draw_signal("NAND1", test_signal_bin, 1)
 
         # _______________________________________________________
 
         # _______________________________________________________
         # Draw the monitor signals
         #
-        # index = 0
-        # for device_id, output_id in self.monitors.monitors_dictionary:
-        #     monitor_name = self.devices.get_signal_name(device_id, output_id)
-        #     signal_list = self.monitors.monitors_dictionary[(
-        #         device_id, output_id)]
-        #     signal_list_bin = self.convert_signal(signal_list)
-        #     self.draw_signal(monitor_name, signal_list_bin, index)
-        #     index += 1
+        index = 0
+        for device_id, output_id in self.monitors.monitors_dictionary:
+            monitor_name = self.devices.get_signal_name(device_id, output_id)
+            signal_list = self.monitors.monitors_dictionary[(
+                device_id, output_id)]
+            if len(signal_list) > 0:
+                signal_list_bin = self.convert_signal(signal_list)
+                self.draw_signal(monitor_name, signal_list_bin, index)
+            index += 1
         # _______________________________________________________
 
         # We have been drawing to the back buffer, flush the graphics pipeline
@@ -253,6 +254,8 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         if event.GetWheelRotation() < 0:
             self.zoom *= (1.0 + (
                 event.GetWheelRotation() / (20 * event.GetWheelDelta())))
+            if self.zoom < 0:
+                self.zoom = 0.001
             # Adjust pan so as to zoom around the mouse position
             self.pan_x -= (self.zoom - old_zoom) * ox
             self.pan_y -= (self.zoom - old_zoom) * oy

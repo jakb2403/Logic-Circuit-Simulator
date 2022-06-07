@@ -36,3 +36,6 @@ class CanvasPanel(wx.Panel):
 
     def on_horiz_scroll(self, event):
         pass
+
+    def refresh(self):
+        self.canvas.on_paint(None)
