@@ -1,0 +1,153 @@
+msgid ""
+msgstr ""
+"Project: GF2P3-Team15\n"
+"Last-Translator: Joseph Waters\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Choose devices to monitor:"
+msgstr "Choisir appareiles à moniteur:"
+
+msgid "Command Line"
+msgstr "Ligne de Commande"
+
+msgid "File"
+msgstr "Dossier"
+
+msgid "Monitor Points"
+msgstr "Pointes de Moniteur"
+
+msgid "Control Switches"
+msgstr "Panneau de Contrôle"
+
+msgid "Logic Simulator"
+msgstr "Simulater Logique"
+
+msgid "Logic Simulator: interactive command line user interface"
+msgstr "Simulateur Logique: interactif ligne de commande interface grafique"
+
+msgid "Enter 'h' for help"
+msgstr "Inscrire 'h' pour assistance"
+
+msgid "User commands"
+msgstr "Commandes de utilateur"
+
+msgid "Invalid command"
+msgstr "Commande non valide"
+
+msgid "run the simulation for N cycles"
+msgstr "faire tourner le simulation pour N cycles"
+
+msgid "continue the simulation for N cycles"
+msgstr "continuer le simulation pour N cycles"
+
+msgid "set switch X to N (0 or 1)"
+msgstr "poser interrupteur X à N"
+
+msgid "set a monitor on signal X"
+msgstr "poser un pointe de moniteur sur signal X"
+
+msgid "zap the monitor on"
+msgstr "zapper le pointe de moniteur allumé"
+
+msgid "help (this command)"
+msgstr "assistance (cette commande)"
+
+msgid "quit the progam"
+msgstr "quitter le programme"
+
+msgid "Running for N cycles"
+msgstr "Gestion pour N cycles."
+
+msgid "Error! Expected a number."
+msgstr "Erreur! Attendu un nombre."
+
+msgid "Continuing for N cycles. Total N"
+msgstr "En cours pour N cycles. Total N"
+
+msgid "Error! Nothing to continue. Run first."
+msgstr "Erreur! Rien a continuer. Faire tourner premier."
+
+msgid "Successfully set switch."
+msgstr "Poser avec succès le interrupteur."
+
+msgid "Error! Invalid switch."
+msgstr "Erreur! Nom inconnu."
+
+msgid "Number out of range."
+msgstr "Nombre hors de portée"
+
+msgid "Successfully made monitor."
+msgstr "Fait avec succès le pointe de moniteur."
+
+msgid "Error! Could not make monitor."
+msgstr "Erreur! Ne pouvait pas faire le pointe de moniteur."
+
+msgid "Error! Unkown name."
+msgstr "Erreur! Nom inconnu."
+
+msgid "Successfully zapped monitor."
+msgstr "Éliminer avec succès le pointe de moniteur."
+
+msgid "Error! Could not zap monitor."
+msgstr "Erreur! Ne pouvait pas éliminer le pointe de moniteur."
+
+msgid "Error! Network oscillating."
+msgstr "Erreur! Réseau oscillant."
+
+msgid "invalid device name"
+msgstr "nom de l'appareil non valide"
+
+msgid "device type '{}' cannot be device name"
+msgstr "genre de l'appareil '{}' ne peut pas être un nom"
+
+msgid "dtype input/output '{}' cannot be device name"
+msgstr "dtype entrée/sortie '{}' ne peut pas être un nom"
+
+msgid "keyword '{}' cannot be device name"
+msgstr "mot-clé '{}' ne peut pas être un nom"
+
+msgid "invalid argument type"
+msgstr "genre de données non valide"
+
+msgid "invalid port identifier"
+msgstr "le identifiant de le port non valide"
+
+msgid "missing symbol: {}"
+msgstr "symbole manquant: {}"
+
+msgid "missing argument for decive type '{}'"
+msgstr "données manquant por le genre de l'appareil '{}'"
+
+msgid "unrecognised device type"
+msgstr "méconnu genre de l'appareil"
+
+msgid "missing keyword {}"
+msgstr "mot-clé manquant {}"
+
+msgid "argument outside of accepted range"
+msgstr "données en dehors de la plage acceptée"
+
+msgid "name already used in previous device assignment"
+msgstr "nom déjà utilisé dans l'attribution précédente de l'appareil"
+
+msgid "monitor point already declared"
+msgstr "pointe de moniteur est déjà déclaré"
+
+msgid "monitor point is an input, only outputs are allowed"
+msgstr "pointe de moniteur est une entrée, seules les sorties sont autorisées"
+
+msgid "input connected to input"
+msgstr "entrée connectée à l'entrée"
+
+msgid "output connected to output"
+msgstr "sortie connectée à la sortie"
+
+msgid "port is absent"
+msgstr "port manquant"
+
+msgid "input is already connected"
+msgstr "l'entrée est déjà connectée"
