@@ -160,9 +160,12 @@ class Scanner:
         error_location = self.file.tell()
         self.file.seek(0, 0)
         if self.char_counter == 0:
-            self.line_counter -= 1
-            line_text = self.file. read().split("\n")[self.line_counter - 1]
-            self.char_counter = self.char_in_line[-1]
+            if self.line_counter != 1:
+                self.line_counter -= 1
+                line_text = self.file.read().split("\n")[self.line_counter - 1]
+                self.char_counter = self.char_in_line[-1]
+            else:
+                line_text = ""
         else:
             line_text = self.file.read().split("\n")[self.line_counter - 1]
         output = ("Error on line " + str(self.line_counter) + "\n" +
@@ -261,7 +264,8 @@ class Scanner:
         elif self.current_character == "#":
             while True:
                 self.advance()
-                if self.current_character == "\n":
+                if (self.current_character == "\n" or
+                        self.current_character == ""):
                     break
             return self.get_symbol()
 

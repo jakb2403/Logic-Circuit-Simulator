@@ -116,7 +116,8 @@ class Parser:
          self.output_to_output,
          self.port_absent,
          self.input_connected,
-         self.section_order_error] = self.names.unique_error_codes(19)
+         self.unconnected_inputs,
+         self.section_order_error] = self.names.unique_error_codes(20)
 
     def _parser_output(self, text, end="\n"):
         """Print text to the correct output terminal."""
@@ -125,7 +126,7 @@ class Parser:
         elif self.mode == "gui":
             self.output_cmd(text)
 
-    def _error(self, category, type=None, sym=None, keyword=None):
+    def _error(self, category, type=None, sym=None, keyword=None, skip=True):
         """Print error category (syntax or semantic), error type,
         and error location. Error location is specified using error_found
         function from scanner.py.
@@ -134,9 +135,9 @@ class Parser:
         self._parser_output(self.scanner.error_found())
         self.error_count += 1
         if category == self.SYNTAX:
-            print("SyntaxError: ", end="")
+            self._parser_output("SyntaxError: ", end="")
         elif category == self.SEMANTIC:
-            print("SemanticError: ", end="")
+            self._parser_output("SemanticError: ", end="")
 
         if type == self.invalid_device_name:
             self._parser_output("invalid device name\n")
@@ -183,10 +184,15 @@ class Parser:
             self._parser_output("port is absent\n")
         if type == self.input_connected:
             self._parser_output("input is already connected\n")
+        if type == self.unconnected_inputs:
+            self._parser_output(
+                "incomplete network, not all inputs are connected\n")
         if type == self.section_order_error:
             self._parser_output("incorrect ordering of sections\n")
-
-        while self.symbol.type not in self.stopping_symbols:
+        if skip is True:
+            while self.symbol.type not in self.stopping_symbols:
+                self.symbol = self.scanner.get_symbol()
+        elif skip is False:
             self.symbol = self.scanner.get_symbol()
 
     def _name(self):
@@ -356,6 +362,8 @@ class Parser:
                 name_list.append(device_id)  # store valid name in list
             else:  # it's not a valid name
                 break
+            if self.symbol.type == self.scanner.EOF:
+                break
         # we encountered another name without a ","
         if self.symbol.type == self.scanner.NAME:
             self._error(self.SYNTAX, self.missing_symbol,
@@ -420,6 +428,8 @@ class Parser:
                         # add port_id to list of port ids
                         second_port_ids.append(second_port_id)
                     else:  # signal_name raises an error
+                        break
+                    if self.symbol.type == self.scanner.EOF:
                         break
                 # iterate over devices in connection output
                 for i in range(len(second_device_ids)):
@@ -598,15 +608,21 @@ class Parser:
         section_dev = self._section(self.dev)
         # if the first section is not a devices section
         if section_dev != self.dev:
-            self.error(self.SYNTAX, self.section_order_error)
+            self._error(self.SYNTAX, self.section_order_error, skip=False)
         section_con = self._section(self.con)
         # if the second section is not a connect section
         if section_con != self.con:
-            self.error(self.SYNTAX, self.section_order_error)
+            self._error(self.SYNTAX, self.section_order_error, skip=False)
         section_mon = self._section(self.mon)
         # if the third section is not a monitor section
         if section_mon != self.mon:
-            self.error(self.SYNTAX, self.section_order_error)
+            self._error(self.SYNTAX, self.section_order_error, skip=False)
+        # if all inputs are connected
+        if self.network.check_network() is True:
+            pass
+        # if not all inputs are connected
+        elif self.network.check_network() is False:
+            self._error(self.SEMANTIC, self.unconnected_inputs)
 
     def parse_network(self):
         """Parse the circuit definition file."""
