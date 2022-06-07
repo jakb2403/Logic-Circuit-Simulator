@@ -308,6 +308,16 @@ class Devices:
                 self.make_clock(device_id, device_property)
                 error_type = self.NO_ERROR
 
+        elif device_kind == self.NOT:
+            # Device property is the clock half period > 0
+            if device_property is None:
+                error_type = self.NO_QUALIFIER
+            elif device_property <= 0:
+                error_type = self.INVALID_QUALIFIER
+            else:
+                self.make_gate(device_id, device_property, 1)
+                error_type = self.NO_ERROR
+
         elif device_kind in self.gate_types:
             # Device property is the number of inputs
             if device_kind == self.XOR:
