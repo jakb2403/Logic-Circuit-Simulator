@@ -66,8 +66,7 @@ class Gui(wx.Frame):
         self.devices = devices
         self.network = network
         self.monitors = monitors
-        self.userint = GuiUserInterface(
-            self.names, self.devices, self.network, self.monitors)
+        
 
         self.cycles_completed = 0
         self.spin_value = 10
@@ -106,11 +105,20 @@ class Gui(wx.Frame):
         self.statusbar.SetStatusText("Status")
 
         # Create instance of panel classes
+        self.canvas_panel = CanvasPanel(
+            self,
+            self.names,
+            self.devices,
+            self.network,
+            self.monitors,
+            self.push_status)
+        self.refresh_canvas = self.canvas_panel.refresh
+        self.userint = GuiUserInterface(
+            self.names, self.devices, self.network, self.monitors, self.refresh_canvas)
         self.cmd = CmdPanel(self, self.names, self.devices, self.network,
                             self.monitors, self.userint, self.push_status)
         self.input_cmd = self.cmd.input_cmd
         self.output_cmd = self.cmd.output_cmd
-
         self.monitor_sidebar = MonitorSidebarPanel(
             self,
             self.names,
@@ -127,13 +135,6 @@ class Gui(wx.Frame):
             self.monitors,
             self.push_status,
             self.input_cmd)
-        self.canvas_panel = CanvasPanel(
-            self,
-            self.names,
-            self.devices,
-            self.network,
-            self.monitors,
-            self.push_status)
 
         # Add panels to AUI manager
         self.mgr.AddPane(self.canvas_panel, aui.AuiPaneInfo().CenterPane())
@@ -193,6 +194,7 @@ class Gui(wx.Frame):
             parse = self.parser.parse_network()
             if parse == True:
                 self.monitor_sidebar.update_checklist()
+                self.switches_sidebar.update_list()
             return True
 
     def on_spin(self, event):

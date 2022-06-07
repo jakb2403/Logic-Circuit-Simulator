@@ -1,4 +1,5 @@
 import wx
+import wx.lib.scrolledpanel
 
 
 class SwitchesSidebarPanel(wx.Panel):
@@ -17,30 +18,21 @@ class SwitchesSidebarPanel(wx.Panel):
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.switches_dict = {
-            1: ["SW1", 0],
-            2: ["SW2", 1],
-            3: ["SW3", 0],
-            4: ["SW4", 1],
-            5: ["SW5", 0],
-        }
-
-        # self.switches_dict = {}
-        # self.switch_device_ids = self.devices.find_devices(devices.SWITCH)
-        # for id in self.switch_device_ids:
-        #     state = self.devices.get_device().switch_state
-        #     name = self.devices.get_signal_name(id, None)
-        #     self.switches_dict[id] = [name, state]
-
-        # Create widgets
-        for switch in self.switches_dict:
-            device_id = switch
-            name = self.switches_dict[switch][0]
-            init_state = self.switches_dict[switch][1]
-            self.create_switch(name, device_id, init_state)
+        self.switches_list = []
 
         self.SetSizer(self.sizer)
 
+    def update_list(self):
+        self.switches_list = self.devices.find_devices(self.devices.SWITCH)
+        print(self.switches_list)
+        for i in range(len(self.switches_list)):
+            device_id = self.switches_list[i]
+            name = self.devices.get_signal_name(device_id, None)
+            init_state = self.devices.get_device(device_id).switch_state
+            self.create_switch(name, device_id, init_state)
+        self.SetSizer(self.sizer)
+
+        
     def create_switch(self, name, device_id, init_state):
         text = wx.StaticText(self, wx.ID_ANY, name)
         toggle = wx.ToggleButton(self, device_id, label=str(init_state))
@@ -55,7 +47,7 @@ class SwitchesSidebarPanel(wx.Panel):
     def on_toggle_switch(self, event):
         toggle = event.GetEventObject()
         id = toggle.GetId()
-        switch_name = self.switches_dict[id][0]
+        switch_name = self.devices.get_signal_name(id, None)
         current_state = int(toggle.GetLabel())
         if current_state == 1:
             new_state = 0
