@@ -321,7 +321,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
     def draw_signal(self, monitor_name, signal_list_bin, index):
 
-        v_space = 100
+        v_space = 60
         one_cycle = 20
         text_x_offset = 10
         signal_height = v_space * 2 // 3
@@ -338,7 +338,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Draw the tickmarks
         tick_start = coord()
         tick_end = coord()
-        for i in range(signal_length):
+        for i in range(signal_length+1):
             if i % 5 == 0:
                 tick_start.x = signal_x_offset + (i * one_cycle)
                 tick_start.y = bottom_left.y + tick_y_offset
