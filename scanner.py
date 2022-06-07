@@ -74,7 +74,8 @@ class Scanner:
                 self.char_in_line = []
 
                 self.symbol_type_list = [
-                    self.NONETYPE,  # fixes a spurious error with scanner seeing a semicolon as the 0th element
+                    self.NONETYPE,  # fixes a spurious error with scanner
+                                    # seeing a semicolon as the 0th element
                     self.DOT,
                     self.COMMA,
                     self.SEMICOLON,
