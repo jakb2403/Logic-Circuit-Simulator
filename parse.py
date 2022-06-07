@@ -419,9 +419,7 @@ class Parser:
                 self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def _section_devices(self):
-        """
-        Parse a section of assignments.
-        """
+        """Parse a section of assignments."""
         # cheking for keyword "DEVICES" to start the devices section
         if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
                 self.scanner.DEVICES_ID):
@@ -441,9 +439,7 @@ class Parser:
         self.symbol = self.scanner.get_symbol()
 
     def _section_connect(self):
-        """
-        Parse a section of connections.
-        """
+        """Parse a section of connections."""
         # cheking for keyword "CONNECT" to start the devices section
         if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
                 self.scanner.CONNECT_ID):
@@ -463,9 +459,7 @@ class Parser:
         self.symbol = self.scanner.get_symbol()
 
     def _section_monitor(self):
-        """
-        Parse a section of monitors.
-        """
+        """Parse a section of monitors."""
         # checking for keyword "MONITOR" to start the connect section
         if (self.symbol.type == self.scanner.KEYWORD and self.symbol.id ==
                 self.scanner.MONITOR_ID):
@@ -485,9 +479,7 @@ class Parser:
         self.symbol = self.scanner.get_symbol()
 
     def program(self):
-        """
-        Parse the entire program.
-        """
+        """Parse the entire program."""
         self.symbol = self.scanner.get_symbol()
         self._section_devices()
         self._section_connect()
