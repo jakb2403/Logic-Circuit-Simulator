@@ -35,7 +35,7 @@ def dummy_parser(path):
 def test_parser_invalid_name(capfd):
     """Parser test for invalid name"""
     parser = dummy_parser(str(Path("test_files/parser_names_test1.txt")))
-    assert parser.parse_network is False  # NEEDS CHANGING!!!
+    assert parser.parse_network() is False  # NEEDS CHANGING!!!
     out, _ = capfd.readouterr()
     assert (
         out

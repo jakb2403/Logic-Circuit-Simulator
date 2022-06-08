@@ -25,7 +25,7 @@ CONNECT
     NOR1 > AND2.I1;
     OR1 > AND2.I2;
     XOR1 > OR2.I1;
-    AND2 > NOT1;
+    AND2 > NOT1.I1;
 END
 
 MONITOR
