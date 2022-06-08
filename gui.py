@@ -456,11 +456,11 @@ class Gui(wx.Frame):
                     "Logic Simulator\n"
                     "Created by Mojisola Agboola\n"
                     "Adapted by P3 Group 15\n"
-                    "Hyun Seung Cho, Joe Water and John Browb\n"
+                    "Hyun Seung Cho, Joe Water and John Brown\n"
                     "2022"
-                    "About Logsim"
                 ),
-                wx.ICON_INFORMATION | wx.OK,
+                _("About Logsim"),
+                wx.ICON_INFORMATION | wx.OK
             )
 
     def push_status(self, text):

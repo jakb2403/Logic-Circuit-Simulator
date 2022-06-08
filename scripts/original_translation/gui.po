@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-06-08 13:55+0100\n"
+"POT-Creation-Date: 2022-06-08 17:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,59 +43,63 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: gui.py:183 gui.py:339
+#: gui.py:183 gui.py:340
 msgid "Monitor Points"
 msgstr ""
 
-#: gui.py:194 gui.py:349
+#: gui.py:194 gui.py:350
 msgid "Control Switches"
 msgstr ""
 
-#: gui.py:204 gui.py:359
+#: gui.py:204 gui.py:360
 msgid "Replace Connections"
 msgstr ""
 
-#: gui.py:215 gui.py:370
+#: gui.py:215 gui.py:371
 msgid "Command Line"
 msgstr ""
 
-#: gui.py:236
+#: gui.py:237
 msgid ""
 "\n"
 "You closed the file dialog box.\n"
 "You must choose a file to load in order to run a simulation\n"
 msgstr ""
 
-#: gui.py:244
+#: gui.py:245
 msgid "Load a .txt file to run"
 msgstr ""
 
-#: gui.py:397
+#: gui.py:398
 msgid "Opening file: "
 msgstr ""
 
-#: gui.py:399
+#: gui.py:400
 msgid "Parsing file: "
 msgstr ""
 
-#: gui.py:427
+#: gui.py:428
 msgid "Save monitor plot"
 msgstr ""
 
-#: gui.py:442
+#: gui.py:443
 msgid "Cannot save current data in file '{}'."
 msgstr ""
 
-#: gui.py:444
+#: gui.py:445
 msgid "Saved file as: "
 msgstr ""
 
-#: gui.py:454
+#: gui.py:455
 msgid ""
 "Logic Simulator\n"
 "Created by Mojisola Agboola\n"
 "Adapted by P3 Group 15\n"
-"Hyun Seung Cho, Joe Water and John Browb\n"
-"2022About Logsim"
+"Hyun Seung Cho, Joe Water and John Brown\n"
+"2022"
+msgstr ""
+
+#: gui.py:462
+msgid "About Logsim"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 17:20+0100\n"
+"PO-Revision-Date: 2022-06-08 17:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr "\\uB17C\\uB9AC \\uD68C\\uB85C \\uBAA8\\uC758 \\uC2E4\\uD5D8 Simulateur l
 
 #: gui.py:90
 msgid "&About"
-msgstr "&à propos"
+msgstr "& à propos"
 
 #: gui.py:91
 msgid "&Exit"
@@ -96,19 +96,23 @@ msgstr "Impossible d'enregistrer les données actuelles dans le fichier '{}'."
 msgid "Saved file as: "
 msgstr "Fichier enregistré sous: "
 
-#: gui.py:454
+#: gui.py:455
 msgid ""
 "Logic Simulator\n"
 "Created by Mojisola Agboola\n"
 "Adapted by P3 Group 15\n"
-"Hyun Seung Cho, Joe Water and John Browb\n"
-"2022About Logsim"
+"Hyun Seung Cho, Joe Water and John Brown\n"
+"2022"
 msgstr ""
 "Simulateur logique\n"
 "Créé par Mojisola Agboola\n"
-"Adapté par P3 Group 15\n"
-"Hyun Seung Cho, Joe Water et John Browb\n"
-"2022à propos de Logsim"
+"Adapté par P3 Groupe 15\n"
+"Hyun Seung Cho, Joe Water et John Brown\n"
+"2022"
+
+#: gui.py:462
+msgid "About Logsim"
+msgstr "À propos de Logsim"
 
 #: gui_monitor_sidebar.py:26
 msgid "Choose devices to monitor:"
