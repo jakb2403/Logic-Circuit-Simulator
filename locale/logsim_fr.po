@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 17:07+0100\n"
+"PO-Revision-Date: 2022-06-08 17:11+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -383,3 +383,7 @@ msgstr "ordre incorrect des sections\n"
 #: parse.py:638
 msgid "Error Count: {}"
 msgstr "Nombre d'erreurs: {}"
+
+#: parse.py:138
+msgid "Error: "
+msgstr "Erreur: "
