@@ -4,64 +4,66 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: logsim\n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2022-06-08 15:08+0100\n"
+"Last-Translator: \n"
+"Language-Team: team15\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-
+"X-Generator: Poedit 3.1\n"
 
 #: logsim.py:83
 msgid "Logic Simulator"
-msgstr ""
+msgstr "Simulateur logique"
 
 #: gui.py:90
 msgid "&About"
-msgstr ""
+msgstr "&À propos"
 
 #: gui.py:91
 msgid "&Exit"
-msgstr ""
+msgstr "&Quitter"
 
 #: gui.py:92
 msgid "&File"
-msgstr ""
+msgstr "&Fichier"
 
 #: gui.py:98
 msgid "Load"
-msgstr ""
+msgstr "Charger"
 
 #: gui.py:101
 msgid "Run"
-msgstr ""
+msgstr "Exécuter"
 
 #: gui.py:104
 msgid "Continue"
-msgstr ""
+msgstr "Continuer"
 
 #: gui.py:114
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: gui.py:183 gui.py:339
 msgid "Monitor Points"
-msgstr ""
+msgstr "Surveiller les points"
 
 #: gui.py:194 gui.py:349
 msgid "Control Switches"
-msgstr ""
+msgstr "Contrôler les interrupteurs"
 
 #: gui.py:204 gui.py:359
 msgid "Replace Connections"
-msgstr ""
+msgstr "Remplacer les connexions"
 
 #: gui.py:215 gui.py:370
 msgid "Command Line"
-msgstr ""
+msgstr "Ligne de commande"
 
 #: gui.py:236
 msgid ""
@@ -69,30 +71,33 @@ msgid ""
 "You closed the file dialog box.\n"
 "You must choose a file to load in order to run a simulation\n"
 msgstr ""
+"\n"
+"Vous avez fermé la boîte de dialogue du fichier.\n"
+"Vous devez choisir un fichier à charger pour exécuter une simulation\n"
 
 #: gui.py:244
 msgid "Load a .txt file to run"
-msgstr ""
+msgstr "Charger un fichier .txt à exécuter"
 
 #: gui.py:397
 msgid "Opening file: "
-msgstr ""
+msgstr "Ouverture du fichier: "
 
 #: gui.py:399
 msgid "Parsing file: "
-msgstr ""
+msgstr "Analyse du fichier: "
 
 #: gui.py:427
 msgid "Save monitor plot"
-msgstr ""
+msgstr "Enregistrer le tracé du moniteur"
 
 #: gui.py:442
 msgid "Cannot save current data in file '{}'."
-msgstr ""
+msgstr "Impossible d’enregistrer les données actuelles dans le fichier ‘{}’."
 
 #: gui.py:444
 msgid "Saved file as: "
-msgstr ""
+msgstr "Fichier enregistré sous : "
 
 #: gui.py:454
 msgid ""
@@ -102,30 +107,35 @@ msgid ""
 "Hyun Seung Cho, Joe Water and John Browb\n"
 "2022About Logsim"
 msgstr ""
+"Simulateur logique\n"
+"Créé par Mojisola Agboola\n"
+"Adapté par P3 Group 15\n"
+"Hyun Seung Cho, Joe Water et John Browb\n"
+"2022À propos de Logsim"
 
 #: gui_monitor_sidebar.py:26
 msgid "Choose devices to monitor:"
-msgstr ""
+msgstr "Choisir les appareils à surveiller :"
 
 #: gui_monitor_sidebar.py:29
 msgid "Monitor Signals"
-msgstr ""
+msgstr "Surveillez les signaux"
 
 #: gui_monitor_sidebar.py:64
 msgid "Device {} added to monitor points"
-msgstr ""
+msgstr "Appareil {} ajouté aux points de surveillance"
 
 #: gui_monitor_sidebar.py:69
 msgid "Device {} zapped from monitor points"
-msgstr ""
+msgstr "Appareil {} zappé des points de surveillance"
 
 #: gui_switches_sidebar.py:23
 msgid "Change state of switches:"
-msgstr ""
+msgstr "Changer l’état des interrupteur :"
 
 #: gui_switches_sidebar.py:73
 msgid "Switch {} toggled to {}"
-msgstr ""
+msgstr "Interrupteur {} changé à {}"
 
 #: gui_connections_sidebar.py:126
 msgid ""
@@ -133,108 +143,110 @@ msgid ""
 "Replacing connection\n"
 "{} > {}  with  {} > {}"
 msgstr ""
+"\n"
+"Remplacement de la connexion\n"
+"{} > {} avec {} > {}"
 
 #: gui_userint.py:104
 msgid "Invalid command. Enter 'h' for help."
-msgstr ""
+msgstr "Commande invalide. Entrez ‘h’ pour obtenir de l’aide."
 
 #: gui_userint.py:130
 msgid "Error! Expected a name."
-msgstr ""
+msgstr "Erreur ! Un nom est attendu."
 
 #: gui_userint.py:148
 msgid "Error! Unknown name."
-msgstr ""
+msgstr "Erreur ! Nom inconnu."
 
 #: gui_userint.py:176
 msgid "Error! Expected a number."
-msgstr ""
+msgstr "Erreur ! Un nombre attendu."
 
 #: gui_userint.py:185 gui_userint.py:190
 msgid "Number out of range."
-msgstr ""
+msgstr "Nombre hors limites."
 
 #: gui_userint.py:197
 msgid "User commands:"
-msgstr ""
+msgstr "Commandes utilisateur :"
 
 #: gui_userint.py:198
 msgid "r N       - run the simulation for N cycles"
-msgstr ""
+msgstr "r N       - exécuter la simulation pendant N cycles"
 
 #: gui_userint.py:199
 msgid "c N       - continue the simulation for N cycles"
-msgstr ""
+msgstr "c N       - continuer la simulation pendant N cycles"
 
 #: gui_userint.py:200
 msgid "s X N     - set switch X to N (0 or 1)"
-msgstr ""
+msgstr "s X N     - régler le interrupteur X à N (0 ou 1)"
 
 #: gui_userint.py:201
 msgid "m X       - set a monitor on signal X"
-msgstr ""
+msgstr "m X       - régler un moniteur sur le signal X"
 
 #: gui_userint.py:202
 msgid "z X       - zap the monitor on signal X"
-msgstr ""
+msgstr "z X       - zappe le moniteur sur le signal X"
 
 #: gui_userint.py:203
 msgid "h         - help (this command)"
-msgstr ""
+msgstr "h         - aide (cette commande)"
 
 #: gui_userint.py:204
 msgid "q         - quit the program"
-msgstr ""
+msgstr "q         - quitter le programme"
 
 #: gui_userint.py:213
 msgid "Successfully set switch."
-msgstr ""
+msgstr "Interrupteur réglé avec succès."
 
 #: gui_userint.py:215
 msgid "Error! Invalid switch."
-msgstr ""
+msgstr "Erreur! Commutateur invalide."
 
 #: gui_userint.py:225
 msgid "Successfully made monitor."
-msgstr ""
+msgstr "Moniteur créé avec succès."
 
 #: gui_userint.py:227
 msgid "Error! Could not make monitor."
-msgstr ""
+msgstr "Erreur! Impossible de faire le moniteur."
 
 #: gui_userint.py:235
 msgid "Successfully zapped monitor"
-msgstr ""
+msgstr "Moniteur zappé avec succès"
 
 #: gui_userint.py:237
 msgid "Error! Could not zap monitor."
-msgstr ""
+msgstr "Erreur! Impossible de zapper le moniteur."
 
 #: gui_userint.py:248
 msgid "Error! Network oscillating."
-msgstr ""
+msgstr "Erreur! Réseau oscillant."
 
 #: gui_userint.py:261
 msgid " cycles"
-msgstr ""
+msgstr " cycles"
 
 #: gui_userint.py:261
 msgid "Running for "
-msgstr ""
+msgstr "Courir pour "
 
 #: gui_userint.py:271
 msgid "Error! Nothing to continue. Run first."
-msgstr ""
+msgstr "Erreur! Rien à continuer. Courez d’abord."
 
 #: gui_userint.py:274
 msgid "Continuing for"
-msgstr ""
+msgstr "Continuer pour"
 
 #: gui_userint.py:274
 msgid "cycles."
-msgstr ""
+msgstr "cycles."
 
 #: gui_userint.py:275
 msgid "Total:"
-msgstr ""
-
+msgstr "Total:"
