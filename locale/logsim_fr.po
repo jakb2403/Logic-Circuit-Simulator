@@ -17,7 +17,6 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 "X-Generator: Poedit 3.1\n"
 
-#: logsim.py:83
 msgid "Logic Simulator"
 msgstr "Simulateur logique"
 
