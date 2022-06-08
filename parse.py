@@ -304,6 +304,8 @@ class Parser:
                 device_kind = self.devices.D_TYPE
             elif self.symbol.id == self.scanner.XOR_ID:  # it's a XOR
                 device_kind = self.devices.XOR
+            elif self.symbol.id == self.scanner.NOT_ID:  # it's a NOT
+                device_kind = self.devices.NOT
             self.symbol = self.scanner.get_symbol()
             return device_kind, None
         # if the symbol is a device with arguments
