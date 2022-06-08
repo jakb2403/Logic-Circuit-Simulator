@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 16:31+0100\n"
+"PO-Revision-Date: 2022-06-08 16:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -198,7 +198,7 @@ msgstr "q         - quitter le programme"
 
 #: gui_userint.py:213
 msgid "Successfully set switch."
-msgstr "Interrupteur réglé avec succÃ¨s."
+msgstr "Interrupteur réglé avec succès."
 
 #: gui_userint.py:215
 msgid "Error! Invalid switch."
@@ -206,7 +206,7 @@ msgstr "Erreur! Commutateur invalide."
 
 #: gui_userint.py:225
 msgid "Successfully made monitor."
-msgstr "Moniteur créé avec succÃ¨s."
+msgstr "Moniteur créé avec succès."
 
 #: gui_userint.py:227
 msgid "Error! Could not make monitor."
@@ -214,7 +214,7 @@ msgstr "Erreur! Impossible de faire le moniteur."
 
 #: gui_userint.py:235
 msgid "Successfully zapped monitor"
-msgstr "Moniteur zappé avec succÃ¨s"
+msgstr "Moniteur zappé avec succès"
 
 #: gui_userint.py:237
 msgid "Error! Could not zap monitor."
