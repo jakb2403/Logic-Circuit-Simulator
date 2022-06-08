@@ -114,9 +114,9 @@ class Scanner:
                  self.dtype_op_list)
 
             else:
-                print("\nError: incorrect file type\n")
+                print(_("\nError: incorrect file type\n"))
         else:
-            print("\nError invalid path\n")
+            print(_("\nError invalid path\n"))
 
     def advance(self):
         """Read the next character."""
@@ -168,7 +168,7 @@ class Scanner:
                 line_text = ""
         else:
             line_text = self.file.read().split("\n")[self.line_counter - 1]
-        output = ("Error on line " + str(self.line_counter) + "\n" +
+        output = (_("Error on line ") + str(self.line_counter) + "\n" +
                   line_text + "\n" + " " * (self.char_counter - 1) + "^")
 
         self.file.seek(0, 0)

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 17:33+0100\n"
+"PO-Revision-Date: 2022-06-08 17:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -391,3 +391,23 @@ msgstr "Nombre d'erreurs: {}"
 #: parse.py:138
 msgid "Error: "
 msgstr "Erreur: "
+
+#: scanner.py:117
+msgid ""
+"\n"
+"Error: incorrect file type\n"
+msgstr ""
+"\n"
+"Erreur: type de fichier incorrect\n"
+
+#: scanner.py:119
+msgid ""
+"\n"
+"Error invalid path\n"
+msgstr ""
+"\n"
+"Erreur chemin invalide\n"
+
+#: scanner.py:171
+msgid "Error on line "
+msgstr "Erreur en ligne "
