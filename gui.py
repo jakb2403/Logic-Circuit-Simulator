@@ -460,7 +460,7 @@ class Gui(wx.Frame):
                     "Logic Simulator\n"
                     "Created by Mojisola Agboola\n"
                     "Adapted by P3 Group 15\n"
-                    "Hyun Seung Cho, Joe Water and John Brown\n"
+                    u"Hyun Seung Cho, Joe Waters and John Brown\n"
                     "2022"
                 ),
                 _("About Logsim"),
