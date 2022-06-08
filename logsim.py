@@ -32,7 +32,7 @@ def main(arg_list):
     Run either the command line user interface, the graphical user interface,
     or display the usage message.
     """
-
+    app = wx.App()
     # Internationalisation
     builtins._ = wx.GetTranslation
     locale = wx.Locale()
