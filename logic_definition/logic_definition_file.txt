@@ -9,7 +9,7 @@ connection          = output , ">" , input , { "," , input } , ";" ;
 monitor  		    = output , ";" ;
 
 device_arg_dec      = device_arg , "(" , argument , ")" ;
-device              = "DTYPE" | "XOR" ;
+device              = "DTYPE" | "XOR" | "NOT" ;
 device_arg          = "CLOCK" | "AND" | "NAND" | "OR" | "NOR" | "SWITCH" ;  
 
 output              = name , [ "." , dtype_op_name ] ;
