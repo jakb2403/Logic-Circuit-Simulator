@@ -79,14 +79,14 @@ def main(arg_list):
                 userint.command_interface()
 
     if not options:  # no option given, use the graphical user interface
-        app = wx.App()
+        # app = wx.App()
 
-        # Internationalisation
-        builtins._ = wx.GetTranslation
-        locale = wx.Locale()
-        locale.Init(wx.LANGUAGE_DEFAULT)
-        locale.AddCatalogLookupPathPrefix('./locale')
-        locale.AddCatalog('logsim_fr.mo')
+        # # Internationalisation
+        # builtins._ = wx.GetTranslation
+        # locale = wx.Locale()
+        # locale.Init(wx.LANGUAGE_DEFAULT)
+        # locale.AddCatalogLookupPathPrefix('./locale')
+        # locale.AddCatalog('logsim_fr.mo')
 
         gui = Gui(_("Logic Simulator"), names, devices, network, monitors)
         gui.Show(True)
