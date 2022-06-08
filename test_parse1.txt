@@ -1,6 +1,6 @@
 DEVICES
     G1, G2, SW1, SW2 = SWITCH(0);
-    G3 = CLOCK(10);
+    G3 = CLOCK(10;
     G4 = NAND(2);
     G5 = DTYPE;
 END
@@ -11,4 +11,8 @@ CONNECT
     SW2 > G5.CLEAR;
     G3 > G5.CLK;
     G4 > G5.DATA;
+END
+MONITOR
+    G5.Q;
+    G5.QBAR;
 END
