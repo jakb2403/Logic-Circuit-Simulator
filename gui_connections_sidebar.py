@@ -70,10 +70,10 @@ class ConnectionsSidebarPanel(wx.Panel):
         self.dropdown_find.Append("")
         self.current_connections_text_list = [""]
         for key in self.connections_dict:
-            first_device_id = key[0]
-            first_port_id = key[1]
-            second_device_id = self.connections_dict[key][0]
-            second_port_id = self.connections_dict[key][1]
+            second_device_id = key[0]
+            second_port_id = key[1]
+            first_device_id = self.connections_dict[key][0]
+            first_port_id = self.connections_dict[key][1]
 
             text = ""
             text += self.devices.get_signal_name(
