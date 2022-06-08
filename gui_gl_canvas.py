@@ -48,10 +48,17 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         self.devices = devices
         self.monitors = monitors
 
-        super().__init__(parent, -1,
-                         attribList=[wxcanvas.WX_GL_RGBA,
-                                     wxcanvas.WX_GL_DOUBLEBUFFER,
-                                     wxcanvas.WX_GL_DEPTH_SIZE, 16, 0])
+        super().__init__(
+            parent,
+            -1,
+            attribList=[
+                wxcanvas.WX_GL_RGBA,
+                wxcanvas.WX_GL_DOUBLEBUFFER,
+                wxcanvas.WX_GL_DEPTH_SIZE,
+                16,
+                0,
+            ],
+        )
         GLUT.glutInit()
         self.init = False
         self.context = wxcanvas.GLContext(self)
@@ -189,8 +196,9 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         index = 0
         for device_id, output_id in self.monitors.monitors_dictionary:
             monitor_name = self.devices.get_signal_name(device_id, output_id)
-            signal_list = self.monitors.monitors_dictionary[(
-                device_id, output_id)]
+            signal_list = self.monitors.monitors_dictionary[
+                (device_id, output_id)
+            ]
             if len(signal_list) > 0:
                 signal_list_bin = self.convert_signal(signal_list)
                 self.draw_signal(monitor_name, signal_list_bin, index)
@@ -242,25 +250,27 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.last_mouse_x = event.GetX()
             self.last_mouse_y = event.GetY()
             self.init = False
-            
+
         if event.GetWheelRotation() < 0:
-            self.zoom *= (1.0 + (
-                event.GetWheelRotation() / (20 * event.GetWheelDelta())))
+            self.zoom *= 1.0 + (
+                event.GetWheelRotation() / (20 * event.GetWheelDelta())
+            )
             if self.zoom < 0:
                 self.zoom = 0.001
             # Adjust pan so as to zoom around the mouse position
             self.pan_x -= (self.zoom - old_zoom) * ox
             self.pan_y -= (self.zoom - old_zoom) * oy
             self.init = False
-            
+
         if event.GetWheelRotation() > 0:
-            self.zoom /= (1.0 - (
-                event.GetWheelRotation() / (20 * event.GetWheelDelta())))
+            self.zoom /= 1.0 - (
+                event.GetWheelRotation() / (20 * event.GetWheelDelta())
+            )
             # Adjust pan so as to zoom around the mouse position
             self.pan_x -= (self.zoom - old_zoom) * ox
             self.pan_y -= (self.zoom - old_zoom) * oy
             self.init = False
-           
+
         self.render()
         self.Refresh()  # triggers the paint event
 
@@ -277,7 +287,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # font = GLUT.GLUT_STROKE_ROMAN
         font = GLUT.GLUT_BITMAP_HELVETICA_10
         for character in text:
-            if character == '\n':
+            if character == "\n":
                 y_pos = y_pos - 20
                 GL.glRasterPos2f(x_pos, y_pos)
             else:
@@ -318,21 +328,22 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         tick_y_offset = v_space - signal_height - tick_length
         signal_length = len(signal_list_bin)
 
-        bottom_left = coord(0, (index+1) * v_space)
+        bottom_left = coord(0, (index + 1) * v_space)
         y_low = bottom_left.y + v_space - signal_height
         y_high = bottom_left.y + v_space
 
         # Draw the tickmarks
         tick_start = coord()
         tick_end = coord()
-        for i in range(signal_length+1):
+        for i in range(signal_length + 1):
             if i % 5 == 0:
                 tick_start.x = signal_x_offset + (i * one_cycle)
                 tick_start.y = bottom_left.y + tick_y_offset
                 tick_end.x = signal_x_offset + (i * one_cycle)
                 tick_end.y = bottom_left.y + tick_y_offset + tick_length
-                GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0 /
-                             256.0)  # tick marks are grey
+                GL.glColor3f(
+                    180.0 / 256.0, 180.0 / 256.0, 180.0 / 256.0
+                )  # tick marks are grey
                 GL.glBegin(GL.GL_LINE_STRIP)
                 GL.glVertex2f(tick_start.x, tick_start.y)
                 GL.glVertex2f(tick_end.x, tick_end.y)
@@ -345,24 +356,28 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             tick_start.y = bottom_left.y + tick_y_offset
             tick_end.x = signal_x_offset + (signal_length * one_cycle)
             tick_end.y = bottom_left.y + tick_y_offset + tick_length
-            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0 /
-                         256.0)  # tick marks are grey
+            GL.glColor3f(
+                180.0 / 256.0, 180.0 / 256.0, 180.0 / 256.0
+            )  # tick marks are grey
             GL.glBegin(GL.GL_LINE_STRIP)
             GL.glVertex2f(tick_start.x, tick_start.y)
             GL.glVertex2f(tick_end.x, tick_end.y)
             GL.glEnd()
-            self.render_text(str(signal_length),
-                             tick_start.x + 1, tick_start.y)
+            self.render_text(
+                str(signal_length), tick_start.x + 1, tick_start.y
+            )
 
         # Draw the horizontal tickmarks for 1 and 0
         for i in range(2):
             tick_start.x = signal_x_offset - tick_length
-            tick_start.y = bottom_left.y + \
-                signal_y_offset + (i * signal_height)
+            tick_start.y = (
+                bottom_left.y + signal_y_offset + (i * signal_height)
+            )
             tick_end.x = signal_x_offset
             tick_end.y = bottom_left.y + signal_y_offset + (i * signal_height)
-            GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0 /
-                         256.0)  # tick marks are grey
+            GL.glColor3f(
+                180.0 / 256.0, 180.0 / 256.0, 180.0 / 256.0
+            )  # tick marks are grey
             GL.glBegin(GL.GL_LINE_STRIP)
             GL.glVertex2f(tick_start.x, tick_start.y)
             GL.glVertex2f(tick_end.x, tick_end.y)
@@ -370,19 +385,25 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.render_text(str(i), tick_start.x, tick_start.y + 1)
 
         # Draw the x axis
-        GL.glColor3f(180.0/256.0, 180.0/256.0, 180.0/256.0)  # axis is grey
+        GL.glColor3f(
+            180.0 / 256.0, 180.0 / 256.0, 180.0 / 256.0
+        )  # axis is grey
         GL.glBegin(GL.GL_LINE_STRIP)
-        axis_start = coord(signal_x_offset, bottom_left.y +
-                           tick_y_offset + tick_length)
-        axis_end = coord(signal_x_offset + signal_length *
-                         one_cycle, bottom_left.y + tick_y_offset + tick_length)
+        axis_start = coord(
+            signal_x_offset, bottom_left.y + tick_y_offset + tick_length
+        )
+        axis_end = coord(
+            signal_x_offset + signal_length * one_cycle,
+            bottom_left.y + tick_y_offset + tick_length,
+        )
         GL.glVertex2f(axis_start.x, axis_start.y)
         GL.glVertex2f(axis_end.x, axis_end.y)
         GL.glEnd()
 
         # Draw the signal trace
-        GL.glColor3f(87.0/256.0, 184.0/256.0, 255.0 /
-                     256.0)  # signal trace is blue
+        GL.glColor3f(
+            87.0 / 256.0, 184.0 / 256.0, 255.0 / 256.0
+        )  # signal trace is blue
         GL.glLineWidth(2)
         GL.glBegin(GL.GL_LINE_STRIP)
         sig_current = coord()
@@ -391,7 +412,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         for i in range(signal_length):
             if just_blank:
                 GL.glBegin(GL.GL_LINE_STRIP)
-                just_blank = not(just_blank)
+                just_blank = not (just_blank)
             sig_current.x = signal_x_offset + (i * one_cycle)
             sig_next.x = signal_x_offset + ((i + 1) * one_cycle)
             if signal_list_bin[i] == 0:
@@ -406,25 +427,29 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 GL.glVertex2f(sig_next.x, sig_next.y)
             elif signal_list_bin == None:
                 GL.glEnd()
-                just_blank = not(just_blank)
+                just_blank = not (just_blank)
                 continue
         GL.glEnd()
         GL.glLineWidth(1)
 
         # Display signal name
         display_text = monitor_name
-        self.render_text(display_text, text_x_offset,
-                         (bottom_left.y + signal_y_offset + signal_height//2))
+        self.render_text(
+            display_text,
+            text_x_offset,
+            (bottom_left.y + signal_y_offset + signal_height // 2),
+        )
 
     def update_size(self, width=None, height=None):
-        if not(width == None) and width > self.width:
+        if not (width == None) and width > self.width:
             self.width = width
-        if not(height == None) and height > self.height:
+        if not (height == None) and height > self.height:
             self.height = height
 
     def save_to_png(self, filename):
-        data = GL.glReadPixels(0, 0, self.width, self.height,
-                               GL.GL_RGB, GL.GL_UNSIGNED_BYTE, None)
+        data = GL.glReadPixels(
+            0, 0, self.width, self.height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, None
+        )
         image = Image.frombytes("RGB", (self.width, self.height), data)
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         image.save(filename, format="png")

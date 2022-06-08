@@ -66,6 +66,8 @@ class MonitorSidebarPanel(wx.Panel):
         else:  # zapping a monitor point
             command = "z {}".format(device_name)
             self.input_cmd(command)
-            text = _("Device {} zapped from monitor points").format(device_name)
+            text = _("Device {} zapped from monitor points").format(
+                device_name
+            )
 
         self.push_status(text)

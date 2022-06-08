@@ -234,8 +234,10 @@ class Gui(wx.Frame):
 
         if not self.startup():
             print(
-                _("\nYou closed the file dialog box.\n"
-                "You must choose a file to load in order to run a simulation\n")
+                _(
+                    "\nYou closed the file dialog box.\n"
+                    "You must choose a file to load in order to run a simulation\n"
+                )
             )
             self.on_close(None)
 
@@ -440,7 +442,9 @@ class Gui(wx.Frame):
                         # self.doSaveData(bitmap)
                 except IOError:
                     wx.LogError(
-                        _("Cannot save current data in file '{}'.").format(path)
+                        _("Cannot save current data in file '{}'.").format(
+                            path
+                        )
                     )
             text = "".join([_("Saved file as: "), path])
             self.push_status(text)
@@ -460,7 +464,7 @@ class Gui(wx.Frame):
                     "2022"
                 ),
                 _("About Logsim"),
-                wx.ICON_INFORMATION | wx.OK
+                wx.ICON_INFORMATION | wx.OK,
             )
 
     def push_status(self, text):

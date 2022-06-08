@@ -2,12 +2,20 @@ import wx
 
 
 class CmdPanel(wx.Panel):
-    def __init__(self, parent, names, devices, network,
-                 monitors, userint, push_status):
+    def __init__(
+        self, parent, names, devices, network, monitors, userint, push_status
+    ):
         wx.Panel.__init__(self, parent)
-        self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
-                     wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
-                     'Courier'))
+        self.SetFont(
+            wx.Font(
+                13,
+                wx.FONTFAMILY_TELETYPE,
+                wx.FONTSTYLE_NORMAL,
+                wx.FONTWEIGHT_NORMAL,
+                False,
+                "Courier",
+            )
+        )
         # self.SetBackgroundColour(wx.WHITE)
 
         self.parent = parent
@@ -26,16 +34,19 @@ class CmdPanel(wx.Panel):
 
         # Create widgets
         self.cmd_output_text_box = wx.TextCtrl(
-            self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=wx.Size(400, 10))
+            self, style=wx.TE_MULTILINE | wx.TE_READONLY, size=wx.Size(400, 10)
+        )
         self.com_text = wx.StaticText(self, wx.ID_ANY, "#")
-        self.cmd_input_text_box = wx.TextCtrl(self, wx.BOTTOM, "",
-                                              style=wx.TE_PROCESS_ENTER)
+        self.cmd_input_text_box = wx.TextCtrl(
+            self, wx.BOTTOM, "", style=wx.TE_PROCESS_ENTER
+        )
 
         # Add widgets to sizer
         output_sizer.Add(self.cmd_output_text_box, 1, wx.EXPAND, 0)
         # TODO to set value of textbox: self.textpanel.SetValue(s)
-        input_sizer.Add(self.com_text, 0, wx.LEFT | wx.RIGHT |
-                        wx.ALIGN_CENTER_VERTICAL, 5)
+        input_sizer.Add(
+            self.com_text, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5
+        )
         input_sizer.Add(self.cmd_input_text_box, 1, wx.RIGHT, 15)
 
         # Add sub-sizers to main sizer
@@ -51,8 +62,10 @@ class CmdPanel(wx.Panel):
 
     def cmd_output_init(self):
         self.cmd_output_text_box.Clear()
-        start_statement = (_("Logic Simulator: interactive command line user interface.\n"
-                            "Enter 'h' for help.\n"))
+        start_statement = _(
+            "Logic Simulator: interactive command line user interface.\n"
+            "Enter 'h' for help.\n"
+        )
         self.output_cmd(start_statement)
 
     def on_cmd_enter(self, event):
@@ -63,7 +76,8 @@ class CmdPanel(wx.Panel):
         if user_input == "q":
             self.parent.on_close(None)
         self.userint.command_interface(
-            user_input, self.output_cmd, self.input_cmd)
+            user_input, self.output_cmd, self.input_cmd
+        )
         text = "".join(["New cmd input: ", user_input])
         self.push_status(text)
 

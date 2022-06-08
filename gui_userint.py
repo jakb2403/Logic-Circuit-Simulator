@@ -219,8 +219,9 @@ class GuiUserInterface:
         monitor = self.read_signal_name()
         if monitor is not None:
             [device, port] = monitor
-            monitor_error = self.monitors.make_monitor(device, port,
-                                                       self.cycles_completed)
+            monitor_error = self.monitors.make_monitor(
+                device, port, self.cycles_completed
+            )
             if monitor_error == self.monitors.NO_ERROR:
                 self.output_cmd(_("Successfully made monitor."))
             else:
@@ -258,7 +259,9 @@ class GuiUserInterface:
 
         if cycles is not None:  # if the number of cycles provided is valid
             self.monitors.reset_monitors()
-            self.output_cmd("".join([_("Running for "), str(cycles), _(" cycles")]))
+            self.output_cmd(
+                "".join([_("Running for "), str(cycles), _(" cycles")])
+            )
             self.devices.cold_startup()
             if self.run_network(cycles):
                 self.cycles_completed += cycles
@@ -271,5 +274,14 @@ class GuiUserInterface:
                 self.output_cmd(_("Error! Nothing to continue. Run first."))
             elif self.run_network(cycles):
                 self.cycles_completed += cycles
-                self.output_cmd(" ".join([_("Continuing for"), str(cycles), _("cycles."),
-                                _("Total:"), str(self.cycles_completed)]))
+                self.output_cmd(
+                    " ".join(
+                        [
+                            _("Continuing for"),
+                            str(cycles),
+                            _("cycles."),
+                            _("Total:"),
+                            str(self.cycles_completed),
+                        ]
+                    )
+                )

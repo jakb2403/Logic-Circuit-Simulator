@@ -123,10 +123,9 @@ class ConnectionsSidebarPanel(wx.Panel):
         selected_text = self.dropdown_find.GetString(selection_index)
         first_signal_name = selected_text.split(" > ")[0]
         self.output_cmd(
-            _("\nReplacing connection\n"
-            "{} > {}"
-            "  with  "
-            "{} > {}").format(
+            _(
+                "\nReplacing connection\n" "{} > {}" "  with  " "{} > {}"
+            ).format(
                 first_signal_name,
                 second_signal_name,
                 third_signal_name,

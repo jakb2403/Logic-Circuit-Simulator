@@ -37,16 +37,16 @@ def main(arg_list):
     builtins._ = wx.GetTranslation
     locale = wx.Locale()
     locale.Init(wx.LANGUAGE_DEFAULT)
-    locale.AddCatalogLookupPathPrefix('./locale')
-    locale.AddCatalog('logsim_fr.mo')
+    locale.AddCatalogLookupPathPrefix("./locale")
+    locale.AddCatalog("logsim_fr.mo")
 
-    usage_message = (
-        _("\nUsage:\n"
+    usage_message = _(
+        "\nUsage:\n"
         "Show help: logsim.py -h\n"
         "Command line user interface: logsim.py -c <file path>\n"
         "Graphical user interface: logsim.py\n"
         "This will bring up a file dialog where you can choose the "
-        "file you wish to run.")
+        "file you wish to run."
     )
     try:
         options, arguments = getopt.getopt(arg_list, "hc:")
@@ -88,7 +88,15 @@ def main(arg_list):
         # locale.AddCatalogLookupPathPrefix('./locale')
         # locale.AddCatalog('logsim_fr.mo')
 
-        gui = Gui(_(u"\uB17C\uB9AC \uD68C\uB85C \uBAA8\uC758 \uC2E4\uD5D8 Logic Simulator"), names, devices, network, monitors)
+        gui = Gui(
+            _(
+                "\uB17C\uB9AC \uD68C\uB85C \uBAA8\uC758 \uC2E4\uD5D8 Logic Simulator"
+            ),
+            names,
+            devices,
+            network,
+            monitors,
+        )
         gui.Show(True)
         app.MainLoop()
 
