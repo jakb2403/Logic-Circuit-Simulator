@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 17:46+0100\n"
+"PO-Revision-Date: 2022-06-08 18:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -15,8 +15,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.1\n"
 
-msgid "\\uB17C\\uB9AC \\uD68C\\uB85C \\uBAA8\\uC758 \\uC2E4\\uD5D8 Logic Simulator"
-msgstr "\\uB17C\\uB9AC \\uD68C\\uB85C \\uBAA8\\uC758 \\uC2E4\\uD5D8 Simulateur logique"
+#: logsim.py:92
+msgid "논리 회로 모의 실험 Logic Simulator"
+msgstr "논리 회로 모의 실험 Simulateur Logique"
 
 #: gui.py:90
 msgid "&About"
