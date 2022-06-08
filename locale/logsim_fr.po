@@ -246,3 +246,15 @@ msgstr "cycles."
 #: gui_userint.py:275
 msgid "Total:"
 msgstr "Total:"
+
+#: gui_connections_sidebar.py:36
+msgid "Replace ..."
+msgstr "Remplacer ..."
+
+#: gui_connections_sidebar.py:43
+msgid "with ..."
+msgstr "avec ..."
+
+#: gui_connections_sidebar.py:50
+msgid "Replace"
+msgstr "Replacer"

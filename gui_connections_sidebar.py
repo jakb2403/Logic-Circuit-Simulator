@@ -33,21 +33,21 @@ class ConnectionsSidebarPanel(wx.Panel):
         info_text1 = wx.StaticText(
             self, wx.ID_ANY, "Choose a connection to replace:"
         )
-        info_text2 = wx.StaticText(self, wx.ID_ANY, "Replace ...")
+        info_text2 = wx.StaticText(self, wx.ID_ANY, _("Replace ..."))
         self.dropdown_find = wx.Choice(
             self,
             wx.CB_DROPDOWN | wx.CB_READONLY,
             choices=self.current_connections_text_list,
             name="find",
         )
-        info_text3 = wx.StaticText(self, wx.ID_ANY, "with ...")
+        info_text3 = wx.StaticText(self, wx.ID_ANY, _("with ..."))
         self.dropdown_replace = wx.Choice(
             self,
             wx.CB_DROPDOWN | wx.CB_READONLY,
             choices=self.new_connections_text_list,
             name="replace",
         )
-        self.replace_button = wx.Button(self, wx.ID_ANY, "Replace")
+        self.replace_button = wx.Button(self, wx.ID_ANY, _("Replace"))
 
         self.sizer.Add(info_text1, 0, wx.ALL, 3)
         self.sizer.Add(info_text2, 0, wx.ALL, 3)
