@@ -8,6 +8,7 @@ DEVICES
     NOR1 = NOR(2);
     XOR1 = XOR;
     DTYPE1 = DTYPE;
+    NOT1 = NOT;
 END
 
 CONNECT
@@ -24,9 +25,10 @@ CONNECT
     NOR1 > AND2.I1;
     OR1 > AND2.I2;
     XOR1 > OR2.I1;
+    AND2 > NOT1;
 END
 
 MONITOR
-    AND2;
+    NOT1;
     OR2;
 END
