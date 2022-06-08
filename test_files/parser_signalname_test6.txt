@@ -1,29 +1,34 @@
 DEVICES
     SW1, SW2, SW3 = SWITCH(1);
-    CLK1 = CLOCK(20);
+    SW4, SW5 = SWITCH(0);
+    CLK1 = CLOCK(1);
     AND1, AND2 = AND(2);
     OR1, OR2 = OR(2);
     NAND1 = NAND(2);
     NOR1 = NOR(2);
     XOR1 = XOR;
     DTYPE1 = DTYPE;
+    NOT1 = NOT;
 END
 
 CONNECT
-    SW1 > AND1.CLK;
+    SW1 > AND1.I1;
     SW2 > AND1.I2, NAND1.I1;
     SW3 > NAND1.I2, DTYPE1.DATA;
-    CLK1 > DTYPE1.CLK, NOR1.I1, OR1.I1, XOR1.I1;
-    AND1 > NOR1.I2;
-    NAND1 > OR1.I2;
+    CLK1 > DTYPE1.CLK, NOR1.I2, OR1.I2, XOR1.I1;
+    SW4 > DTYPE1.SET;
+    SW5 > DTYPE1.CLEAR;
+    AND1 > NOR1.I1;
+    NAND1 > OR1.I1;
     DTYPE1.Q > XOR1.I2;
+    DTYPE1.QBAR > OR2.I2;
     NOR1 > AND2.I1;
     OR1 > AND2.I2;
     XOR1 > OR2.I1;
-    DYPE1.QBAR > OR2.I2;
+    AND2 > NOT1;
 END
 
 MONITOR
-    AND2;
+    NOT1;
     OR2;
 END
