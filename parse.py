@@ -146,11 +146,7 @@ class Parser:
         """
         self._parser_output(self.scanner.error_found())
         self.error_count += 1
-        if category == self.SYNTAX:
-            self._parser_output(_("Error: "), end="")
-        elif category == self.SEMANTIC:
-            self._parser_output(_("Error: "), end="")
-
+        
         if type == self.invalid_device_name:
             self._parser_output(_("invalid device name\n"))
         if type == self.device_as_name:
