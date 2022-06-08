@@ -51,8 +51,8 @@ class CmdPanel(wx.Panel):
 
     def cmd_output_init(self):
         self.cmd_output_text_box.Clear()
-        start_statement = ("Logic Simulator: interactive command line user interface.\n"
-                            "Enter 'h' for help.\n")
+        start_statement = (_("Logic Simulator: interactive command line user interface.\n"
+                            "Enter 'h' for help.\n"))
         self.output_cmd(start_statement)
 
     def on_cmd_enter(self, event):
