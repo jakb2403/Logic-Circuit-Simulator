@@ -223,6 +223,7 @@ class Gui(wx.Frame):
 
         self.mgr.Update()
 
+        self.Bind(wx.EVT_MENU, self.on_menu)
         self.Bind(wx.EVT_CLOSE, self.on_close)
         self.toolbar.Bind(wx.EVT_TOOL, self.on_click_tool)
         self.cycle_spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
