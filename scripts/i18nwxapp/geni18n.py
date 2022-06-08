@@ -34,11 +34,16 @@ appFolder = os.getcwd()
 
 # setup some stuff to get at Python I18N tools/utilities
 
-pyExe = sys.executable
-pyFolder = os.path.split(pyExe)[0]
-pyToolsFolder = os.path.join(pyFolder, 'Tools')
-pyI18nFolder = os.path.join(pyToolsFolder, 'i18n')
-pyGettext = os.path.join(pyI18nFolder, 'pygettext.py')
+# pyExe = sys.executable
+# pyFolder = os.path.split(pyExe)[0]
+# pyToolsFolder = os.path.join(pyFolder, 'Tools')
+# pyI18nFolder = os.path.join(pyToolsFolder, 'i18n')
+# pyGettext = os.path.join(pyI18nFolder, 'pygettext.py')
+# pyMsgfmt = os.path.join(pyI18nFolder, 'msgfmt.py')
+# outFolder = os.path.join(appFolder, 'locale')
+pyExe = "python"
+pyI18nFolder = "/Users/johnbrown/.pyenv/versions/.venv_gf2p3/bin/Tools/i18n/"
+pyGettext = "/Users/johnbrown/.pyenv/versions/.venv_gf2p3/bin/Tools/i18n/pygettext.py"
 pyMsgfmt = os.path.join(pyI18nFolder, 'msgfmt.py')
 outFolder = os.path.join(appFolder, 'locale')
 

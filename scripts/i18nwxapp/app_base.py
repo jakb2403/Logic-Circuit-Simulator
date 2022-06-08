@@ -35,7 +35,7 @@ class BaseApp(wx.App, InspectionMixin):
         # work around for Python stealing "_"
         sys.displayhook = _displayHook
         
-        self.appName = "I18N sample application"
+        self.appName = "Logic Simulator Team 15"
         
         self.doConfig()
         

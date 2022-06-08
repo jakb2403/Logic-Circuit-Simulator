@@ -1,0 +1,7 @@
+python /Users/johnbrown/.pyenv/versions/.venv_gf2p3/bin/Tools/i18n/pygettext.py -a -d I18Nwxapp -o I18Nwxapp.pot -p locale
+
+THIS IS THE COMMAND
+python /Users/johnbrown/.pyenv/versions/.venv_gf2p3/bin/Tools/i18n/pygettext.py -a -d I18Nwxapp -o I18Nwxapp.pot -p i18nwxapp/locale i18nwxapp
+
+
+python /Users/johnbrown/.pyenv/versions/.venv_gf2p3/bin/Tools/i18n/pygettext.py -a -d LOGSIMapp -o LOGSIMapp.pot -p logsim/locale logsim

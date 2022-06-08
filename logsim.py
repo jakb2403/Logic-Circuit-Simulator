@@ -23,6 +23,7 @@ from scanner import Scanner
 from parse import Parser
 from userint import UserInterface
 from gui import Gui
+import builtins
 
 
 def main(arg_list):
@@ -71,7 +72,15 @@ def main(arg_list):
 
     if not options:  # no option given, use the graphical user interface
         app = wx.App()
-        gui = Gui("Logic Simulator", names, devices, network, monitors)
+
+        # Internationalisation
+        builtins._ = wx.GetTranslation
+        locale = wx.Locale()
+        locale.Init(wx.LANGUAGE_DEFAULT)
+        locale.AddCatalogLookupPathPrefix('./locale')
+        locale.AddCatalog('gui')
+
+        gui = Gui(_("Logic Simulator"), names, devices, network, monitors)
         gui.Show(True)
         app.MainLoop()
 
