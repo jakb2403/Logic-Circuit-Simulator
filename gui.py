@@ -166,7 +166,7 @@ class Gui(wx.Frame):
             self.network,
             self.monitors,
             self.push_status,
-            self.input_cmd,
+            self.output_cmd,
         )
 
         # Add panels to AUI manager
@@ -313,7 +313,7 @@ class Gui(wx.Frame):
                     self.network,
                     self.monitors,
                     self.push_status,
-                    self.input_cmd,
+                    self.output_cmd,
                 )
 
                 self.mgr.ClosePane(self.mgr.GetPane("canvas"))
@@ -402,6 +402,7 @@ class Gui(wx.Frame):
             if parse:
                 self.monitor_sidebar.update_checklist()
                 self.switches_sidebar.update_list()
+                self.connections_sidebar.update_dropdown_find()
             return True
 
     def on_spin(self, event):
