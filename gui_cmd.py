@@ -8,7 +8,7 @@ class CmdPanel(wx.Panel):
         self.SetFont(wx.Font(13, wx.FONTFAMILY_TELETYPE,
                      wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
                      'Courier'))
-        self.SetBackgroundColour(wx.WHITE)
+        # self.SetBackgroundColour(wx.WHITE)
 
         self.parent = parent
         self.names = names

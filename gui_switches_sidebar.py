@@ -7,7 +7,7 @@ class SwitchesSidebarPanel(wx.Panel):
         self, parent, names, devices, network, monitors, push_status, input_cmd
     ):
         wx.Panel.__init__(self, parent)
-        self.SetBackgroundColour(wx.WHITE)
+        # self.SetBackgroundColour(wx.WHITE)
 
         self.parent = parent
         self.names = names

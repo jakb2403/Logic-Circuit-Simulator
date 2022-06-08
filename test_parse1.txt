@@ -1,10 +1,10 @@
 DEVICES
     G1, G2, SW1, SW2 = SWITCH(0);
     G3 = CLOCK(10);
-    G4 = XOR;
+    G4 = NAND(2);
     G5 = DTYPE;
 END
-CONNEC
+CONNECT
     G1 > G4.I1;
     G2 > G4.I2;
     SW1 > G5.SET;

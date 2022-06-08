@@ -91,7 +91,13 @@ class Network:
 
     def get_all_connections(self):
         """Return list of all connections in the network."""
-        pass
+        all_devices = self.devices.find_devices()
+        connection_dict = {}
+        for second_device_id in all_devices:
+            for second_port_id in self.devices.get_device(second_device_id).inputs:
+                first_device_id, first_port_id = self.get_connected_output(second_device_id, second_port_id)
+                connection_dict[(first_device_id, first_port_id)] = (second_device_id, second_port_id)
+        return connection_dict                         
 
     def get_input_signal(self, device_id, input_id):
         """Return the signal level at the output connected to the given input.
@@ -171,8 +177,6 @@ class Network:
 
     def replace_connection(
         self,
-        first_device_id,
-        first_port_id,
         second_device_id,
         second_port_id,
         third_device_id,
@@ -180,12 +184,10 @@ class Network:
     ):
         """Replace a connection.
 
-        Replace connection between first device and second device with a
+        Replace connection between an arbitrary device and second device with a
         connection between third device and second device.
         """
-        first_device = self.devices.get_device(first_device_id)
         second_device = self.devices.get_device(second_device_id)
-        third_device = self.devices.get_device(third_device_id)
 
         second_device.inputs[second_port_id] = (third_device_id, third_port_id)
 
