@@ -48,12 +48,22 @@ class Scanner:
     names: instance of the names.Names() class.
 
     Public methods
-    -------------
+    --------------
     get_symbol(self): Translates the next sequence of characters into a symbol
                       and returns the symbol.
 
     error_found(self):Outputs the current line and a ^ symbol on the next line
-                      to highlight the location of the error
+                      to highlight the location of the error.
+
+    Non-public methods
+    ------------------
+    _advance(self): Read the next character.
+
+    _skip_spaces(self): Skip all whitespace character.
+
+    _get_number(self): Seek and return the next number.
+
+    _get_name(self): Seek and return the next name.
     """
 
     def __init__(self, path, names):
@@ -75,8 +85,8 @@ class Scanner:
 
                 self.symbol_type_list = [
                     self.NONETYPE,
-                    # fixes a spurious error with scanner seeing a semicolon as
-                    # the 0th element
+                    # fixes a spurious error with scanner seeing a semicolon
+                    # as the 0th element
                     self.DOT,
                     self.COMMA,
                     self.SEMICOLON,
@@ -145,7 +155,7 @@ class Scanner:
         else:
             print(_("\nError invalid path\n"))
 
-    def advance(self):
+    def _advance(self):
         """Read the next character."""
         # add 1 to the character counter to track location in line
         self.current_character = self.file.read(1)
@@ -155,35 +165,35 @@ class Scanner:
             self.line_counter += 1
             self.char_counter = 0
 
-    def skip_spaces(self):
+    def _skip_spaces(self):
         """Skip all whitespace character."""
         while self.current_character.isspace():
-            self.advance()
+            self._advance()
 
-    def get_number(self):
+    def _get_number(self):
         """Seek and return the next number."""
         num = ""
         num += self.current_character
-        self.advance()
+        self._advance()
         while self.current_character.isdigit():
             num += self.current_character
-            self.advance()
+            self._advance()
 
         return num
 
-    def get_name(self):
+    def _get_name(self):
         """Seek and return the next name."""
         name = self.current_character
-        self.advance()
+        self._advance()
         while self.current_character.isalnum():
             name += self.current_character
-            self.advance()
+            self._advance()
 
         return name
 
     def error_found(self):
         """Outputs the current line and a ^ symbol on the next line to
-        highlight the location of the error"""
+        highlight the location of the error."""
         error_location = self.file.tell()
         self.file.seek(0, 0)
         if self.char_counter == 0:
@@ -209,13 +219,13 @@ class Scanner:
         self.line_counter = 1
         self.char_counter = 0
         for i in range(error_location):
-            self.advance()
+            self._advance()
         return output
 
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
         symbol = Symbol()
-        self.skip_spaces()
+        self._skip_spaces()
 
         # if symbol is a name
         if self.current_character.isalpha():
@@ -226,9 +236,9 @@ class Scanner:
                 self.afterdot = False
                 symbol.type = self.KEYWORD
                 symbol.id = self.I_ID
-                self.advance()
+                self._advance()
             else:
-                name_string = self.get_name()
+                name_string = self._get_name()
                 self.afterdot = False
                 if name_string in self.keywords_list:
                     symbol.type = self.KEYWORD
@@ -247,50 +257,50 @@ class Scanner:
         # if symbol is a number
         elif self.current_character.isdigit():
             self.afterdot = False
-            symbol.id = self.get_number()
+            symbol.id = self._get_number()
             symbol.type = self.NUMBER
 
         # if symbol is a dot
         elif self.current_character == ".":
             self.afterdot = True
             symbol.type = self.DOT
-            self.advance()
+            self._advance()
 
         # if symbol is a comma
         elif self.current_character == ",":
             self.afterdot = False
             symbol.type = self.COMMA
-            self.advance()
+            self._advance()
 
         # if symbol is a semicolon
         elif self.current_character == ";":
             self.afterdot = False
             symbol.type = self.SEMICOLON
-            self.advance()
+            self._advance()
 
         # if symbol is a equals
         elif self.current_character == "=":
             self.afterdot = False
             symbol.type = self.EQUALS
-            self.advance()
+            self._advance()
 
         # if symbol is an arrow
         elif self.current_character == ">":
             self.afterdot = False
             symbol.type = self.ARROW
-            self.advance()
+            self._advance()
 
         # if symbol is an openbracket
         elif self.current_character == "(":
             self.afterdot = False
             symbol.type = self.OPENBRACKET
-            self.advance()
+            self._advance()
 
         # if symbol is an closedbracket
         elif self.current_character == ")":
             self.afterdot = False
             symbol.type = self.CLOSEDBRACKET
-            self.advance()
+            self._advance()
 
         # if symbol is the end of file
         elif self.current_character == "":
@@ -299,7 +309,7 @@ class Scanner:
         # if symbol is a hashtag - comment
         elif self.current_character == "#":
             while True:
-                self.advance()
+                self._advance()
                 if (
                     self.current_character == "\n"
                     or self.current_character == ""
@@ -309,5 +319,5 @@ class Scanner:
 
         # if symbol is an invalid character
         else:
-            self.advance()
+            self._advance()
         return symbol

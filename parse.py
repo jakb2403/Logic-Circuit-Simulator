@@ -8,6 +8,9 @@ Classes
 -------
 Parser - parses the definition file and builds the logic network.
 """
+import builtins
+import wx
+builtins._ = wx.GetTranslation
 
 
 class Parser:
@@ -146,7 +149,7 @@ class Parser:
         """
         self._parser_output(self.scanner.error_found())
         self.error_count += 1
-        
+
         if type == self.invalid_device_name:
             self._parser_output(_("invalid device name\n"))
         if type == self.device_as_name:
@@ -261,11 +264,11 @@ class Parser:
             return None
 
     def _signal_name(self):
-        """Parse an input or output name in the formats
+        """Parse an input or output name in the formats:
         input - [name].I[port_id]
             or  [name].[dtype_ip]
         output -[name]
-            or  [name].[dtype_op]
+            or  [name].[dtype_op].
         Returns device_id and port_id.
         """
         device_id = self._name()
@@ -317,12 +320,12 @@ class Parser:
             return (None, None)
 
     def _device(self):
-        """Parse a device name
+        """Parse a device name.
 
         Returns:
             device_kind - type of device
             device_property - number of inputs to the device (None if device
-            without arguments)
+            without arguments).
         """
         # if the symbol is a device without arguments
         if self.symbol.type == self.scanner.DEVICE:
