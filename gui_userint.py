@@ -101,7 +101,7 @@ class GuiUserInterface:
             elif command == "c":
                 self.continue_command()
             else:
-                self.output_cmd("Invalid command. Enter 'h' for help.")
+                self.output_cmd(_("Invalid command. Enter 'h' for help."))
 
     def read_command(self):
         """Return the first non-whitespace character."""
@@ -127,7 +127,7 @@ class GuiUserInterface:
         self.skip_spaces()
         name_string = ""
         if not self.character.isalpha():  # the string must start with a letter
-            self.output_cmd("Error! Expected a name.")
+            self.output_cmd(_("Error! Expected a name."))
             return None
         while self.character.isalnum():
             name_string = "".join([name_string, self.character])
@@ -145,7 +145,7 @@ class GuiUserInterface:
         else:
             name_id = self.names.query(name_string)
         if name_id is None:
-            self.output_cmd("Error! Unknown name.")
+            self.output_cmd(_("Error! Unknown name."))
         return name_id
 
     def read_signal_name(self):
@@ -173,7 +173,7 @@ class GuiUserInterface:
         self.skip_spaces()
         number_string = ""
         if not self.character.isdigit():
-            self.output_cmd("Error! Expected a number.")
+            self.output_cmd(_("Error! Expected a number."))
             return None
         while self.character.isdigit():
             number_string = "".join([number_string, self.character])
@@ -182,26 +182,26 @@ class GuiUserInterface:
 
         if upper_bound is not None:
             if number > upper_bound:
-                self.output_cmd("Number out of range.")
+                self.output_cmd(_("Number out of range."))
                 return None
 
         if lower_bound is not None:
             if number < lower_bound:
-                self.output_cmd("Number out of range.")
+                self.output_cmd(_("Number out of range."))
                 return None
 
         return number
 
     def help_command(self):
         """Print a list of valid commands."""
-        self.output_cmd("User commands:")
-        self.output_cmd("r N       - run the simulation for N cycles")
-        self.output_cmd("c N       - continue the simulation for N cycles")
-        self.output_cmd("s X N     - set switch X to N (0 or 1)")
-        self.output_cmd("m X       - set a monitor on signal X")
-        self.output_cmd("z X       - zap the monitor on signal X")
-        self.output_cmd("h         - help (this command)")
-        self.output_cmd("q         - quit the program")
+        self.output_cmd(_("User commands:"))
+        self.output_cmd(_("r N       - run the simulation for N cycles"))
+        self.output_cmd(_("c N       - continue the simulation for N cycles"))
+        self.output_cmd(_("s X N     - set switch X to N (0 or 1)"))
+        self.output_cmd(_("m X       - set a monitor on signal X"))
+        self.output_cmd(_("z X       - zap the monitor on signal X"))
+        self.output_cmd(_("h         - help (this command)"))
+        self.output_cmd(_("q         - quit the program"))
 
     def switch_command(self):
         """Set the specified switch to the specified signal level."""
@@ -210,9 +210,9 @@ class GuiUserInterface:
             switch_state = self.read_number(0, 1)
             if switch_state is not None:
                 if self.devices.set_switch(switch_id, switch_state):
-                    self.output_cmd("Successfully set switch.")
+                    self.output_cmd(_("Successfully set switch."))
                 else:
-                    self.output_cmd("Error! Invalid switch.")
+                    self.output_cmd(_("Error! Invalid switch."))
 
     def monitor_command(self):
         """Set the specified monitor."""
@@ -222,9 +222,9 @@ class GuiUserInterface:
             monitor_error = self.monitors.make_monitor(device, port,
                                                        self.cycles_completed)
             if monitor_error == self.monitors.NO_ERROR:
-                self.output_cmd("Successfully made monitor.")
+                self.output_cmd(_("Successfully made monitor."))
             else:
-                self.output_cmd("Error! Could not make monitor.")
+                self.output_cmd(_("Error! Could not make monitor."))
 
     def zap_command(self):
         """Remove the specified monitor."""
@@ -232,9 +232,9 @@ class GuiUserInterface:
         if monitor is not None:
             [device, port] = monitor
             if self.monitors.remove_monitor(device, port):
-                self.output_cmd("Successfully zapped monitor")
+                self.output_cmd(_("Successfully zapped monitor"))
             else:
-                self.output_cmd("Error! Could not zap monitor.")
+                self.output_cmd(_("Error! Could not zap monitor."))
 
     def run_network(self, cycles):
         """Run the network for the specified number of simulation cycles.
@@ -245,7 +245,7 @@ class GuiUserInterface:
             if self.network.execute_network():
                 self.monitors.record_signals()
             else:
-                self.output_cmd("Error! Network oscillating.")
+                self.output_cmd(_("Error! Network oscillating."))
                 return False
         self.monitors.display_signals()
         self.refresh_canvas()
@@ -258,7 +258,7 @@ class GuiUserInterface:
 
         if cycles is not None:  # if the number of cycles provided is valid
             self.monitors.reset_monitors()
-            self.output_cmd("".join(["Running for ", str(cycles), " cycles"]))
+            self.output_cmd("".join([_("Running for "), str(cycles), _(" cycles")]))
             self.devices.cold_startup()
             if self.run_network(cycles):
                 self.cycles_completed += cycles
@@ -268,8 +268,8 @@ class GuiUserInterface:
         cycles = self.read_number(0, None)
         if cycles is not None:  # if the number of cycles provided is valid
             if self.cycles_completed == 0:
-                self.output_cmd("Error! Nothing to continue. Run first.")
+                self.output_cmd(_("Error! Nothing to continue. Run first."))
             elif self.run_network(cycles):
                 self.cycles_completed += cycles
-                self.output_cmd(" ".join(["Continuing for", str(cycles), "cycles.",
-                                "Total:", str(self.cycles_completed)]))
+                self.output_cmd(" ".join([_("Continuing for"), str(cycles), _("cycles."),
+                                _("Total:"), str(self.cycles_completed)]))

@@ -23,10 +23,10 @@ class MonitorSidebarPanel(wx.Panel):
 
         # Create widgets
         info_text = wx.StaticText(
-            self, wx.ID_ANY, "Choose devices to monitor:"
+            self, wx.ID_ANY, _("Choose devices to monitor:")
         )
         self.monitor_checklist = wx.CheckListBox(
-            self, choices=self.all_devices, name="Monitor Signals"
+            self, choices=self.all_devices, name=_("Monitor Signals")
         )
 
         self.sizer.Add(info_text, 0, wx.ALL, 3)
@@ -59,13 +59,13 @@ class MonitorSidebarPanel(wx.Panel):
         device_name = self.all_devices[changed]
 
         if new_state == True:  # adding a monitor point
-            command = f"m {device_name}"
+            command = "m {}".format(device_name)
             self.input_cmd(command)
-            text = f"Device {device_name} added to monitor points"
+            text = _("Device {} added to monitor points").format(device_name)
 
         else:  # zapping a monitor point
-            command = f"z {device_name}"
+            command = "z {}".format(device_name)
             self.input_cmd(command)
-            text = f"Device {device_name} zapped from monitor points"
+            text = _("Device {} zapped from monitor points").format(device_name)
 
         self.push_status(text)

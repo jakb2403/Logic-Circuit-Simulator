@@ -135,60 +135,60 @@ class Parser:
         self._parser_output(self.scanner.error_found())
         self.error_count += 1
         if category == self.SYNTAX:
-            self._parser_output("SyntaxError: ", end="")
+            self._parser_output("Error: ", end="")
         elif category == self.SEMANTIC:
-            self._parser_output("SemanticError: ", end="")
+            self._parser_output("Error: ", end="")
 
         if type == self.invalid_device_name:
-            self._parser_output("invalid device name\n")
+            self._parser_output(_("invalid device name\n"))
         if type == self.device_as_name:
             self._parser_output(
-                "device type '{}' cannot be device name\n".format(keyword))
+                _("device type '{}' cannot be device name\n").format(keyword))
         if type == self.dtype_as_name:
-            self._parser_output("dtype input/output '{}' cannot\
-                be device name\n".format(keyword))
+            self._parser_output(_("dtype input/output '{}' cannot"
+                " be device name\n").format(keyword))
         if type == self.keyword_as_name:
             self._parser_output(
-                "keyword '{}' cannot be device name\n".format(keyword))
+                _("keyword '{}' cannot be device name\n").format(keyword))
         if type == self.invalid_arg_type:
-            self._parser_output("invalid argument type\n")
+            self._parser_output(_("invalid argument type\n"))
         if type == self.port_error:
-            self._parser_output("invalid port identifier\n")
+            self._parser_output(_("invalid port identifier\n"))
         if type == self.missing_symbol:
-            self._parser_output("missing symbol: {}\n".format(sym))
+            self._parser_output(_("missing symbol: {}\n").format(sym))
         if type == self.missing_argument:
             self._parser_output(
-                "missing argument for decive type '{}'\n".format(keyword))
+                _("missing argument for decive type '{}'\n").format(keyword))
         if type == self.unrecognised_device_type:
-            self._parser_output("unrecognised device type\n")
+            self._parser_output(_("unrecognised device type\n"))
         if type == self.missing_keyword:
-            self._parser_output("missing keyword '{}'\n".format(keyword))
+            self._parser_output(_("missing keyword '{}'\n").format(keyword))
         if type == self.invalid_arg:
             self._parser_output(
-                "argument '{}' outside of accepted range\n".format(keyword))
+                _("argument '{}' outside of accepted range\n").format(keyword))
         if type == self.duplicate_name:
             self._parser_output(
-                "name '{}' already used in previous device"
-                " assignment\n".format(keyword))
+                _("name '{}' already used in previous device"
+                " assignment\n").format(keyword))
         if type == self.duplicate_monitor:
             self._parser_output(
-                "monitor point '{}' already declared\n".format(keyword))
+                _("monitor point '{}' already declared\n").format(keyword))
         if type == self.monitor_is_input:
             self._parser_output(
-                "monitor point is an input, only outputs are allowed\n")
+                _("monitor point is an input, only outputs are allowed\n"))
         if type == self.input_to_input:
-            self._parser_output("input connected to input\n")
+            self._parser_output(_("input connected to input\n"))
         if type == self.output_to_output:
-            self._parser_output("output connected to output\n")
+            self._parser_output(_("output connected to output\n"))
         if type == self.port_absent:
-            self._parser_output("port is absent\n")
+            self._parser_output(_("port is absent\n"))
         if type == self.input_connected:
-            self._parser_output("input is already connected\n")
+            self._parser_output(_("input is already connected\n"))
         if type == self.unconnected_inputs:
             self._parser_output(
-                "incomplete network, not all inputs are connected\n")
+                _("incomplete network, not all inputs are connected\n"))
         if type == self.section_order_error:
-            self._parser_output("incorrect ordering of sections\n")
+            self._parser_output(_("incorrect ordering of sections\n"))
         if skip is True:
             while self.symbol.type not in self.stopping_symbols:
                 self.symbol = self.scanner.get_symbol()
@@ -635,5 +635,5 @@ class Parser:
         if self.error_count == 0:
             return True
         else:
-            self._parser_output(f"Error Count: {self.error_count}")
+            self._parser_output(_("Error Count: {}").format(self.error_count))
             return False

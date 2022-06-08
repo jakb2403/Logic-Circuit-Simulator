@@ -88,20 +88,20 @@ class Gui(wx.Frame):
         fileMenu = wx.Menu()
         menuBar = wx.MenuBar()
         fileMenu.Append(wx.ID_ABOUT, _("&About"))
-        fileMenu.Append(wx.ID_EXIT, "&Exit")
-        menuBar.Append(fileMenu, "&File")
+        fileMenu.Append(wx.ID_EXIT, _("&Exit"))
+        menuBar.Append(fileMenu, _("&File"))
         self.SetMenuBar(menuBar)
 
         # Configure the toolbar
         self.toolbar = self.CreateToolBar()
         self.load_button = self.toolbar.AddTool(
-            100, "Load", wx.Bitmap("icons/folder.png")
+            100, _("Load"), wx.Bitmap("icons/folder.png")
         )
         self.run_button = self.toolbar.AddTool(
-            101, "Run", wx.Bitmap("icons/run.png")
+            101, _("Run"), wx.Bitmap("icons/run.png")
         )
         self.cont_button = self.toolbar.AddTool(
-            102, "Continue", wx.Bitmap("icons/continue.png")
+            102, _("Continue"), wx.Bitmap("icons/continue.png")
         )
         self.cycle_spin = wx.SpinCtrl(self.toolbar, wx.ID_ANY, "10")
         self.toolbar.AddControl(self.cycle_spin)
@@ -111,7 +111,7 @@ class Gui(wx.Frame):
 
         # Configure the status bar
         self.statusbar = self.CreateStatusBar()
-        self.statusbar.SetStatusText("Status")
+        self.statusbar.SetStatusText(_("Status"))
 
         # Create instance of panel classes
         self.canvas_panel = CanvasPanel(
@@ -180,7 +180,7 @@ class Gui(wx.Frame):
             .Left()
             .Floatable(False)
             .CloseButton(False)
-            .Caption("Monitor Points")
+            .Caption(_("Monitor Points"))
             .Name("monitors")
             .DestroyOnClose(True)
             .MinSize(200, 50),
@@ -191,7 +191,7 @@ class Gui(wx.Frame):
             .Left()
             .Floatable(False)
             .CloseButton(False)
-            .Caption("Control Switches")
+            .Caption(_("Control Switches"))
             .Name("switches")
             .DestroyOnClose(True),
         )
@@ -201,7 +201,7 @@ class Gui(wx.Frame):
             .Left()
             .Floatable(False)
             .CloseButton(False)
-            .Caption("Replace Connections")
+            .Caption(_("Replace Connections"))
             .Name("connections")
             .DestroyOnClose(True)
             .MinSize(200, 50),
@@ -212,7 +212,7 @@ class Gui(wx.Frame):
             .Right()
             .Floatable(False)
             .CloseButton(False)
-            .Caption("Command Line")
+            .Caption(_("Command Line"))
             .Name("cmd")
             .DestroyOnClose(True),
         )
@@ -233,15 +233,15 @@ class Gui(wx.Frame):
 
         if not self.startup():
             print(
-                "\nYou closed the file dialog box.\n"
-                "You must choose a file to load in order to run a simulation\n"
+                _("\nYou closed the file dialog box.\n"
+                "You must choose a file to load in order to run a simulation\n")
             )
             self.on_close(None)
 
     def startup(self, restart=False):
         with wx.FileDialog(
             self,
-            "Load a .txt file to run",
+            _("Load a .txt file to run"),
             wildcard=".txt files (*.txt)|*.txt",
             style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST,
         ) as fileDialog:
@@ -336,7 +336,7 @@ class Gui(wx.Frame):
                     .Left()
                     .Floatable(False)
                     .CloseButton(False)
-                    .Caption("Monitor Points")
+                    .Caption(_("Monitor Points"))
                     .Name("monitors")
                     .DestroyOnClose(True),
                 )
@@ -346,7 +346,7 @@ class Gui(wx.Frame):
                     .Left()
                     .Floatable(False)
                     .CloseButton(False)
-                    .Caption("Control Switches")
+                    .Caption(_("Control Switches"))
                     .Name("switches")
                     .DestroyOnClose(True),
                 )
@@ -356,7 +356,7 @@ class Gui(wx.Frame):
                     .Left()
                     .Floatable(False)
                     .CloseButton(False)
-                    .Caption("Replace Connections")
+                    .Caption(_("Replace Connections"))
                     .Name("connections")
                     .DestroyOnClose(True)
                     .MinSize(200, 50),
@@ -367,7 +367,7 @@ class Gui(wx.Frame):
                     .Right()
                     .Floatable(False)
                     .CloseButton(False)
-                    .Caption("Command Line")
+                    .Caption(_("Command Line"))
                     .Name("cmd")
                     .DestroyOnClose(True),
                 )
@@ -394,9 +394,9 @@ class Gui(wx.Frame):
                 mode="gui",
                 output_cmd=self.output_cmd,
             )
-            text = "".join(["Opening file: ", self.path])
+            text = "".join([_("Opening file: "), self.path])
             self.push_status(text)
-            text = "".join(["Parsing file: ", self.path])
+            text = "".join([_("Parsing file: "), self.path])
             self.push_status(text)
             parse = self.parser.parse_network()
             if parse:
@@ -408,7 +408,6 @@ class Gui(wx.Frame):
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
         self.spin_value = self.cycle_spin.GetValue()
-        text = "".join(["New spin control value: ", str(self.spin_value)])
 
     def on_click_tool(self, event):
         """Handle the event when the user clicks a button in the toolbar."""
@@ -419,17 +418,13 @@ class Gui(wx.Frame):
         elif tool_id == 101:  # Run button
             command = f"r {self.spin_value}"
             self.input_cmd(command)
-            text = "Run button pressed"
-            self.push_status(text)
         elif tool_id == 102:  # Continue button
             command = f"c {self.spin_value}"
             self.input_cmd(command)
-            text = "Continue button pressed."
-            self.push_status(text)
         elif tool_id == 103:  # Save button
             with wx.FileDialog(
                 self,
-                "Save monitor plot",
+                _("Save monitor plot"),
                 wildcard="PNG files (*.png)|*.png",
                 style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT,
             ) as fileDialog:
@@ -444,9 +439,9 @@ class Gui(wx.Frame):
                         # self.doSaveData(bitmap)
                 except IOError:
                     wx.LogError(
-                        "Cannot save current data in file '%s'." % path
+                        _("Cannot save current data in file '{}'.").format(path)
                     )
-            text = "".join(["Saved file as: ", path])
+            text = "".join([_("Saved file as: "), path])
             self.push_status(text)
 
     def on_menu(self, event):
@@ -456,7 +451,7 @@ class Gui(wx.Frame):
             self.Close(True)
         if Id == wx.ID_ABOUT:
             wx.MessageBox(
-                (
+                _(
                     "Logic Simulator\n"
                     "Created by Mojisola Agboola\n"
                     "Adapted by P3 Group 15\n"
