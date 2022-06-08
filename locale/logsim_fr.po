@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 17:30+0100\n"
+"PO-Revision-Date: 2022-06-08 17:33+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr "\\uB17C\\uB9AC \\uD68C\\uB85C \\uBAA8\\uC758 \\uC2E4\\uD5D8 Simulateur l
 
 #: gui.py:90
 msgid "&About"
-msgstr "& à propos"
+msgstr "&À propos de Logsim"
 
 #: gui.py:91
 msgid "&Exit"
