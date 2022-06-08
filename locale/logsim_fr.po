@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 16:56+0100\n"
+"PO-Revision-Date: 2022-06-08 17:07+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -90,7 +90,7 @@ msgstr "Enregistrer le tracé du moniteur"
 
 #: gui.py:442
 msgid "Cannot save current data in file '{}'."
-msgstr "Impossible d'enregistrer les données actuelles dans le fichier ‘{}’."
+msgstr "Impossible d'enregistrer les données actuelles dans le fichier '{}'."
 
 #: gui.py:444
 msgid "Saved file as: "
@@ -283,7 +283,7 @@ msgid ""
 msgstr ""
 "\n"
 "Usage:\n"
-"Afficher l’aide : logsim.py -h\n"
+"Afficher l'aide : logsim.py -h\n"
 "Interface utilisateur de ligne de commande : logsim.py -c <chemin du fichier>\n"
 "Interface utilisateur graphique : logsim.py\n"
 "Cela fera apparaître une boîte de dialogue de fichier dans laquelle vous pourrez choisir le fichier que vous souhaitez exécuter."
@@ -298,4 +298,88 @@ msgid ""
 "Enter 'h' for help."
 msgstr ""
 "Logic Simulator: interface utilisateur interactive en ligne de commande.\n"
-"Entrez ‘h’ pour obtenir de l’aide."
+"Entrez 'h' pour obtenir de l'aide."
+
+#: parse.py:143
+msgid "invalid device name\n"
+msgstr "nom de périphérique invalide\n"
+
+#: parse.py:146
+msgid "device type '{}' cannot be device name\n"
+msgstr "le type d'appareil '{}' ne peut pas être le nom de l'appareil\n"
+
+#: parse.py:148
+msgid "dtype input/output '{}' cannot be device name\n"
+msgstr "dtype input/output '{}' ne peut pas être le nom du périphérique\n"
+
+#: parse.py:152
+msgid "keyword '{}' cannot be device name\n"
+msgstr "le mot-clé '{}' ne peut pas être le nom de l'appareil\n"
+
+#: parse.py:154
+msgid "invalid argument type\n"
+msgstr "type d'argument invalide\n"
+
+#: parse.py:156
+msgid "invalid port identifier\n"
+msgstr "“identifiant de port invalide\n"
+
+#: parse.py:158
+msgid "missing symbol: {}\n"
+msgstr "symbole manquant: {}\n"
+
+#: parse.py:161
+msgid "missing argument for decive type '{}'\n"
+msgstr "argument manquant pour le type de décision '{}'\n"
+
+#: parse.py:163
+msgid "unrecognised device type\n"
+msgstr "“type d'appareil non reconnu\n"
+
+#: parse.py:165
+msgid "missing keyword '{}'\n"
+msgstr "mot clé manquant '{}'\n"
+
+#: parse.py:168
+msgid "argument '{}' outside of accepted range\n"
+msgstr "argument '{}' en dehors de la plage acceptée\n"
+
+#: parse.py:171
+msgid "name '{}' already used in previous device assignment\n"
+msgstr "“nom '{}' déjà utilisé dans l'attribution de périphérique précédente\n"
+
+#: parse.py:175
+msgid "monitor point '{}' already declared\n"
+msgstr "point de contrôle '{}' déjà déclaré\n"
+
+#: parse.py:178
+msgid "monitor point is an input, only outputs are allowed\n"
+msgstr "le point de contrôle est une entrée, seules les sorties sont autorisées\n"
+
+#: parse.py:180
+msgid "input connected to input\n"
+msgstr "entrée connectée à l'entrée\n"
+
+#: parse.py:182
+msgid "output connected to output\n"
+msgstr "sortie connectée à la sortie\n"
+
+#: parse.py:184
+msgid "port is absent\n"
+msgstr "le port est absent\n"
+
+#: parse.py:186
+msgid "input is already connected\n"
+msgstr "l'entrée est déjà connectée\n"
+
+#: parse.py:189
+msgid "incomplete network, not all inputs are connected\n"
+msgstr "réseau incomplet, toutes les entrées ne sont pas connectées\n"
+
+#: parse.py:191
+msgid "incorrect ordering of sections\n"
+msgstr "ordre incorrect des sections\n"
+
+#: parse.py:638
+msgid "Error Count: {}"
+msgstr "Nombre d'erreurs: {}"
