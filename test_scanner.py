@@ -94,11 +94,16 @@ def test_scanner3():
     assert symbol.type == test_scanner3.EOF
     assert symbol.id is None
 
+
 def test_scanner4():
     """Test if get_symbol skips all unregistered symbols."""
     test_scanner4 = new_scanner(str(Path("test_files/scanner_test4.txt")))
 
     symbol = test_scanner4.get_symbol()
-    print(test_scanner4.current_character)
-    assert symbol.type == test_scanner4.EOF
-    # assert symbol.id is None
+
+    assert symbol.type is None
+    assert symbol.id is None
+
+
+"""Test for scanner_test5.txt is in test_parser.py, which tests if error_found
+   returns the correct error message, line and character numbers."""

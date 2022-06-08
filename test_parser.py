@@ -22,6 +22,14 @@ def dummy_parser(path):
     return new_parser
 
 
+def test_scanner5():
+    """Test if error_found returns the correct error message, line and 
+       character numbers."""
+    test_scanner5 = dummy_parser(
+        str(Path("test_files/parser_names_test1.txt"))
+    )
+
+
 #@pytest.mark.parametrize("path", [
 #    "test_files/parser_test1.txt",
 #    "test_files/parser_test2.txt"
