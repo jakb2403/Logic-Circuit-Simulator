@@ -88,7 +88,7 @@ def main(arg_list):
         # locale.AddCatalogLookupPathPrefix('./locale')
         # locale.AddCatalog('logsim_fr.mo')
 
-        gui = Gui(_("Logic Simulator"), names, devices, network, monitors)
+        gui = Gui(_(u"\uB17C\uB9AC \uD68C\uB85C \uBAA8\uC758 \uC2E4\uD5D8 Logic Simulator"), names, devices, network, monitors)
         gui.Show(True)
         app.MainLoop()
 
