@@ -6,20 +6,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2022-06-08 13:49+0100\n"
-"PO-Revision-Date: 2022-06-08 15:08+0100\n"
+"PO-Revision-Date: 2022-06-08 16:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.1\n"
 
 msgid "Logic Simulator"
 msgstr "Simulateur logique"
 
 #: gui.py:90
 msgid "&About"
-msgstr "&À propos"
+msgstr "&Ã propos"
 
 #: gui.py:91
 msgid "&Exit"
@@ -51,7 +52,7 @@ msgstr "Surveiller les points"
 
 #: gui.py:194 gui.py:349
 msgid "Control Switches"
-msgstr "Contrôler les interrupteurs"
+msgstr "ContrÃ´ler les interrupteurs"
 
 #: gui.py:204 gui.py:359
 msgid "Replace Connections"
@@ -68,12 +69,12 @@ msgid ""
 "You must choose a file to load in order to run a simulation\n"
 msgstr ""
 "\n"
-"Vous avez fermé la boîte de dialogue du fichier.\n"
-"Vous devez choisir un fichier à charger pour exécuter une simulation\n"
+"Vous avez fermé la boÃ®te de dialogue du fichier.\n"
+"Vous devez choisir un fichier Ã  charger pour exécuter une simulation\n"
 
 #: gui.py:244
 msgid "Load a .txt file to run"
-msgstr "Charger un fichier .txt à exécuter"
+msgstr "Charger un fichier .txt Ã  exécuter"
 
 #: gui.py:397
 msgid "Opening file: "
@@ -89,7 +90,7 @@ msgstr "Enregistrer le tracé du moniteur"
 
 #: gui.py:442
 msgid "Cannot save current data in file '{}'."
-msgstr "Impossible d'enregistrer les données actuelles dans le fichier '{}'."
+msgstr "Impossible d'enregistrer les données actuelles dans le fichier ‘{}’."
 
 #: gui.py:444
 msgid "Saved file as: "
@@ -107,11 +108,11 @@ msgstr ""
 "Créé par Mojisola Agboola\n"
 "Adapté par P3 Group 15\n"
 "Hyun Seung Cho, Joe Water et John Browb\n"
-"2022À propos de Logsim"
+"2022Ã propos de Logsim"
 
 #: gui_monitor_sidebar.py:26
 msgid "Choose devices to monitor:"
-msgstr "Choisir les appareils à surveiller:"
+msgstr "Choisir les appareils Ã  surveiller:"
 
 #: gui_monitor_sidebar.py:29
 msgid "Monitor Signals"
@@ -131,7 +132,7 @@ msgstr "Changer l'état des interrupteur:"
 
 #: gui_switches_sidebar.py:73
 msgid "Switch {} toggled to {}"
-msgstr "Interrupteur {} changé à {}"
+msgstr "Interrupteur {} changé Ã  {}"
 
 #: gui_connections_sidebar.py:126
 msgid ""
@@ -177,7 +178,7 @@ msgstr "c N       - continuer la simulation pendant N cycles"
 
 #: gui_userint.py:200
 msgid "s X N     - set switch X to N (0 or 1)"
-msgstr "s X N     - régler le interrupteur X à N (0 ou 1)"
+msgstr "s X N     - régler le interrupteur X Ã  N (0 ou 1)"
 
 #: gui_userint.py:201
 msgid "m X       - set a monitor on signal X"
@@ -197,7 +198,7 @@ msgstr "q         - quitter le programme"
 
 #: gui_userint.py:213
 msgid "Successfully set switch."
-msgstr "Interrupteur réglé avec succès."
+msgstr "Interrupteur réglé avec succÃ¨s."
 
 #: gui_userint.py:215
 msgid "Error! Invalid switch."
@@ -205,7 +206,7 @@ msgstr "Erreur! Commutateur invalide."
 
 #: gui_userint.py:225
 msgid "Successfully made monitor."
-msgstr "Moniteur créé avec succès."
+msgstr "Moniteur créé avec succÃ¨s."
 
 #: gui_userint.py:227
 msgid "Error! Could not make monitor."
@@ -213,7 +214,7 @@ msgstr "Erreur! Impossible de faire le moniteur."
 
 #: gui_userint.py:235
 msgid "Successfully zapped monitor"
-msgstr "Moniteur zappé avec succès"
+msgstr "Moniteur zappé avec succÃ¨s"
 
 #: gui_userint.py:237
 msgid "Error! Could not zap monitor."
@@ -233,7 +234,7 @@ msgstr "Courir pour "
 
 #: gui_userint.py:271
 msgid "Error! Nothing to continue. Run first."
-msgstr "Erreur! Rien à continuer. Courez d'abord."
+msgstr "Erreur! Rien Ã  continuer. Courez d'abord."
 
 #: gui_userint.py:274
 msgid "Continuing for"
@@ -258,3 +259,7 @@ msgstr "avec ..."
 #: gui_connections_sidebar.py:50
 msgid "Replace"
 msgstr "Replacer"
+
+#: gui_connections_sidebar.py:34
+msgid "Choose a connection to replace:"
+msgstr "Choisir une connexion à remplacer :"

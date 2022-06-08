@@ -31,7 +31,7 @@ class ConnectionsSidebarPanel(wx.Panel):
 
         # Create widgets
         info_text1 = wx.StaticText(
-            self, wx.ID_ANY, "Choose a connection to replace:"
+            self, wx.ID_ANY, _("Choose a connection to replace:")
         )
         info_text2 = wx.StaticText(self, wx.ID_ANY, _("Replace ..."))
         self.dropdown_find = wx.Choice(
