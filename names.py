@@ -48,8 +48,9 @@ class Names:
         if not isinstance(num_error_codes, int):
             raise TypeError("Expected num_error_codes to be an integer.")
         self.error_code_count += num_error_codes
-        return range(self.error_code_count - num_error_codes,
-                     self.error_code_count)
+        return range(
+            self.error_code_count - num_error_codes, self.error_code_count
+        )
 
     def query(self, name_string):
         """Return the corresponding name ID for name_string.
@@ -73,9 +74,8 @@ class Names:
                 if item in self.names_list:
                     output_list.append(self.names_list.index(item))
                 else:
-                    if not(item[0].isalpha()):
-                        raise TypeError(
-                            "Name string must start with a letter")
+                    if not (item[0].isalpha()):
+                        raise TypeError("Name string must start with a letter")
                     else:
                         self.names_list.append(item)
                         output_list.append(len(self.names_list) - 1)
@@ -86,9 +86,10 @@ class Names:
             if name_input in self.names_list:
                 return self.names_list.index(name_input)
             else:
-                if not(name_input[0].isalpha()):
+                if not (name_input[0].isalpha()):
                     raise TypeError(
-                        "Name string must start with a letter, not a number.")
+                        "Name string must start with a letter, not a number."
+                    )
                 self.names_list.append(name_input)
                 return len(self.names_list) - 1
         else:
@@ -102,7 +103,8 @@ class Names:
         if isinstance(name_id, int):
             if name_id < 0:
                 raise ValueError(
-                    "Invalid name_id. Only positive integers allowed.")
+                    "Invalid name_id. Only positive integers allowed."
+                )
             if name_id < len(self.names_list):
                 return self.names_list[name_id]
             else:

@@ -31,23 +31,23 @@ class ConnectionsSidebarPanel(wx.Panel):
 
         # Create widgets
         info_text1 = wx.StaticText(
-            self, wx.ID_ANY, "Choose a connection to replace:"
+            self, wx.ID_ANY, _("Choose a connection to replace:")
         )
-        info_text2 = wx.StaticText(self, wx.ID_ANY, "Replace ...")
+        info_text2 = wx.StaticText(self, wx.ID_ANY, _("Replace ..."))
         self.dropdown_find = wx.Choice(
             self,
             wx.CB_DROPDOWN | wx.CB_READONLY,
             choices=self.current_connections_text_list,
             name="find",
         )
-        info_text3 = wx.StaticText(self, wx.ID_ANY, "with ...")
+        info_text3 = wx.StaticText(self, wx.ID_ANY, _("with ..."))
         self.dropdown_replace = wx.Choice(
             self,
             wx.CB_DROPDOWN | wx.CB_READONLY,
             choices=self.new_connections_text_list,
             name="replace",
         )
-        self.replace_button = wx.Button(self, wx.ID_ANY, "Replace")
+        self.replace_button = wx.Button(self, wx.ID_ANY, _("Replace"))
 
         self.sizer.Add(info_text1, 0, wx.ALL, 3)
         self.sizer.Add(info_text2, 0, wx.ALL, 3)
@@ -123,10 +123,9 @@ class ConnectionsSidebarPanel(wx.Panel):
         selected_text = self.dropdown_find.GetString(selection_index)
         first_signal_name = selected_text.split(" > ")[0]
         self.output_cmd(
-            "\nReplacing connection\n"
-            "{} > {}"
-            "  with  "
-            "{} > {}".format(
+            _(
+                "\nReplacing connection\n" "{} > {}" "  with  " "{} > {}"
+            ).format(
                 first_signal_name,
                 second_signal_name,
                 third_signal_name,

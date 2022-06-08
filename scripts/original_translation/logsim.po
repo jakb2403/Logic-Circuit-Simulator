@@ -1,0 +1,36 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-06-08 18:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: logsim.py:43
+msgid ""
+"\n"
+"Usage:\n"
+"Show help: logsim.py -h\n"
+"Command line user interface: logsim.py -c <file path>\n"
+"Graphical user interface: logsim.py\n"
+"This will bring up a file dialog where you can choose the file you wish to run."
+msgstr ""
+
+#: logsim.py:54
+msgid ""
+"Error: invalid command line arguments\n"
+msgstr ""
+
+#: logsim.py:92
+msgid "논리 회로 모의 실험 Logic Simulator"
+msgstr ""
+

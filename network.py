@@ -94,10 +94,17 @@ class Network:
         all_devices = self.devices.find_devices()
         connection_dict = {}
         for second_device_id in all_devices:
-            for second_port_id in self.devices.get_device(second_device_id).inputs:
-                first_device_id, first_port_id = self.get_connected_output(second_device_id, second_port_id)
-                connection_dict[(second_device_id, second_port_id)] = (first_device_id, first_port_id)
-        return connection_dict                         
+            for second_port_id in self.devices.get_device(
+                second_device_id
+            ).inputs:
+                first_device_id, first_port_id = self.get_connected_output(
+                    second_device_id, second_port_id
+                )
+                connection_dict[(second_device_id, second_port_id)] = (
+                    first_device_id,
+                    first_port_id,
+                )
+        return connection_dict
 
     def get_input_signal(self, device_id, input_id):
         """Return the signal level at the output connected to the given input.

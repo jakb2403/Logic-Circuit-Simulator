@@ -20,10 +20,12 @@ class SwitchesSidebarPanel(wx.Panel):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.scroll_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        info_text = wx.StaticText(self, wx.ID_ANY, "Change state of switches:")
+        info_text = wx.StaticText(
+            self, wx.ID_ANY, _("Change state of switches:")
+        )
 
         self.scroll_panel = wx.lib.scrolledpanel.ScrolledPanel(
-            self, -1#, style=wx.SIMPLE_BORDER
+            self, -1  # , style=wx.SIMPLE_BORDER
         )
         self.scroll_panel.SetupScrolling()
         self.scroll_panel.SetSizer(self.scroll_sizer)
@@ -67,8 +69,8 @@ class SwitchesSidebarPanel(wx.Panel):
 
         toggle.SetLabel(str(new_state))
 
-        command = f"s {switch_name} {new_state}"
+        command = "s {} {}".format(switch_name, new_state)
         self.input_cmd(command)
 
-        text = f"Switch {switch_name} toggled to {new_state}"
+        text = _("Switch {} toggled to {}").format(switch_name, new_state)
         self.push_status(text)

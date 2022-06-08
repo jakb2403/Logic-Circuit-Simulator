@@ -23,6 +23,7 @@ from scanner import Scanner
 from parse import Parser
 from userint import UserInterface
 from gui import Gui
+import builtins
 
 
 def main(arg_list):
@@ -31,7 +32,15 @@ def main(arg_list):
     Run either the command line user interface, the graphical user interface,
     or display the usage message.
     """
-    usage_message = (
+    app = wx.App()
+    # Internationalisation
+    builtins._ = wx.GetTranslation
+    locale = wx.Locale()
+    locale.Init(wx.LANGUAGE_DEFAULT)
+    locale.AddCatalogLookupPathPrefix("./locale")
+    locale.AddCatalog("logsim_fr.mo")
+
+    usage_message = _(
         "\nUsage:\n"
         "Show help: logsim.py -h\n"
         "Command line user interface: logsim.py -c <file path>\n"
@@ -42,7 +51,7 @@ def main(arg_list):
     try:
         options, arguments = getopt.getopt(arg_list, "hc:")
     except getopt.GetoptError:
-        print("Error: invalid command line arguments\n")
+        print(_("Error: invalid command line arguments\n"))
         print(usage_message)
         sys.exit()
 
@@ -70,8 +79,24 @@ def main(arg_list):
                 userint.command_interface()
 
     if not options:  # no option given, use the graphical user interface
-        app = wx.App()
-        gui = Gui("Logic Simulator", names, devices, network, monitors)
+        # app = wx.App()
+
+        # # Internationalisation
+        # builtins._ = wx.GetTranslation
+        # locale = wx.Locale()
+        # locale.Init(wx.LANGUAGE_DEFAULT)
+        # locale.AddCatalogLookupPathPrefix('./locale')
+        # locale.AddCatalog('logsim_fr.mo')
+
+        gui = Gui(
+            _(
+                "\uB17C\uB9AC \uD68C\uB85C \uBAA8\uC758 \uC2E4\uD5D8 Logic Simulator"
+            ),
+            names,
+            devices,
+            network,
+            monitors,
+        )
         gui.Show(True)
         app.MainLoop()
 

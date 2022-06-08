@@ -1,0 +1,414 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-06-08 13:49+0100\n"
+"PO-Revision-Date: 2022-06-08 18:41+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.1\n"
+
+#: logsim.py:92
+msgid "논리 회로 모의 실험 Logic Simulator"
+msgstr "논리 회로 모의 실험 Simulateur Logique"
+
+#: gui.py:90
+msgid "&About"
+msgstr "&À propos de Logsim"
+
+#: gui.py:91
+msgid "&Exit"
+msgstr "&Quitter"
+
+#: gui.py:92
+msgid "&File"
+msgstr "&Fichier"
+
+#: gui.py:98
+msgid "Load"
+msgstr "Charger"
+
+#: gui.py:101
+msgid "Run"
+msgstr "Exécuter"
+
+#: gui.py:104
+msgid "Continue"
+msgstr "Continuer"
+
+#: gui.py:114
+msgid "Status"
+msgstr "Statut"
+
+#: gui.py:183 gui.py:339
+msgid "Monitor Points"
+msgstr "Surveiller les points"
+
+#: gui.py:194 gui.py:349
+msgid "Control Switches"
+msgstr "Contrà´ler les interrupteurs"
+
+#: gui.py:204 gui.py:359
+msgid "Replace Connections"
+msgstr "Remplacer les connexions"
+
+#: gui.py:215 gui.py:370
+msgid "Command Line"
+msgstr "Ligne de commande"
+
+#: gui.py:236
+msgid ""
+"\n"
+"You closed the file dialog box.\n"
+"You must choose a file to load in order to run a simulation\n"
+msgstr ""
+"\n"
+"Vous avez fermé la boîte de dialogue du fichier.\n"
+"Vous devez choisir un fichier à charger pour exécuter une simulation\n"
+
+#: gui.py:244
+msgid "Load a .txt file to run"
+msgstr "Charger un fichier .txt à exécuter"
+
+#: gui.py:397
+msgid "Opening file: "
+msgstr "Ouverture du fichier: "
+
+#: gui.py:399
+msgid "Parsing file: "
+msgstr "Analyse du fichier: "
+
+#: gui.py:427
+msgid "Save monitor plot"
+msgstr "Enregistrer le tracé du moniteur"
+
+#: gui.py:442
+msgid "Cannot save current data in file '{}'."
+msgstr "Impossible d'enregistrer les données actuelles dans le fichier '{}'."
+
+#: gui.py:444
+msgid "Saved file as: "
+msgstr "Fichier enregistré sous: "
+
+#: gui.py:455
+msgid ""
+"Logic Simulator\n"
+"Created by Mojisola Agboola\n"
+"Adapted by P3 Group 15\n"
+"Hyun Seung Cho, Joe Waters and John Brown\n"
+"2022"
+msgstr ""
+"Simulateur logique\n"
+"Créé par Mojisola Agboola\n"
+"Adapté par P3 Groupe 15\n"
+"Hyun Seung Cho, Joe Waters et Jean Marron 💩\n"
+"2022"
+
+#: gui.py:462
+msgid "About Logsim"
+msgstr "À propos de Logsim"
+
+#: gui_monitor_sidebar.py:26
+msgid "Choose devices to monitor:"
+msgstr "Choisir les appareils à surveiller:"
+
+#: gui_monitor_sidebar.py:29
+msgid "Monitor Signals"
+msgstr "Surveillez les signaux"
+
+#: gui_monitor_sidebar.py:64
+msgid "Device {} added to monitor points"
+msgstr "Appareil {} ajouté aux points de surveillance"
+
+#: gui_monitor_sidebar.py:69
+msgid "Device {} zapped from monitor points"
+msgstr "Appareil {} zappé des points de surveillance"
+
+#: gui_switches_sidebar.py:23
+msgid "Change state of switches:"
+msgstr "Changer l'état des interrupteur:"
+
+#: gui_switches_sidebar.py:73
+msgid "Switch {} toggled to {}"
+msgstr "Interrupteur {} changé à {}"
+
+#: gui_connections_sidebar.py:126
+msgid ""
+"\n"
+"Replacing connection\n"
+"{} > {}  with  {} > {}"
+msgstr ""
+"\n"
+"Remplacement de la connexion\n"
+"{} > {} avec {} > {}"
+
+#: gui_userint.py:104
+msgid "Invalid command. Enter 'h' for help."
+msgstr "Commande invalide. Entrez 'h' pour obtenir de l'aide."
+
+#: gui_userint.py:130
+msgid "Error! Expected a name."
+msgstr "Erreur! Un nom est attendu."
+
+#: gui_userint.py:148
+msgid "Error! Unknown name."
+msgstr "Erreur! Nom inconnu."
+
+#: gui_userint.py:176
+msgid "Error! Expected a number."
+msgstr "Erreur! Un nombre attendu."
+
+#: gui_userint.py:185 gui_userint.py:190
+msgid "Number out of range."
+msgstr "Nombre hors limites."
+
+#: gui_userint.py:197
+msgid "User commands:"
+msgstr "Commandes utilisateur:"
+
+#: gui_userint.py:198
+msgid "r N       - run the simulation for N cycles"
+msgstr "r N       - exécuter la simulation pendant N cycles"
+
+#: gui_userint.py:199
+msgid "c N       - continue the simulation for N cycles"
+msgstr "c N       - continuer la simulation pendant N cycles"
+
+#: gui_userint.py:200
+msgid "s X N     - set switch X to N (0 or 1)"
+msgstr "s X N     - régler le interrupteur X à N (0 ou 1)"
+
+#: gui_userint.py:201
+msgid "m X       - set a monitor on signal X"
+msgstr "m X       - régler un moniteur sur le signal X"
+
+#: gui_userint.py:202
+msgid "z X       - zap the monitor on signal X"
+msgstr "z X       - zappe le moniteur sur le signal X"
+
+#: gui_userint.py:203
+msgid "h         - help (this command)"
+msgstr "h         - aide (cette commande)"
+
+#: gui_userint.py:204
+msgid "q         - quit the program"
+msgstr "q         - quitter le programme"
+
+#: gui_userint.py:213
+msgid "Successfully set switch."
+msgstr "Interrupteur réglé avec succès."
+
+#: gui_userint.py:215
+msgid "Error! Invalid switch."
+msgstr "Erreur! Commutateur invalide."
+
+#: gui_userint.py:225
+msgid "Successfully made monitor."
+msgstr "Moniteur créé avec succès."
+
+#: gui_userint.py:227
+msgid "Error! Could not make monitor."
+msgstr "Erreur! Impossible de faire le moniteur."
+
+#: gui_userint.py:235
+msgid "Successfully zapped monitor"
+msgstr "Moniteur zappé avec succès"
+
+#: gui_userint.py:237
+msgid "Error! Could not zap monitor."
+msgstr "Erreur! Impossible de zapper le moniteur."
+
+#: gui_userint.py:248
+msgid "Error! Network oscillating."
+msgstr "Erreur! Réseau oscillant."
+
+#: gui_userint.py:261
+msgid " cycles"
+msgstr " cycles"
+
+#: gui_userint.py:261
+msgid "Running for "
+msgstr "Courir pour "
+
+#: gui_userint.py:271
+msgid "Error! Nothing to continue. Run first."
+msgstr "Erreur! Rien à continuer. Courez d'abord."
+
+#: gui_userint.py:274
+msgid "Continuing for"
+msgstr "Continuer pour"
+
+#: gui_userint.py:274
+msgid "cycles."
+msgstr "cycles."
+
+#: gui_userint.py:275
+msgid "Total:"
+msgstr "Total:"
+
+#: gui_connections_sidebar.py:36
+msgid "Replace ..."
+msgstr "Remplacer ..."
+
+#: gui_connections_sidebar.py:43
+msgid "with ..."
+msgstr "avec ..."
+
+#: gui_connections_sidebar.py:50
+msgid "Replace"
+msgstr "Replacer"
+
+#: gui_connections_sidebar.py:34
+msgid "Choose a connection to replace:"
+msgstr "Choisir une connexion à remplacer:"
+
+#: gui_cmd.py:54
+msgid ""
+"Logic Simulator: interactive command line user interface.\n"
+"Enter 'h' for help.\n"
+msgstr ""
+"Simulateur Logique: interface utilisateur interactive en ligne de commande.\n"
+"Entrez 'h' pour obtenir de l'aide.\n"
+
+#: logsim.py:44
+msgid ""
+"\n"
+"Usage:\n"
+"Show help: logsim.py -h\n"
+"Command line user interface: logsim.py -c <file path>\n"
+"Graphical user interface: logsim.py\n"
+"This will bring up a file dialog where you can choose the file you wish to run."
+msgstr ""
+"\n"
+"Usage:\n"
+"Afficher l'aide : logsim.py -h\n"
+"Interface utilisateur de ligne de commande : logsim.py -c <chemin du fichier>\n"
+"Interface utilisateur graphique : logsim.py\n"
+"Cela fera apparaître une boîte de dialogue de fichier dans laquelle vous pourrez choisir le fichier que vous souhaitez exécuter."
+
+#: logsim.py:54
+msgid "Error: invalid command line arguments\n"
+msgstr "Erreur: arguments de ligne de commande non valides\n"
+
+#: userint.py:84
+msgid ""
+"Logic Simulator: interactive command line user interface.\n"
+"Enter 'h' for help."
+msgstr ""
+"Logic Simulator: interface utilisateur interactive en ligne de commande.\n"
+"Entrez 'h' pour obtenir de l'aide."
+
+#: parse.py:143
+msgid "invalid device name\n"
+msgstr "nom de périphérique invalide\n"
+
+#: parse.py:146
+msgid "device type '{}' cannot be device name\n"
+msgstr "le type d'appareil '{}' ne peut pas être le nom de l'appareil\n"
+
+#: parse.py:148
+msgid "dtype input/output '{}' cannot be device name\n"
+msgstr "dtype input/output '{}' ne peut pas être le nom du périphérique\n"
+
+#: parse.py:152
+msgid "keyword '{}' cannot be device name\n"
+msgstr "le mot-clé '{}' ne peut pas être le nom de l'appareil\n"
+
+#: parse.py:154
+msgid "invalid argument type\n"
+msgstr "type d'argument invalide\n"
+
+#: parse.py:156
+msgid "invalid port identifier\n"
+msgstr "“identifiant de port invalide\n"
+
+#: parse.py:158
+msgid "missing symbol: {}\n"
+msgstr "symbole manquant: {}\n"
+
+#: parse.py:161
+msgid "missing argument for decive type '{}'\n"
+msgstr "argument manquant pour le type de décision '{}'\n"
+
+#: parse.py:163
+msgid "unrecognised device type\n"
+msgstr "“type d'appareil non reconnu\n"
+
+#: parse.py:165
+msgid "missing keyword '{}'\n"
+msgstr "mot clé manquant '{}'\n"
+
+#: parse.py:168
+msgid "argument '{}' outside of accepted range\n"
+msgstr "argument '{}' en dehors de la plage acceptée\n"
+
+#: parse.py:171
+msgid "name '{}' already used in previous device assignment\n"
+msgstr "“nom '{}' déjà utilisé dans l'attribution de périphérique précédente\n"
+
+#: parse.py:175
+msgid "monitor point '{}' already declared\n"
+msgstr "point de contrôle '{}' déjà déclaré\n"
+
+#: parse.py:178
+msgid "monitor point is an input, only outputs are allowed\n"
+msgstr "le point de contrôle est une entrée, seules les sorties sont autorisées\n"
+
+#: parse.py:180
+msgid "input connected to input\n"
+msgstr "entrée connectée à l'entrée\n"
+
+#: parse.py:182
+msgid "output connected to output\n"
+msgstr "sortie connectée à la sortie\n"
+
+#: parse.py:184
+msgid "port is absent\n"
+msgstr "le port est absent\n"
+
+#: parse.py:186
+msgid "input is already connected\n"
+msgstr "l'entrée est déjà connectée\n"
+
+#: parse.py:189
+msgid "incomplete network, not all inputs are connected\n"
+msgstr "réseau incomplet, toutes les entrées ne sont pas connectées\n"
+
+#: parse.py:191
+msgid "incorrect ordering of sections\n"
+msgstr "ordre incorrect des sections\n"
+
+#: parse.py:638
+msgid "Error Count: {}"
+msgstr "Nombre d'erreurs: {}"
+
+#: parse.py:138
+msgid "Error: "
+msgstr "Erreur: "
+
+#: scanner.py:117
+msgid ""
+"\n"
+"Error: incorrect file type\n"
+msgstr ""
+"\n"
+"Erreur: type de fichier incorrect\n"
+
+#: scanner.py:119
+msgid ""
+"\n"
+"Error invalid path\n"
+msgstr ""
+"\n"
+"Erreur chemin invalide\n"
+
+#: scanner.py:171
+msgid "Error on line "
+msgstr "Erreur en ligne "

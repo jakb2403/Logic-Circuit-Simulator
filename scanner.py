@@ -63,7 +63,7 @@ class Scanner:
 
         if Path(str(path)).is_file():
             if Path(str(path)).suffix == ".txt":
-                self.file = open(Path(str(path)), 'r')
+                self.file = open(Path(str(path)), "r")
 
                 self.file.seek(0, 0)
                 self.current_character = self.file.read(1)
@@ -91,32 +91,59 @@ class Scanner:
                     self.DTYPE_OP,
                     self.NUMBER,
                     self.NAME,
-                    self.EOF] = range(16)
+                    self.EOF,
+                ] = range(16)
 
-                self.keywords_list = ["DEVICES",
-                                      "CONNECT", "MONITOR", "END", "I"]
-                self.device_arg_list = ["CLOCK", "AND",
-                                        "NAND", "OR", "NOR", "SWITCH"]
+                self.keywords_list = [
+                    "DEVICES",
+                    "CONNECT",
+                    "MONITOR",
+                    "END",
+                    "I",
+                ]
+                self.device_arg_list = [
+                    "CLOCK",
+                    "AND",
+                    "NAND",
+                    "OR",
+                    "NOR",
+                    "SWITCH",
+                ]
                 self.device_list = ["DTYPE", "XOR", "NOT"]
                 self.dtype_ip_list = ["SET", "CLEAR", "DATA", "CLK"]
                 self.dtype_op_list = ["Q", "QBAR"]
-                [self.DEVICES_ID, self.CONNECT_ID,
-                 self.MONITOR_ID, self.END_ID,
-                 self.I_ID] = self.names.lookup(self.keywords_list)
-                [self.CLOCK_ID, self.AND_ID, self.NAND_ID,
-                 self.OR_ID, self.NOR_ID,
-                 self.SWITCH_ID] = self.names.lookup(self.device_arg_list)
+                [
+                    self.DEVICES_ID,
+                    self.CONNECT_ID,
+                    self.MONITOR_ID,
+                    self.END_ID,
+                    self.I_ID,
+                ] = self.names.lookup(self.keywords_list)
+                [
+                    self.CLOCK_ID,
+                    self.AND_ID,
+                    self.NAND_ID,
+                    self.OR_ID,
+                    self.NOR_ID,
+                    self.SWITCH_ID,
+                ] = self.names.lookup(self.device_arg_list)
                 [self.DTYPE_ID, self.XOR_ID, self.NOT_ID] = self.names.lookup(
-                 self.device_list)
-                [self.SET_ID, self.CLEAR_ID, self.DATA_ID,
-                 self.CLK_ID] = self.names.lookup(self.dtype_ip_list)
+                    self.device_list
+                )
+                [
+                    self.SET_ID,
+                    self.CLEAR_ID,
+                    self.DATA_ID,
+                    self.CLK_ID,
+                ] = self.names.lookup(self.dtype_ip_list)
                 [self.Q_ID, self.QBAR_ID] = self.names.lookup(
-                 self.dtype_op_list)
+                    self.dtype_op_list
+                )
 
             else:
-                print("\nError: incorrect file type\n")
+                print(_("\nError: incorrect file type\n"))
         else:
-            print("\nError invalid path\n")
+            print(_("\nError invalid path\n"))
 
     def advance(self):
         """Read the next character."""
@@ -164,12 +191,19 @@ class Scanner:
                 self.line_counter -= 1
                 line_text = self.file.read().split("\n")[self.line_counter - 1]
                 self.char_counter = self.char_in_line[-1]
-            else:    # if the file is an empty file
+            else:  # if the file is an empty file
                 line_text = ""
         else:
             line_text = self.file.read().split("\n")[self.line_counter - 1]
-        output = ("Error on line " + str(self.line_counter) + "\n" +
-                  line_text + "\n" + " " * (self.char_counter - 1) + "^")
+        output = (
+            _("Error on line ")
+            + str(self.line_counter)
+            + "\n"
+            + line_text
+            + "\n"
+            + " " * (self.char_counter - 1)
+            + "^"
+        )
 
         self.file.seek(0, 0)
         self.line_counter = 1
@@ -185,8 +219,10 @@ class Scanner:
 
         # if symbol is a name
         if self.current_character.isalpha():
-            if (self.afterdot is True and
-                    self.current_character in self.keywords_list):
+            if (
+                self.afterdot is True
+                and self.current_character in self.keywords_list
+            ):
                 self.afterdot = False
                 symbol.type = self.KEYWORD
                 symbol.id = self.I_ID
@@ -264,8 +300,10 @@ class Scanner:
         elif self.current_character == "#":
             while True:
                 self.advance()
-                if (self.current_character == "\n" or
-                        self.current_character == ""):
+                if (
+                    self.current_character == "\n"
+                    or self.current_character == ""
+                ):
                     break
             return self.get_symbol()
 
