@@ -90,7 +90,7 @@ class Parser:
 
         self.mode = mode
         self.output_cmd = output_cmd
-
+        self.name_error = False
         # get instances of other modules from arguments
         self.names = names
         self.devices = devices
@@ -147,76 +147,77 @@ class Parser:
         function from scanner.py.
         If an error is found, skip parsing until stopping symbol.
         """
-        self._parser_output(self.scanner.error_found())
-        self.error_count += 1
+        if self.name_error is False:
+            self._parser_output(self.scanner.error_found())
+            self.error_count += 1
 
-        if type == self.invalid_device_name:
-            self._parser_output(_("invalid device name\n"))
-        if type == self.device_as_name:
-            self._parser_output(
-                _("device type '{}' cannot be device name\n").format(keyword)
-            )
-        if type == self.dtype_as_name:
-            self._parser_output(
-                _("dtype input/output '{}' cannot" " be device name\n").format(
-                    keyword
+            if type == self.invalid_device_name:
+                self._parser_output(_("invalid device name\n"))
+            if type == self.device_as_name:
+                self._parser_output(
+                    _("device type '{}' cannot be device name\n").format(keyword)
                 )
-            )
-        if type == self.keyword_as_name:
-            self._parser_output(
-                _("keyword '{}' cannot be device name\n").format(keyword)
-            )
-        if type == self.invalid_arg_type:
-            self._parser_output(_("invalid argument type\n"))
-        if type == self.port_error:
-            self._parser_output(_("invalid port identifier\n"))
-        if type == self.missing_symbol:
-            self._parser_output(_("missing symbol: {}\n").format(sym))
-        if type == self.missing_argument:
-            self._parser_output(
-                _("missing argument for decive type '{}'\n").format(keyword)
-            )
-        if type == self.unrecognised_device_type:
-            self._parser_output(_("unrecognised device type\n"))
-        if type == self.missing_keyword:
-            self._parser_output(_("missing keyword '{}'\n").format(keyword))
-        if type == self.invalid_arg:
-            self._parser_output(
-                _("argument '{}' outside of accepted range\n").format(keyword)
-            )
-        if type == self.duplicate_name:
-            self._parser_output(
-                _(
-                    "name '{}' already used in previous device" " assignment\n"
-                ).format(keyword)
-            )
-        if type == self.duplicate_monitor:
-            self._parser_output(
-                _("monitor point '{}' already declared\n").format(keyword)
-            )
-        if type == self.monitor_is_input:
-            self._parser_output(
-                _("monitor point is an input, only outputs are allowed\n")
-            )
-        if type == self.input_to_input:
-            self._parser_output(_("input connected to input\n"))
-        if type == self.output_to_output:
-            self._parser_output(_("output connected to output\n"))
-        if type == self.port_absent:
-            self._parser_output(_("port is absent\n"))
-        if type == self.input_connected:
-            self._parser_output(_("input is already connected\n"))
-        if type == self.unconnected_inputs:
-            self._parser_output(
-                _("incomplete network, not all inputs are connected\n")
-            )
-        if type == self.section_order_error:
-            self._parser_output(_("incorrect ordering of sections\n"))
-        if skip is True:
-            while self.symbol.type not in self.stopping_symbols:
+            if type == self.dtype_as_name:
+                self._parser_output(
+                    _("dtype input/output '{}' cannot" " be device name\n").format(
+                        keyword
+                    )
+                )
+            if type == self.keyword_as_name:
+                self._parser_output(
+                    _("keyword '{}' cannot be device name\n").format(keyword)
+                )
+            if type == self.invalid_arg_type:
+                self._parser_output(_("invalid argument type\n"))
+            if type == self.port_error:
+                self._parser_output(_("invalid port identifier\n"))
+            if type == self.missing_symbol:
+                self._parser_output(_("missing symbol: {}\n").format(sym))
+            if type == self.missing_argument:
+                self._parser_output(
+                    _("missing argument for decive type '{}'\n").format(keyword)
+                )
+            if type == self.unrecognised_device_type:
+                self._parser_output(_("unrecognised device type\n"))
+            if type == self.missing_keyword:
+                self._parser_output(_("missing keyword '{}'\n").format(keyword))
+            if type == self.invalid_arg:
+                self._parser_output(
+                    _("argument '{}' outside of accepted range\n").format(keyword)
+                )
+            if type == self.duplicate_name:
+                self._parser_output(
+                    _(
+                        "name '{}' already used in previous device" " assignment\n"
+                    ).format(keyword)
+                )
+            if type == self.duplicate_monitor:
+                self._parser_output(
+                    _("monitor point '{}' already declared\n").format(keyword)
+                )
+            if type == self.monitor_is_input:
+                self._parser_output(
+                    _("monitor point is an input, only outputs are allowed\n")
+                )
+            if type == self.input_to_input:
+                self._parser_output(_("input connected to input\n"))
+            if type == self.output_to_output:
+                self._parser_output(_("output connected to output\n"))
+            if type == self.port_absent:
+                self._parser_output(_("port is absent\n"))
+            if type == self.input_connected:
+                self._parser_output(_("input is already connected\n"))
+            if type == self.unconnected_inputs:
+                self._parser_output(
+                    _("incomplete network, not all inputs are connected\n")
+                )
+            if type == self.section_order_error:
+                self._parser_output(_("incorrect ordering of sections\n"))
+            if skip is True:
+                while self.symbol.type not in self.stopping_symbols:
+                    self.symbol = self.scanner.get_symbol()
+            elif skip is False:
                 self.symbol = self.scanner.get_symbol()
-        elif skip is False:
-            self.symbol = self.scanner.get_symbol()
 
     def _name(self):
         """Parse a name and return the name ID if it is a valid name.
@@ -232,6 +233,7 @@ class Parser:
         ):
             device_type = self.names.get_name_string(self.symbol.id)
             self._error(self.SYNTAX, self.device_as_name, keyword=device_type)
+            self.name_error = True
             return None
         # if dtype input output is device name
         elif (
@@ -240,15 +242,18 @@ class Parser:
         ):
             dtype = self.names.get_name_string(self.symbol.id)
             self._error(self.SYNTAX, self.dtype_as_name, keyword=dtype)
+            self.name_error = True
             return None
         # if keyword is device name
         elif self.symbol.type == self.scanner.KEYWORD:
             keyword = self.names.get_name_string(self.symbol.id)
             self._error(self.SYNTAX, self.keyword_as_name, keyword=keyword)
+            self.name_error = True
             return None
         else:
             # invalid device name
             self._error(self.SYNTAX, self.invalid_device_name)
+            self.name_error = True
             return None
 
     def _argument(self):
@@ -397,49 +402,50 @@ class Parser:
             if self.symbol.type == self.scanner.EOF:
                 break
         # we encountered another name without a ","
-        if self.symbol.type == self.scanner.NAME:
-            self._error(
-                self.SYNTAX, self.missing_symbol, sym=","
-            )  # missing symbol ","
-        # finished reading in names
-        elif self.symbol.type == self.scanner.EQUALS:
-            self.symbol = self.scanner.get_symbol()
-            device_kind, device_property = self._device()
-            if device_kind is not None:  # it's a valid device
-                error_list = []  # create list of errors to catch duplicate
-                # names and arguments outside range
-                for i in range(len(name_list)):
-                    error_type = self.devices.make_device(
-                        name_list[i], device_kind, device_property
-                    )
-                    error_list.append(error_type)
-                # argument for device outside of range
-                if self.devices.INVALID_QUALIFIER in error_list:
-                    # invalid argument
-                    self._error(
-                        self.SEMANTIC,
-                        self.invalid_arg,
-                        keyword=device_property,
-                    )
-                # used name in device declaration (duplicate name used)
-                if self.devices.DEVICE_PRESENT in error_list or len(
-                    name_list
-                ) != len(set(name_list)):
-                    device_name = self.names.get_name_string(device_id)
-                    # used name in device declaration
-                    self._error(
-                        self.SEMANTIC, self.duplicate_name, keyword=device_name
-                    )
-            else:  # it's not a valid device
-                pass  # device outputs error for us here
-        else:  # not another name or "=", therefore missing equals symbol
-            self._error(
-                self.SYNTAX, self.missing_symbol, sym="="
-            )  # missing "="
-        if self.symbol.type == self.scanner.SEMICOLON:  # see ";"
-            pass
-        else:
-            self._error(self.SYNTAX, self.missing_symbol, sym=";")
+        if self.name_error is False:
+            if self.symbol.type == self.scanner.NAME:
+                self._error(
+                    self.SYNTAX, self.missing_symbol, sym=","
+                )  # missing symbol ","
+            # finished reading in names
+            elif self.symbol.type == self.scanner.EQUALS:
+                self.symbol = self.scanner.get_symbol()
+                device_kind, device_property = self._device()
+                if device_kind is not None:  # it's a valid device
+                    error_list = []  # create list of errors to catch duplicate
+                    # names and arguments outside range
+                    for i in range(len(name_list)):
+                        error_type = self.devices.make_device(
+                            name_list[i], device_kind, device_property
+                        )
+                        error_list.append(error_type)
+                    # argument for device outside of range
+                    if self.devices.INVALID_QUALIFIER in error_list:
+                        # invalid argument
+                        self._error(
+                            self.SEMANTIC,
+                            self.invalid_arg,
+                            keyword=device_property,
+                        )
+                    # used name in device declaration (duplicate name used)
+                    if self.devices.DEVICE_PRESENT in error_list or len(
+                        name_list
+                    ) != len(set(name_list)):
+                        device_name = self.names.get_name_string(device_id)
+                        # used name in device declaration
+                        self._error(
+                            self.SEMANTIC, self.duplicate_name, keyword=device_name
+                        )
+                else:  # it's not a valid device
+                    pass  # device outputs error for us here
+            else:  # not another name or "=", therefore missing equals symbol
+                self._error(
+                    self.SYNTAX, self.missing_symbol, sym="="
+                )  # missing "="
+            if self.symbol.type == self.scanner.SEMICOLON:  # see ";"
+                pass
+            else:
+                self._error(self.SYNTAX, self.missing_symbol, sym=";")
 
     def _connection(self):
         """Parse a connection statement.
