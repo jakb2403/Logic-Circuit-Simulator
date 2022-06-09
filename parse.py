@@ -696,12 +696,15 @@ class Parser:
         # if the third section is not a monitor section
         if section_mon != self.mon:
             self._error(self.SYNTAX, self.section_order_error, skip=False)
-        # if all inputs are connected
-        if self.network.check_network() is True:
+        if self.error_count == 0:
+            # if all inputs are connected
+            if self.network.check_network() is True:
+                pass
+            # if not all inputs are connected
+            elif self.network.check_network() is False:
+                self._error(self.SEMANTIC, self.unconnected_inputs)
+        else:
             pass
-        # if not all inputs are connected
-        elif self.network.check_network() is False:
-            self._error(self.SEMANTIC, self.unconnected_inputs)
 
     def parse_network(self):
         """Parse the circuit definition file."""
