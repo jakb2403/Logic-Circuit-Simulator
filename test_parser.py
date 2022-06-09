@@ -22,26 +22,16 @@ def dummy_parser(path):
     return new_parser
 
 
-def test_scanner5():
-    """Test if error_found returns the correct error message, line and
-       character numbers."""
-    test_scanner5 = dummy_parser(
-        str(Path("test_files/scanner_test5.txt"))
-    )
-    out = test_scanner5.scanner.error_found()
-    assert out == "Error on line 1\n\n^"
-    assert test_scanner5.scanner.line_counter == 1
-    assert test_scanner5.scanner.char_counter == 1
-
-
-@pytest.mark.parametrize("path", [
-   "test_files/parser_test1.txt",
-   "test_files/parser_test2.txt"
-])
-def test_parser1(path):
-    """Tests if the parser returns True for correct definition files"""
-    parser = dummy_parser(str(Path(path)))
-    assert parser.parse_network is False
+# def test_scanner5():
+#     """Test if error_found returns the correct error message, line and
+#        character numbers."""
+#     test_scanner5 = dummy_parser(
+#         str(Path("test_files/scanner_test5.txt"))
+#     )
+#     out = test_scanner5.scanner.error_found()
+#     assert out == "Error on line 1\n\n^"
+#     assert test_scanner5.scanner.line_counter == 1
+#     assert test_scanner5.scanner.char_counter == 1
 
 
 def test_parser_invalid_name(capfd):
@@ -60,12 +50,21 @@ def test_parser_invalid_name(capfd):
 
 ######################################################################
 
-# def test_parser_input_with_number(capfd):
-#     """Parser test for argument with an input with a letter in it"""
-#     parser = dummy_parser(str(Path("test_files/parser_argument_test1.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #or gate has argumnet "p"
+
+def test_parser_input_with_number(capfd):
+    """Parser test for argument with an input with a letter in it"""
+    parser = dummy_parser(str(Path("test_files/parser_argument_test1.txt")))
+    assert parser.parse_network is False  # NEEDS CHANGING!!!
+    out, _ = capfd.readouterr()
+    assert (
+        out
+        == "Error on line 6\n"
+        + "    OR1, OR2 = OR(p);\n"
+        + "                  ^\n"
+        + "invalid device argument\n\n"
+        + "Error Count: 1\n"        
+    )
+    #or gate has argumnet "p"
 
 
 # def test_parser_input_without_number(capfd):
