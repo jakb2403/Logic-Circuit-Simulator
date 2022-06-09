@@ -60,8 +60,8 @@ def test_parser_input_with_number(capfd):
         out
         == "Error on line 6\n"
         + "    OR1, OR2 = OR(p);\n"
-        + "                  ^\n"
-        + "invalid device argument\n\n"
+        + "                   ^\n"
+        + "invalid argument type\n\n"
         + "Error Count: 1\n"        
     )
     #or gate has argumnet "p"
