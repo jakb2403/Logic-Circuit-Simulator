@@ -236,12 +236,27 @@ class Gui(wx.Frame):
             print(
                 _(
                     "\nYou closed the file dialog box.\n"
-                    "You must choose a file to load in order to run a simulation\n"
+                    "You must choose a file to load in "
+                    "order to run a simulation\n"
                 )
             )
             self.on_close(None)
 
     def startup(self, restart=False):
+        """Startup the GUI.
+
+        If the GUI is restarting, reinitialise all logsim classes and panels in
+        the GUI.
+
+        Parameters
+        ----------
+        restart, optional
+            True if the GUI is restarting (from file button), by default False
+
+        Returns
+        -------
+            False if the user cancels the restart
+        """
         with wx.FileDialog(
             self,
             _("Load a .txt file to run"),
@@ -468,8 +483,10 @@ class Gui(wx.Frame):
             )
 
     def push_status(self, text):
+        """Push text to the GUI statusbar."""
         self.statusbar.PushStatusText(text)
 
     def on_close(self, event):
+        """Handle the event when the user closes the program."""
         self.mgr.UnInit()
         self.Destroy()

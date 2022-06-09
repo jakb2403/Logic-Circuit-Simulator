@@ -1,11 +1,11 @@
-"""Implement the interactive command line user interface.
+"""Implement the interactive command line user interface for the GUI.
 
-Used in the Logic Simulator project to enable the user to enter commands
+Used in the GUI project to enable the user to enter commands
 to run the simulation or adjust the network properties.
 
 Classes:
 --------
-UserInterface - reads and parses user commands.
+GuiUserInterface - reads and parses user commands.
 """
 
 

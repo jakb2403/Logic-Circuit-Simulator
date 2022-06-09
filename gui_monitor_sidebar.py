@@ -1,11 +1,40 @@
+"""Create GUI monitors sidebar panel.
+
+Used in gui.py to make instance of the GUI monitors sidebar panel.
+
+Classes
+-------
+MonitorsSidebarPanel - creates wx panel for GUI monitors sidebar panel
+"""
 import wx
 from wx.core import Command, SingleChoiceDialog
 
 
 class MonitorSidebarPanel(wx.Panel):
+    """Create wx.Panel for monitors sidebar."""
+
     def __init__(
         self, parent, names, devices, network, monitors, push_status, input_cmd
     ):
+        """Initialise the MonitorsSidebarPanel panel.
+
+        Parameters
+        ----------
+        parent
+            parent panel
+        names
+            instance of names class
+        devices
+            instance of devices class
+        network
+            instance of network class
+        monitors
+            instance of monitors class
+        push_status
+            GUI statusbar pushstatus function
+        input_cmd
+            GUI command line input_cmd function
+        """
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.WHITE)
 
@@ -40,7 +69,7 @@ class MonitorSidebarPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def update_checklist(self):
-
+        """Update the checklist of monitor points."""
         [self.monitored, self.not_monitored] = self.monitors.get_signal_names()
         self.all_devices = [*self.monitored, *self.not_monitored]
 
@@ -52,13 +81,13 @@ class MonitorSidebarPanel(wx.Panel):
         self.monitor_checklist.SetCheckedItems(monitors_index)
 
     def on_check(self, event):
-        """Handle the event when the user clicks one of the checkbox items"""
+        """Handle the event when the user clicks one of the checkbox items."""
         changed = wx.CommandEvent.GetInt(event)
         new_state = self.monitor_checklist.IsChecked(changed)
 
         device_name = self.all_devices[changed]
 
-        if new_state == True:  # adding a monitor point
+        if new_state:  # adding a monitor point
             command = "m {}".format(device_name)
             self.input_cmd(command)
             text = _("Device {} added to monitor points").format(device_name)

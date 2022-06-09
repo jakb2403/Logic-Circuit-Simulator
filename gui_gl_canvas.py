@@ -1,3 +1,13 @@
+"""Create OpenGL canvas for drawing signals.
+
+Used in gui_canvas.py to create a canvas
+
+Classes
+-------
+MyGLCanvas - wxcanvas.GLCanvas object
+"""
+
+
 import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT, GLU
@@ -7,6 +17,7 @@ from PIL import Image
 
 @dataclass
 class coord:
+    """Class for storing screen coordinates"""
     x: int = 0
     y: int = 0
 

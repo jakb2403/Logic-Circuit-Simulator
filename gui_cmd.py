@@ -1,10 +1,40 @@
+"""Create GUI command line panel.
+
+Used in gui.py to make instance of the GUI command line.
+
+Classes
+-------
+CmdPanel - creates wx panel for GUI command line interface
+"""
+
 import wx
 
 
 class CmdPanel(wx.Panel):
+    """Create wx.Panel for canvas."""
+
     def __init__(
         self, parent, names, devices, network, monitors, userint, push_status
     ):
+        """Initialise the CmdPanel panel.
+
+        Parameters
+        ----------
+        parent
+            parent panel
+        names
+            instance of names class
+        devices
+            instance of devices class
+        network
+            instance of network class
+        monitors
+            instance of monitors class
+        userint
+            instance of userint class
+        push_status
+            GUI statusbar pushstatus function
+        """
         wx.Panel.__init__(self, parent)
         self.SetFont(
             wx.Font(
@@ -61,6 +91,7 @@ class CmdPanel(wx.Panel):
         self.cmd_output_init()
 
     def cmd_output_init(self):
+        """Initialise the GUI command line with a help message."""
         self.cmd_output_text_box.Clear()
         start_statement = _(
             "Logic Simulator: interactive command line user interface.\n"
@@ -82,9 +113,23 @@ class CmdPanel(wx.Panel):
         self.push_status(text)
 
     def input_cmd(self, command):
+        """Type the command text in the GUI command input box and press enter.
+
+        Parameters
+        ----------
+        command
+            command to be input
+        """
         self.cmd_input_text_box.Clear()
         self.cmd_input_text_box.AppendText(command)
         self.on_cmd_enter(None)
 
     def output_cmd(self, text):
+        """Output the command to the GUI command line output.
+
+        Parameters
+        ----------
+        text
+            text to be output
+        """
         self.cmd_output_text_box.AppendText("\n" + text)

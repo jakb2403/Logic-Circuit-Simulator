@@ -1,8 +1,20 @@
+"""Create GUI connections sidebar panel.
+
+Used in gui.py to make instance of the GUI connections sidebar panel.
+
+Classes
+-------
+ConnectionsSidebarPanel - creates wx panel for GUI connections sidebar panel
+"""
+
+
 import wx
 from wx.core import Command, SingleChoiceDialog
 
 
 class ConnectionsSidebarPanel(wx.Panel):
+    """Create wx.Panel for connections sidebar."""
+
     def __init__(
         self,
         parent,
@@ -13,6 +25,25 @@ class ConnectionsSidebarPanel(wx.Panel):
         push_status,
         output_cmd,
     ):
+        """Initialise ConnectionsSidebarPanel panel.
+
+        Parameters
+        ----------
+        parent
+            parent panel
+        names
+            instance of names class
+        devices
+            instance of devices class
+        network
+            instance of network class
+        monitors
+            instance of monitors class
+        push_status
+            GUI statusbar pushstatus function
+        output_cmd
+            GUI command line output_cmd function
+        """
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.WHITE)
 
@@ -63,6 +94,10 @@ class ConnectionsSidebarPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def update_dropdown_find(self):
+        """Update the dropdown to choose the first connection.
+
+        (The connection that will be replaced)
+        """
         self.current_connections_text_list = []
         self.dropdown_find.Clear()
         self.dropdown_replace.Clear()
@@ -88,7 +123,7 @@ class ConnectionsSidebarPanel(wx.Panel):
             self.dropdown_find.Append(text)
 
     def on_dropdown_find(self, event):
-        """Handle the event when the user uses the first (find) dropdown"""
+        """Handle the event when the user uses the first (find) dropdown."""
         self.new_connections_text_list = []
         self.dropdown_replace.Clear()
         selection_index = self.dropdown_find.GetCurrentSelection()
@@ -106,7 +141,7 @@ class ConnectionsSidebarPanel(wx.Panel):
                 self.dropdown_replace.Append(text)
 
     def on_click_replace(self, event):
-        """Handle the event when the user clicks the Replace button"""
+        """Handle the event when the user clicks the Replace button."""
         selection_index = self.dropdown_replace.GetCurrentSelection()
         selected_text = self.dropdown_replace.GetString(selection_index)
         signal_names = selected_text.split(" > ")

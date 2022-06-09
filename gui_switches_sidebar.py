@@ -1,11 +1,41 @@
+"""Create GUI switches sidebar panel.
+
+Used in gui.py to make instance of the GUI monitors sidebar panel.
+
+Classes
+-------
+MonitorsSidebarPanel - creates wx panel for GUI monitors sidebar panel
+"""
+
 import wx
 import wx.lib.scrolledpanel
 
 
 class SwitchesSidebarPanel(wx.Panel):
+    """Create wx.Panel for switches sidebar."""
+
     def __init__(
         self, parent, names, devices, network, monitors, push_status, input_cmd
     ):
+        """Initialise SwitchesSidebarPanel panel.
+
+        Parameters
+        ----------
+        parent
+            parent panel
+        names
+            instance of names class
+        devices
+            instance of devices class
+        network
+            instance of network class
+        monitors
+            instance of monitors class
+        push_status
+            GUI statusbar pushstatus function
+        input_cmd
+            GUI command line input_cmd function to output to GUI command line
+        """
         wx.Panel.__init__(self, parent)
         # self.SetBackgroundColour(wx.WHITE)
 
@@ -36,6 +66,7 @@ class SwitchesSidebarPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def update_list(self):
+        """Update list of switches."""
         self.switches_list = self.devices.find_devices(self.devices.SWITCH)
         for i in range(len(self.switches_list)):
             device_id = self.switches_list[i]
@@ -45,6 +76,10 @@ class SwitchesSidebarPanel(wx.Panel):
         self.SetSizer(self.sizer)
 
     def create_switch(self, name, device_id, init_state):
+        """Create text and button inside a horizontal sizer.
+
+        with text and switch state initialised to correct value
+        """
         text = wx.StaticText(self.scroll_panel, wx.ID_ANY, name)
         toggle = wx.ToggleButton(
             self.scroll_panel, device_id, label=str(init_state)
@@ -58,6 +93,7 @@ class SwitchesSidebarPanel(wx.Panel):
         self.scroll_sizer.Add(switch_sizer, 0, wx.ALL | wx.EXPAND, 0)
 
     def on_toggle_switch(self, event):
+        """Handle the event where the user toggles one of the switches."""
         toggle = event.GetEventObject()
         id = toggle.GetId()
         switch_name = self.devices.get_signal_name(id, None)
