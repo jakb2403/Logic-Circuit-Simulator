@@ -34,14 +34,14 @@ def test_scanner5():
     assert test_scanner5.scanner.char_counter == 1
 
 
-@pytest.mark.parametrize("path", [
-   "test_files/parser_test1.txt",
-   "test_files/parser_test2.txt"
-])
-def test_parser1(path):
-    """Tests if the parser returns True for correct definition files"""
-    parser = dummy_parser(str(Path(path)))
-    assert parser.parse_network() is False
+# @pytest.mark.parametrize("path", [
+#    "test_files/parser_test1.txt",
+#    "test_files/parser_test2.txt"
+# ])
+# def test_parser1(path):
+#     """Tests if the parser returns True for correct definition files"""
+#     parser = dummy_parser(str(Path(path)))
+#     assert parser.parse_network() is False
 
 
 def test_parser_invalid_name(capfd):
