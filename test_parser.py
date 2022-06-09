@@ -67,12 +67,15 @@ def test_parser_input_with_number(capfd):
     #or gate has argumnet "p"
 
 
-# def test_parser_input_without_number(capfd):
-#     """Parser test for argument with an input without a number in it"""
-#     parser = dummy_parser(str(Path("test_files/parser_argument_test2.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #nor gate has no argument
+def test_parser_input_without_number(capfd):
+    """Parser test for argument with an input without a number in it"""
+    parser = dummy_parser(str(Path("test_files/parser_argument_test2.txt")))
+    assert parser.parse_network is False  # NEEDS CHANGING!!!
+    out, _ = capfd.readouterr()
+    assert 
+    
+    
+    #nor gate has no argument
 
 
 # def test_parser_input_with_multiple_numbers(capfd):
