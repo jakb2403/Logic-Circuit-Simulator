@@ -1,7 +1,7 @@
 DEVICES
     SW1, SW2, SW3 = SWITCH(1);
     SW4, SW5 = SWITCH(0);
-    CLK1 = CLOCK();
+    CLK1 = CLOCK(1);
     AND1, AND2 = AND(2);
     OR1, OR2 = OR(2);
     NAND1 = NAND(2);

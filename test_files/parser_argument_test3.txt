@@ -2,10 +2,10 @@ DEVICES
     SW1, SW2, SW3 = SWITCH(1);
     SW4, SW5 = SWITCH(0);
     CLK1 = CLOCK(1);
-    AND1, AND2 = AND(5);
+    AND1, AND2 = AND(18);
     OR1, OR2 = OR(2);
     NAND1 = NAND(2);
-    NOR1 = NOR();
+    NOR1 = NOR(5);
     XOR1 = XOR;
     DTYPE1 = DTYPE;
     NOT1 = NOT;
@@ -25,10 +25,9 @@ CONNECT
     NOR1 > AND2.I1;
     OR1 > AND2.I2;
     XOR1 > OR2.I1;
-    AND2 > NOT1;
+    AND2 > NOT1.I1;
 END
 
 MONITOR
     NOT1;
-    OR2;
 END
