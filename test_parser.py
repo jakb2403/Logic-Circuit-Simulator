@@ -55,7 +55,7 @@ def test_parser_invalid_name(capfd):
         + "    2g = NAND(2);\n"
         + "     ^\n"
         + "invalid device name\n\n"
-        + "Error Count: 1"
+        + "Error Count: 1\n"
     )
 
 ######################################################################
