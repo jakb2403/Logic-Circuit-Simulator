@@ -155,11 +155,13 @@ class Parser:
                 self._parser_output(_("invalid device name\n"))
             if type == self.device_as_name:
                 self._parser_output(
-                    _("device type '{}' cannot be device name\n").format(keyword)
+                    _("device type '{}' cannot be"
+                      " device name\n").format(keyword)
                 )
             if type == self.dtype_as_name:
                 self._parser_output(
-                    _("dtype input/output '{}' cannot" " be device name\n").format(
+                    _("dtype input/output '{}' cannot"
+                      " be device name\n").format(
                         keyword
                     )
                 )
@@ -175,20 +177,25 @@ class Parser:
                 self._parser_output(_("missing symbol: {}\n").format(sym))
             if type == self.missing_argument:
                 self._parser_output(
-                    _("missing argument for decive type '{}'\n").format(keyword)
+                    _("missing argument for",
+                      " decive type '{}'\n").format(keyword)
                 )
             if type == self.unrecognised_device_type:
                 self._parser_output(_("unrecognised device type\n"))
             if type == self.missing_keyword:
-                self._parser_output(_("missing keyword '{}'\n").format(keyword))
+                self._parser_output(
+                    _("missing keyword '{}'\n").format(keyword)
+                )
             if type == self.invalid_arg:
                 self._parser_output(
-                    _("argument '{}' outside of accepted range\n").format(keyword)
+                    _("argument '{}' outside of"
+                      " accepted range\n").format(keyword)
                 )
             if type == self.duplicate_name:
                 self._parser_output(
                     _(
-                        "name '{}' already used in previous device" " assignment\n"
+                        "name '{}' already used in previous device"
+                        " assignment\n"
                     ).format(keyword)
                 )
             if type == self.duplicate_monitor:
@@ -434,7 +441,8 @@ class Parser:
                         device_name = self.names.get_name_string(device_id)
                         # used name in device declaration
                         self._error(
-                            self.SEMANTIC, self.duplicate_name, keyword=device_name
+                            self.SEMANTIC, self.duplicate_name,
+                            keyword=device_name
                         )
                 else:  # it's not a valid device
                     pass  # device outputs error for us here
