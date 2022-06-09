@@ -8,6 +8,9 @@ Classes
 -------
 Parser - parses the definition file and builds the logic network.
 """
+import builtins
+import wx
+builtins._ = wx.GetTranslation
 
 
 class Parser:
@@ -146,10 +149,6 @@ class Parser:
         """
         self._parser_output(self.scanner.error_found())
         self.error_count += 1
-        if category == self.SYNTAX:
-            self._parser_output(_("Error: "), end="")
-        elif category == self.SEMANTIC:
-            self._parser_output(_("Error: "), end="")
 
         if type == self.invalid_device_name:
             self._parser_output(_("invalid device name\n"))
@@ -265,11 +264,11 @@ class Parser:
             return None
 
     def _signal_name(self):
-        """Parse an input or output name in the formats
+        """Parse an input or output name in the formats:
         input - [name].I[port_id]
             or  [name].[dtype_ip]
         output -[name]
-            or  [name].[dtype_op]
+            or  [name].[dtype_op].
         Returns device_id and port_id.
         """
         device_id = self._name()
@@ -321,12 +320,12 @@ class Parser:
             return (None, None)
 
     def _device(self):
-        """Parse a device name
+        """Parse a device name.
 
         Returns:
             device_kind - type of device
             device_property - number of inputs to the device (None if device
-            without arguments)
+            without arguments).
         """
         # if the symbol is a device without arguments
         if self.symbol.type == self.scanner.DEVICE:
@@ -697,12 +696,15 @@ class Parser:
         # if the third section is not a monitor section
         if section_mon != self.mon:
             self._error(self.SYNTAX, self.section_order_error, skip=False)
-        # if all inputs are connected
-        if self.network.check_network() is True:
+        if self.error_count == 0:
+            # if all inputs are connected
+            if self.network.check_network() is True:
+                pass
+            # if not all inputs are connected
+            elif self.network.check_network() is False:
+                self._error(self.SEMANTIC, self.unconnected_inputs)
+        else:
             pass
-        # if not all inputs are connected
-        elif self.network.check_network() is False:
-            self._error(self.SEMANTIC, self.unconnected_inputs)
 
     def parse_network(self):
         """Parse the circuit definition file."""

@@ -22,6 +22,18 @@ def dummy_parser(path):
     return new_parser
 
 
+def test_scanner5():
+    """Test if error_found returns the correct error message, line and
+       character numbers."""
+    test_scanner5 = dummy_parser(
+        str(Path("test_files/scanner_test5.txt"))
+    )
+    out = test_scanner5.scanner.error_found()
+    assert out == "Error on line 1\n\n^"
+    assert test_scanner5.scanner.line_counter == 1
+    assert test_scanner5.scanner.char_counter == 1
+
+
 #@pytest.mark.parametrize("path", [
 #    "test_files/parser_test1.txt",
 #    "test_files/parser_test2.txt"
@@ -35,13 +47,14 @@ def dummy_parser(path):
 def test_parser_invalid_name(capfd):
     """Parser test for invalid name"""
     parser = dummy_parser(str(Path("test_files/parser_names_test1.txt")))
-    assert parser.parse_network is False  # NEEDS CHANGING!!!
+    assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
         out
-        == "\n    2g = NAND(2),"
-        + "     ^"
-        + "SyntaxError: invalid device name"
+        == "Error on line 7\n"
+        + "    2g = NAND(2);\n"
+        + "     ^\n"
+        + "invalid device name\n\n"
     )
 
 ######################################################################
