@@ -41,7 +41,7 @@ def test_scanner5():
 def test_parser1(path):
     """Tests if the parser returns True for correct definition files"""
     parser = dummy_parser(str(Path(path)))
-    assert parser.parse_network is False
+    assert parser.parse_network() is False
 
 
 def test_parser_invalid_name(capfd):
