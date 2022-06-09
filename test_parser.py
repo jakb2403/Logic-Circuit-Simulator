@@ -54,7 +54,7 @@ def test_parser_invalid_name(capfd):
 def test_parser_input_with_number(capfd):
     """Parser test for argument with an input with a letter in it"""
     parser = dummy_parser(str(Path("test_files/parser_argument_test1.txt")))
-    assert parser.parse_network is False  # NEEDS CHANGING!!!
+    assert parser.parse_network() is False  # NEEDS CHANGING!!!
     out, _ = capfd.readouterr()
     assert (
         out
