@@ -37,14 +37,14 @@ def dummy_parser(path):
 #####################################################################
 
 
-def test_parser_(capfd):
-    """Parser test for """
-    parser = dummy_parser(str(Path("test_files/parser_base_file.txt")))
-    assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out 
-    )
+# def test_parser_(capfd):
+#     """Parser test for """
+#     parser = dummy_parser(str(Path("test_files/parser_base_file.txt")))
+#     assert parser.parse_network() is False
+#     out, _ = capfd.readouterr()
+#     assert (
+#         out 
+#     )
 
 #####################################################################
 
@@ -82,6 +82,21 @@ def test_parser_dev_type_as_dev_name(capfd):
 def test_parser_dtype_in_set_as_name(capfd):
     """Parser test for having a dtype input SET as a name"""
     parser = dummy_parser(str(Path("test_files/parser_test3.txt")))
+    assert parser.parse_network() is False
+    out, _ = capfd.readouterr()
+    assert (
+        out 
+       == "Error on line 5\n"
+        + "    AND1, SET = AND(2);\n"
+        + "             ^\n"
+        + "dtype input/output 'SET' cannot be device name\n\n"
+        + "Error Count: 1\n"
+    )
+
+
+def test_parser_dtype_in_clear__as_name(capfd):
+    """Parser test for having a dtype input CLEAR as a name"""
+    parser = dummy_parser(str(Path("test_files/parser_test4.txt")))
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
