@@ -48,6 +48,7 @@ def test_parser_invalid_name(capfd):
         + "Error Count: 1\n"
     )
 
+
 def test_parser_dev_type_as_dev_name(capfd):
     """Parser test for having a device type as a device name"""
     parser = dummy_parser(str(Path("test_files/parser_test2.txt")))
@@ -61,6 +62,7 @@ def test_parser_dev_type_as_dev_name(capfd):
         + "device type 'NOR' cannot be device name\n\n"
         + "Error Count: 1\n"
     )
+
 
 def test_parser_dtype_in_set_as_name(capfd):
     """Parser test for having a dtype input SET as a name"""
@@ -91,6 +93,7 @@ def test_parser_dtype_in_clear_as_name(capfd):
         + "Error Count: 1\n"
     )
 
+
 def test_parser_dtype_in_data_as_name(capfd):
     """Parser test for having a dtype input DATA as a name"""
     parser = dummy_parser(str(Path("test_files/parser_test5.txt")))
@@ -105,6 +108,7 @@ def test_parser_dtype_in_data_as_name(capfd):
         + "Error Count: 1\n"
     )
 
+
 def test_parser_dtype_in_clk_as_name(capfd):
     """Parser test for having a dtype input CLK as a name"""
     parser = dummy_parser(str(Path("test_files/parser_test6.txt")))
@@ -118,6 +122,7 @@ def test_parser_dtype_in_clk_as_name(capfd):
         + "dtype input/output 'CLK' cannot be device name\n\n"
         + "Error Count: 1\n"
     )
+
 
 def test_parser_dtype_out_q_as_name(capfd):
     """Parser test for having a dtype output Q as a name"""
@@ -163,49 +168,23 @@ def test_parser_keyword_devices_as_name(capfd):
         + "Error Count: 1\n"
     )
 
+
 def test_parser_keyword_connect_as_name(capfd):
     """Parser test for having the keyword CONNECT as a name"""
     parser = dummy_parser(str(Path("test_files/parser_test10.txt")))
     assert parser.parse_network() is False
-    # out, _ = capfd.readouterr()
-    # assert (
-    #     out
-    #     == "Error on line 8\n"
-    #     + "    DEVICES = NOR(2);\n"
-    #     + "           ^\n"
-    #     + "keyword 'DEVICES' cannot be device name\n\n"
-    #     + "Error Count: 1\n"
-    # )
 
 
 def test_parser_keyword_monitor_as_name(capfd):
     """Parser test for having the keyword MONITOR as a name"""
     parser = dummy_parser(str(Path("test_files/parser_test11.txt")))
     assert parser.parse_network() is False
-    # out, _ = capfd.readouterr()
-    # assert (
-    #     out
-    #     == "Error on line 8\n"
-    #     + "    DEVICES = NOR(2);\n"
-    #     + "           ^\n"
-    #     + "keyword 'DEVICES' cannot be device name\n\n"
-    #     + "Error Count: 1\n"
-    # )
 
 
 def test_parser_keyword_end_as_name(capfd):
     """Parser test for having the keyword END as a name"""
     parser = dummy_parser(str(Path("test_files/parser_test12.txt")))
     assert parser.parse_network() is False
-    # out, _ = capfd.readouterr()
-    # assert (
-    #     out
-    #     == "Error on line 8\n"
-    #     + "    DEVICES = NOR(2);\n"
-    #     + "           ^\n"
-    #     + "keyword 'DEVICES' cannot be device name\n\n"
-    #     + "Error Count: 1\n"
-    # )
 
 
 def test_parser_keyword_i_as_name(capfd):
@@ -243,15 +222,6 @@ def test_parser_invalid_port_identifier(capfd):
     #currently test file has no implanted errors
     parser = dummy_parser(str(Path("test_files/parser_test15.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-        == "Error on line 7\n"
-        + "    NAND1 = NAND(d);\n"
-        + "                  ^\n"
-        + "invalid argument type\n\n"
-        + "Error Count: 1\n"
-    )
 
 
 def test_parser_keyword_missing_symbol_equals(capfd):
@@ -273,30 +243,21 @@ def test_parser_keyword_missing_symbol_connection(capfd):
     """Parser test for having a missing connection symbol, >"""
     parser = dummy_parser(str(Path("test_files/parser_test17.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-        == "Error on line 3\n"
-        + "    SW4, SW5 SWITCH(0);\n"
-        + "                   ^\n"
-        + "missing symbol: =\n\n"
-        + "Error Count: 1\n"
-    )
 
 
 def test_parser_keyword_missing_argument(capfd):
     """Parser test for having a missing argument"""
     parser = dummy_parser(str(Path("test_files/parser_test18.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-        == "Error on line 3\n"
-        + "    SW4, SW5 SWITCH(0);\n"
-        + "                   ^\n"
-        + "missing symbol: =\n\n"
-        + "Error Count: 1\n"
-    )
+    # out, _ = capfd.readouterr()
+    # assert (
+    #     out
+    #     == "Error on line 3\n"
+    #     + "    SW4, SW5 SWITCH(0);\n"
+    #     + "                   ^\n"
+    #     + "missing symbol: =\n\n"
+    #     + "Error Count: 1\n"
+    # )
 
 
 def test_parser_unrecognised_device_type(capfd):
@@ -393,12 +354,3 @@ def test_parser_input_to_input(capfd):
     """Parser test for connecting an input to an input"""
     parser = dummy_parser(str(Path("test_files/parser_test25.txt")))
     assert parser.parse_network() is False
-    # out, _ = capfd.readouterr()
-    # assert (
-    #     out
-    #     == "Error on line 33\n"
-    #     + "    OR2.I2;\n"
-    #     + "          ^\n"
-    #     + "monitor point is an input, only outputs are allowed\n\n"
-    #     + "Error Count: 1\n"
-    # )
