@@ -19,4 +19,4 @@ This software also comes with the ability to run the software in French on Linux
 - **To run in the terminal in French** : typing `LANG=fr_FR.utf8 .\logsim.py -c <.txt file>` will run the terminal interface in French. 
 
 ## Acknowledgements
-This software was written (in part) by team 15 in GF2P3 in Easter term 2022. The group members are Hyun Seung Cho, Joe Waters and John Brown.
+This software was written (in part) by team 15 in GF2P3 in Easter term 2022. The group members are Hyun Seung Cho, Joseph Waters and John Brown.
