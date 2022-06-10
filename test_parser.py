@@ -1,3 +1,4 @@
+"""Test the Parse module."""
 import pytest
 import os
 from pathlib import Path
@@ -17,8 +18,9 @@ def dummy_parser(path):
     new_devices = Devices(new_names)
     new_network = Network(new_names, new_devices)
     new_monitors = Monitors(new_names, new_devices, new_network)
-    new_parser = Parser(new_names, new_devices, new_network,
-                        new_monitors, new_scanner)
+    new_parser = Parser(
+        new_names, new_devices, new_network, new_monitors, new_scanner
+    )
     return new_parser
 
 
@@ -203,7 +205,7 @@ def test_parser_keyword_i_as_name(capfd):
 
 
 def test_parser_keyword_invalid_argument_type_letter(capfd):
-    """Parser test for having an invalid argument type of a letter"""
+    """Parser test for having an invalid argument type of a letter."""
     parser = dummy_parser(str(Path("test_files/parser_test14.txt")))
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
@@ -219,16 +221,16 @@ def test_parser_keyword_invalid_argument_type_letter(capfd):
 
 def test_parser_invalid_port_identifier(capfd):
     """Parser test for having an invalid port identifier."""
-    #currently test file has no implanted errors
+    # currently test file has no implanted errors
     parser = dummy_parser(str(Path("test_files/parser_test15.txt")))
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-                "Error on line 23\n"
-                + "    DTYPE1.WRONG > XOR1.I2;\n"
-                + "                ^\n"
-                + "invalid port identifier"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 23\n"
+        + "    DTYPE1.WRONG > XOR1.I2;\n"
+        + "                ^\n"
+        + "invalid port identifier"
     )
 
 
@@ -253,11 +255,11 @@ def test_parser_keyword_missing_symbol_connection(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-            "Error on line 15\n"
-            + "    SW1 AND1.I1;\n"
-            + "            ^\n"
-            + "missing symbol: >"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 15\n"
+        + "    SW1 AND1.I1;\n"
+        + "            ^\n"
+        + "missing symbol: >"
     )
 
 
@@ -267,16 +269,16 @@ def test_parser_keyword_missing_argument(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-            "Error on line 8\n"
-            +"    NOR1 = NOR;\n"
-            +"              ^\n"
-            +"missing argument for"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 8\n"
+        + "    NOR1 = NOR;\n"
+        + "              ^\n"
+        + "missing argument for"
     )
 
 
 def test_parser_unrecognised_device_type(capfd):
-    """Parser test for an unrecognised device type (with valid input syntax)."""
+    """Parser test for unrecognised device type (with valid input syntax)."""
     parser = dummy_parser(str(Path("test_files/parser_test19.txt")))
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
@@ -296,17 +298,18 @@ def test_parser_missing_keyword1(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out ==  "Error on line 1\n"
-                + "    SW1, SW2, SW3 = SWITCH(1);\n"
-                + "      ^\n"
-                + "missing keyword 'DEVICES'\n"
-                + "\n"
-                + "Error on line 1\n"
-                + "    SW1, SW2, SW3 = SWITCH(1);\n"
-                + "        ^\n"
-                + "invalid device name\n"
-                + "\n"
-                + "Error Count: 2\n"
+        out
+        == "Error on line 1\n"
+        + "    SW1, SW2, SW3 = SWITCH(1);\n"
+        + "      ^\n"
+        + "missing keyword 'DEVICES'\n"
+        + "\n"
+        + "Error on line 1\n"
+        + "    SW1, SW2, SW3 = SWITCH(1);\n"
+        + "        ^\n"
+        + "invalid device name\n"
+        + "\n"
+        + "Error Count: 2\n"
     )
 
 
@@ -376,11 +379,11 @@ def test_parser_input_to_input(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-            "Error on line 16\n"
-            + "    AND1.I2 > NAND1.I1;\n"
-            + "                      ^\n"
-            + "input connected to input"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 16\n"
+        + "    AND1.I2 > NAND1.I1;\n"
+        + "                      ^\n"
+        + "input connected to input"
     )
 
 
@@ -390,12 +393,12 @@ def test_parser_output_to_output(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            out ==
-                "Error on line 25\n"
-            + "    NOR1 > AND2;\n"
-            + "               ^\n"
-            + "output connected to output\n\n"
-            + "Error Count: 1\n"
+        out
+        == "Error on line 25\n"
+        + "    NOR1 > AND2;\n"
+        + "               ^\n"
+        + "output connected to output\n\n"
+        + "Error Count: 1\n"
     )
 
 
@@ -405,11 +408,11 @@ def test_parser_absent_port(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-            "Error on line 17\n"
-            + "    SW3 > NAND1.I3, DTYPE1.DATA;\n"
-            + "                               ^\n"
-            + "port is absent"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 17\n"
+        + "    SW3 > NAND1.I3, DTYPE1.DATA;\n"
+        + "                               ^\n"
+        + "port is absent"
     )
 
 
@@ -419,11 +422,11 @@ def test_parser_input_already_in_use(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-            "Error on line 22\n"
-            + "    NAND1 > NOR1.I1;\n"
-            + "                   ^\n"
-            + "input is already connected"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 22\n"
+        + "    NAND1 > NOR1.I1;\n"
+        + "                   ^\n"
+        + "input is already connected"
     )
 
 
@@ -433,8 +436,8 @@ def test_parser_incomplete_network(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            out ==
-        "Error on line 34\n"
+        out
+        == "Error on line 34\n"
         + "END\n"
         + "   ^\n"
         + "incomplete network, not all inputs are connected\n"
@@ -449,9 +452,9 @@ def test_parser_incorrect_section_ordering(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-            "\n".join(out.split("\n")[:4]) == 
-            "Error on line 18\n"
-            + "DEVICES\n"
-            + "      ^\n"
-            + "incorrect ordering of sections"
+        "\n".join(out.split("\n")[:4])
+        == "Error on line 18\n"
+        + "DEVICES\n"
+        + "      ^\n"
+        + "incorrect ordering of sections"
     )
