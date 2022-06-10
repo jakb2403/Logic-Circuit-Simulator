@@ -4,7 +4,7 @@ Used in gui_canvas.py to create a canvas
 
 Classes
 -------
-MyGLCanvas - wxcanvas.GLCanvas object
+MyGLCanvas - handles all canvas drawing operations.
 """
 
 
