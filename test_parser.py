@@ -279,15 +279,6 @@ def test_parser_missing_keyword1(capfd):
     """Parser test for a missing keyword DEVICES"""
     parser = dummy_parser(str(Path("test_files/parser_test20.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-        == "Error on line 7\n"
-        + "    NAND1 = RANDOM(2);\n"
-        + "                  ^\n"
-        + "unrecognised device type\n\n"
-        + "Error Count: 1\n"
-    )
 
 
 def test_parser_argument_outside_array(capfd):
