@@ -34,9 +34,24 @@ def dummy_parser(path):
 #     assert test_scanner5.scanner.char_counter == 1
 
 
+#####################################################################
+
+
+def test_parser_(capfd):
+    """Parser test for """
+    parser = dummy_parser(str(Path("test_files/parser_base_file.txt")))
+    assert parser.parse_network() is False
+    out, _ = capfd.readouterr()
+    assert (
+        out 
+    )
+
+#####################################################################
+
+
 def test_parser_invalid_name(capfd):
     """Parser test for invalid name"""
-    parser = dummy_parser(str(Path("test_files/parser_names_test1.txt")))
+    parser = dummy_parser(str(Path("test_files/parser_test1.txt")))
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
@@ -48,93 +63,32 @@ def test_parser_invalid_name(capfd):
         + "Error Count: 1\n"
     )
 
-######################################################################
 
-
-def test_parser_input_with_number(capfd):
-    """Parser test for argument with an input with a letter in it"""
-    parser = dummy_parser(str(Path("test_files/parser_argument_test1.txt")))
-    assert parser.parse_network() is False  # NEEDS CHANGING!!!
+def test_parser_dev_type_as_dev_name(capfd):
+    """Parser test for having a device type as a device name"""
+    parser = dummy_parser(str(Path("test_files/parser_test2.txt")))
+    assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
-        == "Error on line 6\n"
-        + "    OR1, OR2 = OR(p);\n"
-        + "                   ^\n"
-        + "invalid argument type\n\n"
-        + "Error Count: 1\n"        
+        out 
+       == "Error on line 7\n"
+        + "    NOR = NOR(2);\n"
+        + "       ^\n"
+        + "device type 'NOR' cannot be device name\n\n"
+        + "Error Count: 1\n"
     )
-    #or gate has argumnet "p"
 
 
-# def test_parser_input_without_number(capfd):
-#     """Parser test for argument with an input without a number in it"""
-#     parser = dummy_parser(str(Path("test_files/parser_argument_test2.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert  nor gate has no argument
-
-
-def test_parser_input_with_number_out_of_range(capfd):
-    """Parser test for argument with an input with a number out of range"""
-    parser = dummy_parser(str(Path("test_files/parser_argument_test3.txt")))
-    assert parser.parse_network is False  # NEEDS CHANGING!!!
+def test_parser_dtype_in_set_as_name(capfd):
+    """Parser test for having a dtype input SET as a name"""
+    parser = dummy_parser(str(Path("test_files/parser_test3.txt")))
+    assert parser.parse_network() is False
     out, _ = capfd.readouterr()
-    assert #and gate has argument = 5
-
-##############################################################################
-
-# def test_parser_invalid_signal_name(capfd):
-#     """Parser test for signal name with an invalid input"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test1.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #sw2 is now sw5
-
-
-# def test_parser_invalid_dtype_input_set(capfd):
-#     """Parser test for signal name with an invalid dtype input SET"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test2.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #SW1 > AND1.SET;
-
-
-# def test_parser_invalid_dtype_input_clear(capfd):
-#     """Parser test for signal name with an invalid dtype input CLEAR"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test3.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #SW1 > AND1.CLEAR;
-
-
-# def test_parser_invalid_dtype_input_data(capfd):
-#     """Parser test for signal name with an invalid dtype input DATA"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test4.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #SW1 > AND1.DATA;
-
-
-# def test_parser_invalid_dtype_input_clk(capfd):
-#     """Parser test for signal name with an invalid dtype input CLK"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test5.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert #SW1 > AND1.CLK;
-
-
-# def test_parser_invalid_gate_name(capfd):
-#     """Parser test for signal name with an invalid gate name"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test6.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert
-
-
-# def test_parser_invalid_gate_and_output_name(capfd):
-#     """Parser test for signal name with an invalid gate and output name"""
-#     parser = dummy_parser(str(Path("test_files/parser_signalname_test7.txt")))
-#     assert parser.parse_network is False  # NEEDS CHANGING!!!
-#     out, _ = capfd.readouterr()
-#     assert
+    assert (
+        out 
+       == "Error on line 5\n"
+        + "    AND1, SET = AND(2);\n"
+        + "             ^\n"
+        + "dtype input/output 'SET' cannot be device name\n\n"
+        + "Error Count: 1\n"
+    )
