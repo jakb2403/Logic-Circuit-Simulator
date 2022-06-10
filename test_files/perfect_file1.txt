@@ -1,0 +1,13 @@
+DEVICES
+    SW1, SW2 = SWITCH(0);
+    AND1 = AND(2);
+END
+
+CONNECT
+    SW1 > AND1.I2;
+    SW2 > AND1.I1;
+END
+
+MONITOR
+    AND1;
+END

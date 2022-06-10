@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-06-08 18:34+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: userint.py:84
+msgid ""
+"Logic Simulator: interactive command line user interface.\n"
+"Enter 'h' for help."
+msgstr ""
+
+#: userint.py:102
+msgid "Invalid command. Enter 'h' for help."
+msgstr ""
+
+#: userint.py:137
+msgid "Error! Expected a name."
+msgstr ""
+
+#: userint.py:155
+msgid "Error! Unknown name."
+msgstr ""
+
+#: userint.py:183
+msgid "Error! Expected a number."
+msgstr ""
+
+#: userint.py:192 userint.py:197
+msgid "Number out of range."
+msgstr ""
+
+#: userint.py:204
+msgid "User commands:"
+msgstr ""
+
+#: userint.py:205
+msgid "r N       - run the simulation for N cycles"
+msgstr ""
+
+#: userint.py:206
+msgid "c N       - continue the simulation for N cycles"
+msgstr ""
+
+#: userint.py:207
+msgid "s X N     - set switch X to N (0 or 1)"
+msgstr ""
+
+#: userint.py:208
+msgid "m X       - set a monitor on signal X"
+msgstr ""
+
+#: userint.py:209
+msgid "z X       - zap the monitor on signal X"
+msgstr ""
+
+#: userint.py:210
+msgid "h         - help (this command)"
+msgstr ""
+
+#: userint.py:211
+msgid "q         - quit the program"
+msgstr ""
+
+#: userint.py:220
+msgid "Successfully set switch."
+msgstr ""
+
+#: userint.py:222
+msgid "Error! Invalid switch."
+msgstr ""
+
+#: userint.py:232
+msgid "Successfully made monitor."
+msgstr ""
+
+#: userint.py:234
+msgid "Error! Could not make monitor."
+msgstr ""
+
+#: userint.py:267
+msgid " cycles"
+msgstr ""
+
+#: userint.py:267
+msgid "Running for "
+msgstr ""
+
+#: userint.py:277
+msgid "Error! Nothing to continue. Run first."
+msgstr ""
+
+#: userint.py:280
+msgid "Continuing for"
+msgstr ""
+
+#: userint.py:280
+msgid "cycles."
+msgstr ""
+
+#: userint.py:281
+msgid "Total:"
+msgstr ""
+
