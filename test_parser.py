@@ -279,7 +279,20 @@ def test_parser_missing_keyword1(capfd):
     """Parser test for a missing keyword DEVICES"""
     parser = dummy_parser(str(Path("test_files/parser_test20.txt")))
     assert parser.parse_network() is False
-
+    out, _ = capfd.readouterr()
+    assert (
+        out
+        == "Error on line 1\n"
+        + "    SW1, SW2, SW3 = SWITCH(1);\n"
+        + "      ^\n"
+        + "missing keyword 'DEVICES'\n\n"
+        + "Error on line 1\n\n"
+        + "    SW1, SW2, SW3 = SWITCH(1);\n"
+        + "        ^\n"
+        + "invalid device name\n\n"
+        + "Error Count: 2\n"
+    )
+    
 
 def test_parser_argument_outside_array(capfd):
     """Parser test for a gate argument > 17"""
