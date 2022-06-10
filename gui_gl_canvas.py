@@ -4,7 +4,7 @@ Used in gui_canvas.py to create a canvas
 
 Classes
 -------
-MyGLCanvas - wxcanvas.GLCanvas object
+MyGLCanvas - handles all canvas drawing operations.
 """
 
 
@@ -117,93 +117,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Clear everything
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        # _______________________________________________________
-        # Draw 5 test signals (basically clocks)
-        #
-        # v_space = 60
-        # one_clk = 40
-        # one_clk = one_clk // 2
-        # signal_x_offset = 50
-        # text_x_offset = 10
-        # signal_height = v_space * 2 // 3
-        # tick_y_offset = 10
-        # tick_height = 5
-        # # Draw a sample signal trace
-        # for j in range(5):
-        #     bottom_left = coord(0, j * v_space)
-        #     y_low = bottom_left.y + v_space - signal_height
-        #     y_high = bottom_left.y + v_space
-        #     # Draw the signal
-        #     GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-        #     GL.glBegin(GL.GL_LINE_STRIP)
-        #     sig_current = coord()
-        #     sig_next = coord()
-        #     for i in range(10):
-        #         sig_current.x = signal_x_offset + (i * one_clk)
-        #         sig_next.x = signal_x_offset + ((i + 1) * one_clk)
-        #         if i % 2 == 0:
-        #             sig_current.y = y_low
-        #             sig_next.y = y_low
-        #         else:
-        #             sig_current.y = y_high
-        #             sig_next.y = y_high
-        #         GL.glVertex2f(sig_current.x, sig_current.y)
-        #         GL.glVertex2f(sig_next.x, sig_next.y)
-        #     GL.glEnd()
-
-        #     # Draw the tickmarks
-        #     tick_bottom = coord()
-        #     tick_top = coord()
-        #     for i in range(10):
-        #         tick_bottom.x = signal_x_offset + (i * one_clk)
-        #         tick_bottom.y = bottom_left.y + tick_y_offset
-        #         tick_top.x = signal_x_offset + (i * one_clk)
-        #         tick_top.y = bottom_left.y + tick_y_offset + tick_height
-        #         GL.glColor3f(1.0, 0.0, 0.0)  # tick marks are red
-        #         GL.glBegin(GL.GL_LINE_STRIP)
-        #         GL.glVertex2f(tick_bottom.x, tick_bottom.y)
-        #         GL.glVertex2f(tick_top.x, tick_top.y)
-        #         GL.glEnd()
-        #         self.render_text(str(i), tick_bottom.x + 1, tick_bottom.y)
-
-        #     # Display signal name
-        #     display_text = "Signal " + str(j + 1)
-        #     self.render_text(display_text, text_x_offset,
-        #                      (bottom_left.y + v_space//2))
-        # _______________________________________________________
-
-        # _______________________________________________________
-        # Draw 1 test signal using draw_signal function
-        #
-        # test_signal = [0, 1, 1 ,0, 1, 1, 1, 0]
-        # self.draw_signal("TEST", test_signal, 0)
-        # _______________________________________________________
-
-        # _______________________________________________________
-        # Draw test signal from devices class
-        # Signal should be --\__/---\___
-        # test_signal = [self.devices.HIGH,
-        #                self.devices.HIGH,
-        #                self.devices.FALLING,
-        #                self.devices.LOW,
-        #                self.devices.LOW,
-        #                self.devices.RISING,
-        #                self.devices.HIGH,
-        #                self.devices.HIGH,
-        #                self.devices.HIGH,
-        #                self.devices.FALLING,
-        #                self.devices.LOW,
-        #                self.devices.LOW,
-        #                self.devices.LOW]
-        # test_signal_bin = self.convert_signal(test_signal)
-        # self.draw_signal("AND1", test_signal_bin, 0)
-        # self.draw_signal("NAND1", test_signal_bin, 1)
-
-        # _______________________________________________________
-
-        # _______________________________________________________
         # Draw the monitor signals
-        #
         index = 0
         for device_id, output_id in self.monitors.monitors_dictionary:
             monitor_name = self.devices.get_signal_name(device_id, output_id)
@@ -214,7 +128,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 signal_list_bin = self.convert_signal(signal_list)
                 self.draw_signal(monitor_name, signal_list_bin, index)
             index += 1
-        # _______________________________________________________
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front

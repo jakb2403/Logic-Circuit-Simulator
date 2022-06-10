@@ -248,7 +248,7 @@ class GuiUserInterface:
             else:
                 self.output_cmd(_("Error! Network oscillating."))
                 return False
-        self.monitors.display_signals()
+        # self.monitors.display_signals()
         self.refresh_canvas()
         return True
 
