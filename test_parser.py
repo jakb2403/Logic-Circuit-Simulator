@@ -216,11 +216,7 @@ def test_parser_keyword_monitor_as_name(capfd):
                 + "keyword 'I' cannot be device name\n"
                 + "\n"
                 + "Error Count: 6\n"
-
     )
-
-
-
 
 
 def test_parser_keyword_end_as_name(capfd):
@@ -295,7 +291,11 @@ def test_parser_keyword_missing_symbol_connection(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+            "Error on line 15\n"
+            + "    SW1 AND1.I1;\n"
+            + "            ^\n"
+            + "missing symbol: >"
     )
 
 
@@ -305,7 +305,11 @@ def test_parser_keyword_missing_argument(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+            "Error on line 8\n"
+            +"    NOR1 = NOR;\n"
+            +"              ^\n"
+            +"missing argument for"
     )
 
 
