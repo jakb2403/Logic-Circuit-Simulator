@@ -407,18 +407,3 @@ def test_parser_monitor_an_input(capfd):
         + "monitor point is an input, only outputs are allowed\n\n"
         + "Error Count: 1\n"
     )
-
-
-def test_parser_input_to_input(capfd):
-    """Parser test for input to input"""
-    parser = dummy_parser(str(Path("test_files/parser_test25.txt")))
-    assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-        == "Error on line 33\n"
-        + "    OR2.I2;\n"
-        + "          ^\n"
-        + "monitor point is an input, only outputs are allowed\n\n"
-        + "Error Count: 1\n"
-    )
