@@ -17,7 +17,8 @@ from PIL import Image
 
 @dataclass
 class coord:
-    """Class for storing screen coordinates"""
+    """Class for storing screen coordinates."""
+
     x: int = 0
     y: int = 0
 
@@ -52,7 +53,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
     def __init__(self, parent, devices, monitors, push_status):
         """Initialise canvas properties and useful variables."""
-
         self.parent = parent
         self.push_status = push_status
 
@@ -305,7 +305,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 GLUT.glutBitmapCharacter(font, ord(character))
 
     def convert_signal(self, signal_list):
-        """Converts signal from output type of network module to 1s and 0s"""
+        """Convert signal from output type of network module to 1s and 0s."""
         output_signal = []
         for i in range(len(signal_list) - 1):
             current_sig = signal_list[i]
@@ -328,7 +328,17 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         return output_signal
 
     def draw_signal(self, monitor_name, signal_list_bin, index):
+        """Draw a signal to the canvas.
 
+        Parameters
+        ----------
+        monitor_name
+            the signal name of the monitor, for the label
+        signal_list_bin
+            signal values as list of binary numbers
+        index
+            the position of the signal in the list of monitored signals
+        """
         v_space = 60
         one_cycle = 20
         text_x_offset = 10
@@ -436,7 +446,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 sig_next.y = y_high
                 GL.glVertex2f(sig_current.x, sig_current.y)
                 GL.glVertex2f(sig_next.x, sig_next.y)
-            elif signal_list_bin == None:
+            elif signal_list_bin is None:
                 GL.glEnd()
                 just_blank = not (just_blank)
                 continue
@@ -452,12 +462,14 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         )
 
     def update_size(self, width=None, height=None):
-        if not (width == None) and width > self.width:
+        """Update the class variables storing the size of the canvas."""
+        if not (width is None) and width > self.width:
             self.width = width
-        if not (height == None) and height > self.height:
+        if not (height is None) and height > self.height:
             self.height = height
 
     def save_to_png(self, filename):
+        """Save the current view in the canvas pael to a .png."""
         data = GL.glReadPixels(
             0, 0, self.width, self.height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, None
         )
