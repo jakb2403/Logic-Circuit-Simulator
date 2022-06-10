@@ -15,8 +15,8 @@ This software is written to run logic circuits defined in a Logic Definition Lan
 
 ## French Version
 This software also comes with the ability to run the software in French on Linux. This functionality works in both the terminal interface and the GUI:
-- **To run the GUI in French** : typing `LANG=fr_FR.utf8 .\logsim.py` will launch the GUI in French.
-- **To run in the terminal in French** : typing `LANG=fr_FR.utf8 .\logsim.py -c <.txt file>` will run the terminal interface in French. 
+- **To run the GUI in French** : typing `LANG=fr_FR.utf8 ./logsim.py` will launch the GUI in French.
+- **To run in the terminal in French** : typing `LANG=fr_FR.utf8 ./logsim.py -c <.txt file>` will run the terminal interface in French. 
 
 ## Acknowledgements
 This software was written (in part) by team 15 in GF2P3 in Easter term 2022. The group members are Hyun Seung Cho, Joseph Waters and John Brown.
