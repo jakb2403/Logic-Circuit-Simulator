@@ -173,60 +173,18 @@ def test_parser_keyword_connect_as_name(capfd):
     """Parser test for having the keyword CONNECT as a name."""
     parser = dummy_parser(str(Path("test_files/parser_test10.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-    )
 
 
 def test_parser_keyword_monitor_as_name(capfd):
     """Parser test for having the keyword MONITOR as a name."""
     parser = dummy_parser(str(Path("test_files/parser_test11.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out == "Error on line 9\n"
-                + "    CONNECT = XOR;\n"
-                + "           ^\n"
-                + "missing keyword 'END'\n"
-                + "\n"
-                + "Error on line 11\n"
-                + "    NOT1 = NOT;\n"
-                + "        ^\n"
-                + "missing keyword 'CONNECT'\n"
-                + "\n"
-                + "Error on line 14\n"
-                + "CONNECT\n"
-                + "      ^\n"
-                + "missing symbol: >\n"
-                + "\n"
-                + "Error on line 15\n"
-                + "    SW1 > AND1.I1;\n"
-                + "               ^\n"
-                + "missing symbol: ;\n"
-                + "\n"
-                + "Error on line 16\n"
-                + "    SW2 > AND1.I2, NAND1.I1;\n"
-                + "          ^\n"
-                + "missing keyword 'MONITOR'\n"
-                + "\n"
-                + "Error on line 16\n"
-                + "    SW2 > AND1.I2, NAND1.I1;\n"
-                + "                          ^\n"
-                + "keyword 'I' cannot be device name\n"
-                + "\n"
-                + "Error Count: 6\n"
-    )
 
 
 def test_parser_keyword_end_as_name(capfd):
     """Parser test for having the keyword END as a name."""
     parser = dummy_parser(str(Path("test_files/parser_test12.txt")))
     assert parser.parse_network() is False
-    out, _ = capfd.readouterr()
-    assert (
-        out
-    )
 
 
 def test_parser_keyword_i_as_name(capfd):
@@ -266,7 +224,11 @@ def test_parser_invalid_port_identifier(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+                "Error on line 23\n"
+                + "    DTYPE1.WRONG > XOR1.I2;\n"
+                + "                ^\n"
+                + "invalid port identifier"
     )
 
 
@@ -414,7 +376,11 @@ def test_parser_input_to_input(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+            "Error on line 16\n"
+            + "    AND1.I2 > NAND1.I1;\n"
+            + "                      ^\n"
+            + "input connected to input"
     )
 
 
@@ -424,7 +390,12 @@ def test_parser_output_to_output(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            out ==
+                "Error on line 25\n"
+            + "    NOR1 > AND2;\n"
+            + "               ^\n"
+            + "output connected to output\n\n"
+            + "Error Count: 1\n"
     )
 
 
@@ -434,7 +405,11 @@ def test_parser_absent_port(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+            "Error on line 17\n"
+            + "    SW3 > NAND1.I3, DTYPE1.DATA;\n"
+            + "                               ^\n"
+            + "port is absent"
     )
 
 
@@ -444,7 +419,11 @@ def test_parser_input_already_in_use(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+            "Error on line 22\n"
+            + "    NAND1 > NOR1.I1;\n"
+            + "                   ^\n"
+            + "input is already connected"
     )
 
 
@@ -454,7 +433,13 @@ def test_parser_incomplete_network(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            out ==
+            "Error on line 34\n"
+            + "END\n"
+            + "   ^\n"
+            + "incomplete network, not all inputs are connected\n"
+            + "\n"
+            + "Error Count: 1"
     )
 
 
@@ -464,5 +449,9 @@ def test_parser_incorrect_section_ordering(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+            "\n".join(out.split("\n")[:4]) == 
+            "Error on line 18\n"
+            + "DEVICES\n"
+            + "      ^\n"
+            + "incorrect ordering of sections"
     )
