@@ -356,10 +356,10 @@ def test_parser_argument_outside_array(capfd):
     out, _ = capfd.readouterr()
     assert (
         out
-        == "Error on line 8\n"
-        + "    NAND1 = NOR(2);\n"
-        + "                  ^\n"
-        + "name 'NAND1' already used in previous device assignment\n\n"
+        == "Error on line 6\n"
+        + "    OR1, OR2 = OR(50);\n"
+        + "                     ^\n"
+        + "argument '50' outside of accepted range\n\n"
         + "Error Count: 1\n"
     )
 
