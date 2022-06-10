@@ -434,12 +434,12 @@ def test_parser_incomplete_network(capfd):
     out, _ = capfd.readouterr()
     assert (
             out ==
-            "Error on line 34\n"
-            + "END\n"
-            + "   ^\n"
-            + "incomplete network, not all inputs are connected\n"
-            + "\n"
-            + "Error Count: 1"
+        "Error on line 34\n"
+        + "END\n"
+        + "   ^\n"
+        + "incomplete network, not all inputs are connected\n"
+        + "\n"
+        + "Error Count: 1\n"
     )
 
 
