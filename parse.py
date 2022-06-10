@@ -10,12 +10,12 @@ Parser - parses the definition file and builds the logic network.
 """
 import builtins
 import wx
+
 builtins._ = wx.GetTranslation
 
 
 class Parser:
-
-    """Parse the definition file and build the logic network.
+    r"""Parse the definition file and build the logic network.
 
     The parser deals with error handling. It analyses the syntactic and
     semantic correctness of the symbols it receives from the scanner, and
@@ -87,7 +87,6 @@ class Parser:
         output_cmd=None,
     ):
         """Initialise constants."""
-
         self.mode = mode
         self.output_cmd = output_cmd
         self.name_error = False
@@ -142,7 +141,9 @@ class Parser:
             self.output_cmd(text)
 
     def _error(self, category, type=None, sym=None, keyword=None, skip=True):
-        """Print error category (syntax or semantic), error type,
+        """Print an error.
+
+        Print error category (syntax or semantic), error type,
         and error location. Error location is specified using error_found
         function from scanner.py.
         If an error is found, skip parsing until stopping symbol.
@@ -155,15 +156,15 @@ class Parser:
                 self._parser_output(_("invalid device name\n"))
             if type == self.device_as_name:
                 self._parser_output(
-                    _("device type '{}' cannot be"
-                      " device name\n").format(keyword)
+                    _("device type '{}' cannot be" " device name\n").format(
+                        keyword
+                    )
                 )
             if type == self.dtype_as_name:
                 self._parser_output(
-                    _("dtype input/output '{}' cannot"
-                      " be device name\n").format(
-                        keyword
-                    )
+                    _(
+                        "dtype input/output '{}' cannot" " be device name\n"
+                    ).format(keyword)
                 )
             if type == self.keyword_as_name:
                 self._parser_output(
@@ -177,8 +178,9 @@ class Parser:
                 self._parser_output(_("missing symbol: {}\n").format(sym))
             if type == self.missing_argument:
                 self._parser_output(
-                    _("missing argument for",
-                      " decive type '{}'\n").format(keyword)
+                    _("missing argument for", " decive type '{}'\n").format(
+                        keyword
+                    )
                 )
             if type == self.unrecognised_device_type:
                 self._parser_output(_("unrecognised device type\n"))
@@ -188,8 +190,9 @@ class Parser:
                 )
             if type == self.invalid_arg:
                 self._parser_output(
-                    _("argument '{}' outside of"
-                      " accepted range\n").format(keyword)
+                    _("argument '{}' outside of" " accepted range\n").format(
+                        keyword
+                    )
                 )
             if type == self.duplicate_name:
                 self._parser_output(
@@ -228,7 +231,9 @@ class Parser:
 
     def _name(self):
         """Parse a name and return the name ID if it is a valid name.
-        Else return None."""
+
+        Else return None.
+        """
         if self.symbol.type == self.scanner.NAME:
             device_id = self.symbol.id
             self.symbol = self.scanner.get_symbol()
@@ -265,7 +270,9 @@ class Parser:
 
     def _argument(self):
         """Parse an argument and return the number.
-        Else return None (if it's not a number)."""
+
+        Else return None (if it's not a number).
+        """
         if self.symbol.type == self.scanner.NUMBER:
             argument = int(self.symbol.id)
             self.symbol = self.scanner.get_symbol()
@@ -276,7 +283,8 @@ class Parser:
             return None
 
     def _signal_name(self):
-        """Parse an input or output name in the formats:
+        """Parse an input or output name in the formats.
+
         input - [name].I[port_id]
             or  [name].[dtype_ip]
         output -[name]
@@ -392,8 +400,10 @@ class Parser:
 
     def _assignment(self):
         """Parse an assigment line.
+
         This could be a list of names or a single name.
-        Make all the devices, as required."""
+        Make all the devices, as required.
+        """
         name_list = []  # to store any names, single or multiple
         device_id = self._name()
         if device_id is not None:  # if device name is valid
@@ -441,8 +451,9 @@ class Parser:
                         device_name = self.names.get_name_string(device_id)
                         # used name in device declaration
                         self._error(
-                            self.SEMANTIC, self.duplicate_name,
-                            keyword=device_name
+                            self.SEMANTIC,
+                            self.duplicate_name,
+                            keyword=device_name,
                         )
                 else:  # it's not a valid device
                     pass  # device outputs error for us here
@@ -457,7 +468,9 @@ class Parser:
 
     def _connection(self):
         """Parse a connection statement.
-        Make all the connections, as required."""
+
+        Make all the connections, as required.
+        """
         # call signal_name and save device_id and port_id
         first_device_id, first_port_id = self._signal_name()
         second_device_ids = []  # list to store device ids of inputs
@@ -516,7 +529,9 @@ class Parser:
 
     def _monitor(self):
         """Parse a monitor statement.
-        Make all monitor points, as required."""
+
+        Make all monitor points, as required.
+        """
         device_id, output_id = self._signal_name()
         if self.isoutput is False:  # monitor point is an input, invalid
             self._error(self.SYNTAX, self.monitor_is_input)
@@ -664,8 +679,8 @@ class Parser:
 
     def _section(self, type):
         """Call _section_### function if a keyword is present.
-        If keyword is not present call the intended function.
 
+        If keyword is not present call the intended function.
         Return section type.
         """
         if (

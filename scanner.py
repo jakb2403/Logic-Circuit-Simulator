@@ -15,7 +15,6 @@ import os
 
 
 class Symbol:
-
     """Encapsulate a symbol and store its properties.
 
     Parameters
@@ -34,7 +33,6 @@ class Symbol:
 
 
 class Scanner:
-
     """Read circuit definition file and translate the characters into symbols.
 
     Once supplied with the path to a valid definition file, the scanner
@@ -192,8 +190,11 @@ class Scanner:
         return name
 
     def error_found(self):
-        """Outputs the current line and a ^ symbol on the next line to
-        highlight the location of the error."""
+        """Scanner error output.
+
+        Outputs the current line and a ^ symbol on the next line to
+        highlight the location of the error.
+        """
         error_location = self.file.tell()
         self.file.seek(0, 0)
         if self.char_counter == 0:

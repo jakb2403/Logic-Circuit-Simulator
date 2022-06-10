@@ -90,7 +90,8 @@ def main(arg_list):
 
         gui = Gui(
             _(
-                "\uB17C\uB9AC \uD68C\uB85C \uBAA8\uC758 \uC2E4\uD5D8 Logic Simulator"
+                "\uB17C\uB9AC \uD68C\uB85C \uBAA8\uC758 \uC2E4\uD5D8 "
+                "Logic Simulator"
             ),
             names,
             devices,
