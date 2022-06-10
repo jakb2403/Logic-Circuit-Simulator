@@ -1,3 +1,4 @@
+"""Test the Scanner module."""
 import pytest
 from pathlib import Path
 
@@ -13,18 +14,17 @@ def new_scanner(path):
 
 
 def test_scanner1():
-    """Test if get_symbol returns the correct symbol_id and
-       symbol_type for scanner_test1.txt.
-       scanner_test1.txt contains all possible symbols (some examples of
-       numbers and names).
+    """Test if get_symbol returns the correct output.
+
+    Testing for correct symbol_id and symbol_type for scanner_test1.txt.
+    scanner_test1.txt contains all possible symbols (some examples of
+    numbers and names).
     """
     test_scanner1 = new_scanner(str(Path("test_files/scanner_test1.txt")))
 
     names = test_scanner1.names
 
-    [G1_ID, G2_ID, G3_ID] = names.lookup(
-        ["G1", "G2", "G3"]
-    )
+    [G1_ID, G2_ID, G3_ID] = names.lookup(["G1", "G2", "G3"])
 
     expected_symbol_type_id = [
         (test_scanner1.DOT, None),
@@ -54,15 +54,15 @@ def test_scanner1():
         (test_scanner1.DTYPE_IP, test_scanner1.CLK_ID),
         (test_scanner1.DTYPE_OP, test_scanner1.Q_ID),
         (test_scanner1.DTYPE_OP, test_scanner1.QBAR_ID),
-        (test_scanner1.NUMBER, '1'),
-        (test_scanner1.NUMBER, '2'),
-        (test_scanner1.NUMBER, '3'),
-        (test_scanner1.NUMBER, '4'),
-        (test_scanner1.NUMBER, '5'),
+        (test_scanner1.NUMBER, "1"),
+        (test_scanner1.NUMBER, "2"),
+        (test_scanner1.NUMBER, "3"),
+        (test_scanner1.NUMBER, "4"),
+        (test_scanner1.NUMBER, "5"),
         (test_scanner1.NAME, G1_ID),
         (test_scanner1.NAME, G2_ID),
         (test_scanner1.NAME, G3_ID),
-        (test_scanner1.EOF, None)
+        (test_scanner1.EOF, None),
     ]
 
     for i in range(len(expected_symbol_type_id)):
@@ -77,7 +77,7 @@ def test_scanner2():
 
     expected_symbol_type_id = [
         (test_scanner2.KEYWORD, test_scanner2.DEVICES_ID),
-        (test_scanner2.EOF, None)
+        (test_scanner2.EOF, None),
     ]
 
     for i in range(len(expected_symbol_type_id)):
