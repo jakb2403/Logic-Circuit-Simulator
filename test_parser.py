@@ -185,8 +185,42 @@ def test_parser_keyword_monitor_as_name(capfd):
     assert parser.parse_network() is False
     out, _ = capfd.readouterr()
     assert (
-        out
+        out == "Error on line 9\n"
+                + "    CONNECT = XOR;\n"
+                + "           ^\n"
+                + "missing keyword 'END'\n"
+                + "
+                + "Error on line 11\n"
+                + "    NOT1 = NOT;\n"
+                + "        ^\n"
+                + "missing keyword 'CONNECT'\n"
+                + "
+                + "Error on line 14\n"
+                + "CONNECT\n"
+                + "      ^\n"
+                + "missing symbol: >\n"
+                + "
+                + "Error on line 15\n"
+                + "    SW1 > AND1.I1;\n"
+                + "               ^\n"
+                + "missing symbol: ;\n"
+                + "
+                + "Error on line 16\n"
+                + "    SW2 > AND1.I2, NAND1.I1;\n"
+                + "          ^\n"
+                + "missing keyword 'MONITOR'\n"
+                + "
+                + "Error on line 16\n"
+                + "    SW2 > AND1.I2, NAND1.I1;\n"
+                + "                          ^\n"
+                + "keyword 'I' cannot be device name\n"
+                + "
+                + "Error Count: 6\n"
+
     )
+
+
+
 
 
 def test_parser_keyword_end_as_name(capfd):
