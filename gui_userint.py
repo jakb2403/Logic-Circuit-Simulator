@@ -10,7 +10,6 @@ GuiUserInterface - reads and parses user commands.
 
 
 class GuiUserInterface:
-
     """Read and parse user commands.
 
     This class allows the user to enter certain commands.

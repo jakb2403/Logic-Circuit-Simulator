@@ -65,6 +65,7 @@ class Names:
 
     def lookup(self, name_input):
         """Return the corresponding name ID for the given name_string.
+        
         If the name string is not present in the names list, add it.
         """
         if isinstance(name_input, list):
