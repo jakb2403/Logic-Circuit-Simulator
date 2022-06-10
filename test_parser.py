@@ -24,16 +24,16 @@ def dummy_parser(path):
     return new_parser
 
 
-# def test_scanner5():
-#     """Test if error_found returns the correct error message, line and
-#        character numbers."""
-#     test_scanner5 = dummy_parser(
-#         str(Path("test_files/scanner_test5.txt"))
-#     )
-#     out = test_scanner5.scanner.error_found()
-#     assert out == "Error on line 1\n\n^"
-#     assert test_scanner5.scanner.line_counter == 1
-#     assert test_scanner5.scanner.char_counter == 1
+def test_scanner5():
+    """Test if error_found returns the correct error message, line and
+       character numbers."""
+    test_scanner5 = dummy_parser(
+        str(Path("test_files/scanner_test5.txt"))
+    )
+    out = test_scanner5.scanner.error_found()
+    assert out == "Error on line 1\n\n^"
+    assert test_scanner5.scanner.line_counter == 1
+    assert test_scanner5.scanner.char_counter == 1
 
 
 def test_parser_invalid_name(capfd):
