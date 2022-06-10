@@ -1,2 +1,0 @@
-# This is a comment. get_symbol() should skip it.
-DEVICES

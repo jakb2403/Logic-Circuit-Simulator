@@ -67,11 +67,11 @@ def used_names_lookup2(unknown_name_list_unordered):
 def test_get_string_raises_exceptions(used_names):
     """Test if get_string raises expected exceptions."""
     with pytest.raises(TypeError):
-        used_names.get_string(1.4)
+        used_names.get_name_string(1.4)
     with pytest.raises(TypeError):
-        used_names.get_string("hello")
+        used_names.get_name_string("hello")
     with pytest.raises(ValueError):
-        used_names.get_string(-1)
+        used_names.get_name_string(-1)
 
 
 @pytest.mark.parametrize(
@@ -81,9 +81,9 @@ def test_get_string_raises_exceptions(used_names):
 def test_get_string(used_names, new_names, name_id, expected_string):
     """Test if get_string returns the expected string."""
     # Name is present
-    assert used_names.get_string(name_id) == expected_string
+    assert used_names.get_name_string(name_id) == expected_string
     # Name is absent
-    assert new_names.get_string(name_id) is None
+    assert new_names.get_name_string(name_id) is None
 
 
 @pytest.mark.parametrize(
