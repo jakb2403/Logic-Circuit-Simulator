@@ -10,7 +10,6 @@ Names - maps variable names and string names to unique integers.
 
 
 class Names:
-
     """Map variable names and string names to unique integers.
 
     This class deals with storing grammatical keywords and user-defined words,
@@ -57,7 +56,6 @@ class Names:
 
         If the name string is not present in the names list, return None.
         """
-
         if name_string in self.names_list:
             return self.names_list.index(name_string)
         else:
@@ -65,7 +63,7 @@ class Names:
 
     def lookup(self, name_input):
         """Return the corresponding name ID for the given name_string.
-        
+
         If the name string is not present in the names list, add it.
         """
         if isinstance(name_input, list):
